@@ -28,6 +28,10 @@ export enum LOG_COLORS {
   BgGray = "\x1b[100m",
 }
 
-export const LOG = (color: LOG_COLORS, ...args: string[]) => {
-  return console.log(`${color}%s\x1b[0m`, ...args);
+export const LOG = (color: LOG_COLORS, ...args: any[]) => {
+  if (__DEV__ && process.env.NODE_ENV != "test") {
+    return console.log(`${color}%s\x1b[0m`, ...args);
+  } else {
+    return;
+  }
 };

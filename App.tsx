@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { StatusBar } from "expo-status-bar";
 import { Platform, StyleSheet, Text, View } from "react-native";
-import { LOG, LOG_COLORS } from "src/utility/logger";
 
 export default function App() {
   useEffect(() => {

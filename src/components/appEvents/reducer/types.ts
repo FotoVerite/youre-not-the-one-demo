@@ -1,8 +1,6 @@
 import { PHONE_APPLICATION_NAMES } from "src/constants/phoneApplicationNames";
 
-enum CONTACT_NAMES {
-  NAME = "NAME",
-}
+type CONTACT_NAMES = string;
 
 //-----MESSAGES-----//
 
@@ -49,25 +47,22 @@ export type BlockMessageAppConversationEventAction = {
   payload: { name: CONTACT_NAMES };
 };
 
+export type EventPropsPayloadType = {
+  name: CONTACT_NAMES;
+  routeId: number;
+  chosen?: string;
+  finished?: boolean;
+  atIndex?: number;
+};
+
 export type CreateMessageAppRouteEventAction = {
   type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_CREATE;
-  payload: {
-    name: CONTACT_NAMES;
-    routeId: number;
-    chosen?: string;
-    finished?: boolean;
-    atIndex?: number;
-  };
+  payload: EventPropsPayloadType;
 };
 
 export type UpdateMessageAppRouteEventAction = {
   type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_UPDATE;
-  payload: {
-    name: CONTACT_NAMES;
-    routeId: number;
-    finished?: boolean;
-    atIndex?: number;
-  };
+  payload: EventPropsPayloadType;
 };
 export type AppEventsReducerActionsType =
   | AddMessageAppConversationSeenEventAction
