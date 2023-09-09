@@ -6,8 +6,6 @@ export type AppEventsContextTypeDigest = {
 };
 
 export type AppEventsContextTypeDigested = PropsWithChildren<{
-  events: {
-    state: AppEventsType;
-    dispatch: (action: AppEventsReducerActionsType) => void;
-  };
+  state: AppEventsType;
+  dispatch: (action: AppEventsReducerActionsType) => void;
 }>;
