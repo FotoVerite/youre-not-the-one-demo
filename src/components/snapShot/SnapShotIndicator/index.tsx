@@ -1,15 +1,17 @@
 import {
   Blur,
   Canvas,
+  Group,
   Image,
   RoundedRect,
   Shadow,
   SkImage,
+  rect,
+  rrect,
+  vec,
 } from "@shopify/react-native-skia";
-import React, { FC, useContext, useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { StyleSheet, useWindowDimensions } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { SnapShotContext, useSnapshotContext } from "../context";
 import {
   AnimationCallback,
   Extrapolate,
@@ -20,7 +22,9 @@ import {
   withDelay,
   withTiming,
 } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { delayFor } from "src/utility/async";
+
 import { SNAPSHOT_TYPES, SnapShotImageType } from "../context/type";
 
 const SnapshotIndicator: FC<{
@@ -32,36 +36,14 @@ const SnapshotIndicator: FC<{
   const insets = useSafeAreaInsets();
   const dimensions = useWindowDimensions();
   const height = dimensions.height - insets.top - insets.bottom;
-
+  const width = dimensions.width;
   const opacity = useSharedValue(0);
   const scaling = useSharedValue(1);
   const blur = useSharedValue(5);
   const moveOffscreen = useSharedValue(0);
 
-  const animatedHeight = useDerivedValue(() => height * scaling.value);
-
-  const animatedWidth = useDerivedValue(
-    () => (dimensions.width - 50) * scaling.value
-  );
-  const reactAnimatedWidth = useDerivedValue(
-    () => dimensions.width * scaling.value
-  );
-  const reactAnimatedY = useDerivedValue(() => height - animatedHeight.value);
-  const rectOffset = useDerivedValue(
-    () =>
-      interpolate(scaling.value, [1, 0.2], [0, 20]).valueOf() -
-      interpolate(
-        moveOffscreen.value,
-        [0, 1],
-        [0, reactAnimatedWidth.value + 20]
-      )
-  );
   const shadowBlur = useDerivedValue(() =>
-    interpolate(scaling.value, [0.5, 0.2], [0, 5], Extrapolate.CLAMP)
-  );
-  const imageXOffset = useDerivedValue(
-    () =>
-      (reactAnimatedWidth.value - animatedWidth.value) / 2 + rectOffset.value
+    interpolate(scaling.value, [0.5, 0.2], [0, 5], Extrapolate.CLAMP),
   );
 
   const resetSnapshot = async () => {
@@ -80,7 +62,7 @@ const SnapshotIndicator: FC<{
       scaleTo: number;
       duration: number;
     },
-    cb: AnimationCallback
+    cb: AnimationCallback,
   ) => {
     "worklet";
     scaling.value = withDelay(
@@ -88,8 +70,8 @@ const SnapshotIndicator: FC<{
       withTiming(
         configuration.scaleTo,
         { duration: configuration.duration },
-        cb
-      )
+        cb,
+      ),
     );
   };
 
@@ -104,7 +86,7 @@ const SnapshotIndicator: FC<{
       500,
       withTiming(1, {}, () => {
         runOnJS(resetSnapshot)();
-      })
+      }),
     );
   };
 
@@ -124,6 +106,19 @@ const SnapshotIndicator: FC<{
     }
   }, [snapshot]);
 
+  const groupTransform = useDerivedValue(() => {
+    return [
+      { scale: scaling.value },
+      {
+        translateX: interpolate(
+          moveOffscreen.value,
+          [0, 1],
+          [0, -width / scaling.value],
+        ),
+      },
+    ];
+  });
+
   return (
     <>
       {snapshot && (
@@ -133,28 +128,37 @@ const SnapshotIndicator: FC<{
             { height: dimensions.height, width: dimensions.width },
           ]}
         >
-          <RoundedRect
-            opacity={opacity}
-            x={rectOffset}
-            y={reactAnimatedY}
-            r={10}
-            height={animatedHeight}
-            width={reactAnimatedWidth}
-            color={"white"}
+          <Group
+            origin={vec(50, dimensions.height - insets.bottom)}
+            transform={groupTransform}
           >
+            <RoundedRect
+              opacity={opacity}
+              x={0}
+              y={insets.top}
+              r={25}
+              width={width}
+              height={height}
+              color="white"
+            />
+            <Image
+              clip={rrect(
+                rect(10, insets.top + 10, width - 20, height - 20),
+                25,
+                25,
+              )}
+              fit="fill"
+              opacity={opacity}
+              image={snapshot}
+              x={10}
+              y={insets.top + 10}
+              width={width - 20}
+              height={height - 20}
+            >
+              <Blur blur={blur} />
+            </Image>
             <Shadow dx={0} dy={0} blur={shadowBlur} color="black" />
-          </RoundedRect>
-          <Image
-            fit={"scaleDown"}
-            opacity={opacity}
-            image={snapshot}
-            x={imageXOffset}
-            y={reactAnimatedY}
-            height={animatedHeight}
-            width={animatedWidth}
-          >
-            <Blur blur={blur} />
-          </Image>
+          </Group>
         </Canvas>
       )}
     </>

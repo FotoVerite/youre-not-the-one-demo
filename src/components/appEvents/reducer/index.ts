@@ -1,16 +1,17 @@
 import { produce } from "immer";
+import { LOG, LOG_COLORS } from "src/utility/logger";
+
 import {
   APP_EVENTS_ACTIONS,
   AppEventsType,
   AppEventsReducerActionsType,
   EventPropsPayloadType,
 } from "./types";
-import { LOG, LOG_COLORS } from "src/utility/logger";
 
 const eventsReducer = produce(
   (
     draft: AppEventsType,
-    action: AppEventsReducerActionsType
+    action: AppEventsReducerActionsType,
   ): AppEventsType => {
     switch (action.type) {
       case APP_EVENTS_ACTIONS.MESSAGE_APP_BLOCK_CONVERSATION:
@@ -26,7 +27,7 @@ const eventsReducer = produce(
       default:
         return draft;
     }
-  }
+  },
 );
 
 const BlockedConversation = (draft: AppEventsType, name: string) => {
@@ -43,7 +44,7 @@ const ConversationSeen = (draft: AppEventsType, name: string) => {
 
 const CreateRouteEvent = (
   draft: AppEventsType,
-  payload: EventPropsPayloadType
+  payload: EventPropsPayloadType,
 ) => {
   const { routeId, name, ...props } = payload;
   const routeInfo = draft.Messages[name].routes;
@@ -52,7 +53,7 @@ const CreateRouteEvent = (
   routeInfo[stringRouteID] = {
     createdAt: new Date(),
     updatedAt: new Date(),
-    position: position,
+    position,
     ...props,
   };
 
@@ -66,7 +67,7 @@ const CreateRouteEvent = (
 
 const UpdateRouteEvent = (
   draft: AppEventsType,
-  payload: EventPropsPayloadType
+  payload: EventPropsPayloadType,
 ) => {
   const { routeId, name, ...props } = payload;
   const stringRouteID = routeId.toString();
@@ -74,7 +75,7 @@ const UpdateRouteEvent = (
     LOG_COLORS.FgGreen,
     "MESSAGE_APP_ROUTE_UPDATED",
     routeId.toString(),
-    props
+    props,
   );
 
   const routeInfo = draft.Messages[name].routes;

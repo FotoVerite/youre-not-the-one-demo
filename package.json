@@ -8,7 +8,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "ts:check": "tsc",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@shopify/react-native-skia": "0.1.196",
@@ -30,6 +31,10 @@
     "@babel/core": "^7.20.0",
     "@types/jest": "^29.5.4",
     "@types/react": "~18.2.14",
+    "eslint": "^8.49.0",
+    "eslint-config-universe": "^12.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "prettier": "^3.0.3",
     "typescript": "^5.1.3"
   },
   "jest": {

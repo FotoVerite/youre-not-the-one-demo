@@ -1,15 +1,15 @@
-import { useEffect } from "react";
+import SnapShotContextProvider from "@Components/snapShot/context";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { StatusBar } from "expo-status-bar";
+import { useEffect } from "react";
 import { Platform, StyleSheet, Text, View } from "react-native";
-import SnapShotContextProvider from "@Components/snapShot/context";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 export default function App() {
   useEffect(() => {
     if (Platform.OS !== "web") {
       ScreenOrientation.lockAsync(
-        ScreenOrientation.OrientationLock.PORTRAIT_UP
+        ScreenOrientation.OrientationLock.PORTRAIT_UP,
       );
     }
   }, []);

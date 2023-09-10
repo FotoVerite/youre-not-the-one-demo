@@ -1,3 +1,4 @@
+import { makeImageFromView } from "@shopify/react-native-skia";
 import React, {
   FC,
   useCallback,
@@ -6,8 +7,10 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { View } from "react-native";
+import { writeImageToFs } from "src/utility/filesystem";
+import { LOG, LOG_COLORS } from "src/utility/logger";
 
-import { SkImage, makeImageFromView } from "@shopify/react-native-skia";
 import {
   SNAPSHOT_TYPES,
   SnapShotContextDigestType,
@@ -15,9 +18,8 @@ import {
   SnapShotImageType,
   TakeSnapshotType,
 } from "./type";
-import { LOG, LOG_COLORS } from "src/utility/logger";
-import { writeImageToFs } from "src/utility/filesystem";
 import SnapshotIndicator from "../SnapShotIndicator";
+import SnapshotView from "../SnapshotView";
 
 //defaults for empty app
 export const SnapShotContext = React.createContext<
@@ -29,12 +31,12 @@ const SnapShotContextProvider: FC<SnapShotContextDigestType> = (props) => {
 
   const [image, _setImage] = useState<SnapShotImageType>();
 
-  const snapShotRef = useRef<React.RefObject<View>>();
+  const snapShotRef = useRef<View>(null);
 
   useEffect(() => {
     const snapShot = async () => {
       if (snapShotRef.current && takeSnapShot) {
-        const image = await makeImageFromView(snapShotRef.current);
+        const image = await makeImageFromView(snapShotRef);
         if (image) {
           _setImage({
             uri: image,
@@ -79,35 +81,28 @@ const SnapShotContextProvider: FC<SnapShotContextDigestType> = (props) => {
     (args: TakeSnapshotType) => {
       _setTakeSnapShot(args);
     },
-    [_setTakeSnapShot]
+    [_setTakeSnapShot],
   );
 
   const setImage = useCallback(
     (args: SnapShotImageType) => {
       _setImage(args);
     },
-    [_setTakeSnapShot]
+    [_setTakeSnapShot],
   );
-
-  useEffect(() => {
-    setTakeSnapShot({
-      filename: "Blah",
-      type: SNAPSHOT_TYPES.BACKGROUND_IMAGE,
-    });
-  }, []);
 
   return (
     <SnapShotContext.Provider
       value={{
-        takeSnapShot: takeSnapShot,
-        setTakeSnapShot: setTakeSnapShot,
-        image: image,
+        takeSnapShot,
+        setTakeSnapShot,
+        image,
         setImage: _setImage,
       }}
     >
       <>
         <SnapshotIndicator image={image} setImage={setImage} />
-        {props.children}
+        <SnapshotView snapshotRef={snapShotRef}>{props.children}</SnapshotView>
       </>
     </SnapShotContext.Provider>
   );

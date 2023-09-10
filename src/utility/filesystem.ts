@@ -1,28 +1,29 @@
 import { SkImage } from "@shopify/react-native-skia";
 import * as FileSystem from "expo-file-system";
+
 import { LOG, LOG_COLORS } from "./logger";
 
 enum DIRECTORIES {
   IMAGE_DIR = `images/`,
 }
 
-const convertsToBase64 = (file: string | SkImage): file is SkImage => {
+const _convertibleToBase64 = (file: string | SkImage): file is SkImage => {
   return Object.keys(file).includes("encodeToBase64");
 };
 
 export const writeToFile = async (
   dir: string,
   file: string | SkImage,
-  fileName: string
+  fileName: string,
 ) => {
   await ensureDirExists(dir);
-  if (convertsToBase64(file)) {
+  if (_convertibleToBase64(file)) {
     await FileSystem.writeAsStringAsync(
       createPath(dir, fileName),
       file.encodeToBase64(),
       {
         encoding: FileSystem.EncodingType.Base64,
-      }
+      },
     );
   } else {
     await FileSystem.writeAsStringAsync(createPath(dir, fileName), file, {
@@ -44,6 +45,7 @@ export const createPath = (dir: string, filename: string) => {
 };
 
 export const writeImageToFs = async (file: SkImage, filename: string) => {
+  const dir = FileSystem.documentDirectory + DIRECTORIES.IMAGE_DIR;
   LOG(LOG_COLORS.FgBlue, `Writing image ${filename}`);
-  writeToFile(DIRECTORIES.IMAGE_DIR, file, filename);
+  writeToFile(dir, file, filename);
 };

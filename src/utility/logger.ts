@@ -29,9 +29,8 @@ export enum LOG_COLORS {
 }
 
 export const LOG = (color: LOG_COLORS, ...args: any[]) => {
-  if (__DEV__ && process.env.NODE_ENV != "test") {
+  if (__DEV__ && process.env.NODE_ENV !== "test") {
     return console.log(`${color}%s\x1b[0m`, ...args);
   } else {
-    return;
   }
 };

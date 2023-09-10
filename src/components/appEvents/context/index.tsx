@@ -1,4 +1,7 @@
-import React, { FC, memo, useCallback, useContext, useReducer } from "react";
+import React, { FC, useCallback, useContext, useReducer } from "react";
+import { PHONE_APPLICATION_NAMES } from "src/constants/phoneApplicationNames";
+import { LOG, LOG_COLORS } from "src/utility/logger";
+
 import {
   AppEventsContextTypeDigest,
   AppEventsContextTypeDigested,
@@ -8,8 +11,6 @@ import {
   AppEventsReducerActionsType,
   MessageAppEventsContainerType,
 } from "../reducer/types";
-import { PHONE_APPLICATION_NAMES } from "src/constants/phoneApplicationNames";
-import { LOG, LOG_COLORS } from "src/utility/logger";
 
 //defaults for empty app
 const AppEventsContext = React.createContext<
@@ -18,7 +19,7 @@ const AppEventsContext = React.createContext<
 
 const AppEventsContextProvider: FC<AppEventsContextTypeDigest> = (props) => {
   const setDefaultMessageEventState = (
-    state: MessageAppEventsContainerType
+    state: MessageAppEventsContainerType,
   ) => {
     for (const name of Object.values({ test: "test" })) {
       if (state[name] === undefined) {
@@ -35,7 +36,7 @@ const AppEventsContextProvider: FC<AppEventsContextTypeDigest> = (props) => {
     (action: AppEventsReducerActionsType) => {
       dispatch(action);
     },
-    []
+    [],
   );
 
   return (
