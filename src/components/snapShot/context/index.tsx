@@ -7,7 +7,6 @@ import React, {
   useState,
 } from "react";
 
-import * as FileSystem from "expo-file-system";
 import { SkImage, makeImageFromView } from "@shopify/react-native-skia";
 import {
   SNAPSHOT_TYPES,
@@ -16,8 +15,9 @@ import {
   SnapShotImageType,
   TakeSnapshotType,
 } from "./type";
-import { View } from "react-native";
 import { LOG, LOG_COLORS } from "src/utility/logger";
+import { writeImageToFs } from "src/utility/filesystem";
+import SnapshotIndicator from "../SnapShotIndicator";
 
 //defaults for empty app
 export const SnapShotContext = React.createContext<
@@ -27,7 +27,7 @@ export const SnapShotContext = React.createContext<
 const SnapShotContextProvider: FC<SnapShotContextDigestType> = (props) => {
   const [takeSnapShot, _setTakeSnapShot] = useState<TakeSnapshotType>();
 
-  const [image, setImage] = useState<SnapShotImageType>();
+  const [image, _setImage] = useState<SnapShotImageType>();
 
   const snapShotRef = useRef<React.RefObject<View>>();
 
@@ -36,7 +36,7 @@ const SnapShotContextProvider: FC<SnapShotContextDigestType> = (props) => {
       if (snapShotRef.current && takeSnapShot) {
         const image = await makeImageFromView(snapShotRef.current);
         if (image) {
-          setImage({
+          _setImage({
             uri: image,
             filename: takeSnapShot.filename,
             type: takeSnapShot.type,
@@ -57,11 +57,11 @@ const SnapShotContextProvider: FC<SnapShotContextDigestType> = (props) => {
       if (image != null) {
         switch (image.type) {
           case SNAPSHOT_TYPES.SILENT:
-            writeImageToFile(image.uri, image.filename);
+            writeImageToFs(image.uri, image.filename);
             break;
           case SNAPSHOT_TYPES.WITH_INDICATOR:
-            writeImageToFile(image.uri, image.filename);
-            setImage({
+            writeImageToFs(image.uri, image.filename);
+            _setImage({
               ...image,
               indicatorStatus: false,
               type: SNAPSHOT_TYPES.INDICATOR_RUNNING,
@@ -82,15 +82,33 @@ const SnapShotContextProvider: FC<SnapShotContextDigestType> = (props) => {
     [_setTakeSnapShot]
   );
 
+  const setImage = useCallback(
+    (args: SnapShotImageType) => {
+      _setImage(args);
+    },
+    [_setTakeSnapShot]
+  );
+
+  useEffect(() => {
+    setTakeSnapShot({
+      filename: "Blah",
+      type: SNAPSHOT_TYPES.BACKGROUND_IMAGE,
+    });
+  }, []);
+
   return (
     <SnapShotContext.Provider
       value={{
         takeSnapShot: takeSnapShot,
         setTakeSnapShot: setTakeSnapShot,
         image: image,
+        setImage: _setImage,
       }}
     >
-      {props.children}
+      <>
+        <SnapshotIndicator image={image} setImage={setImage} />
+        {props.children}
+      </>
     </SnapShotContext.Provider>
   );
 };
@@ -99,35 +117,12 @@ export default SnapShotContextProvider;
 export const SnapShotContextConsumer = SnapShotContext.Consumer;
 
 export const useSnapshotContext = () => {
+  const ERROR_MESSAGE = "SnapshotContext called outside it's provider";
   const context = useContext(SnapShotContext);
   if (context == null) {
-    LOG(LOG_COLORS.FgRed, "Event Context called outside of provider");
+    LOG(LOG_COLORS.FgRed, ERROR_MESSAGE);
+    throw new Error(ERROR_MESSAGE);
   } else {
     return context;
   }
-};
-
-const IMAGE_DIR = FileSystem.documentDirectory + "images/";
-
-const writeImageToFile = async (image: SkImage, fileName: string) => {
-  await ensureImageDirExists();
-  await FileSystem.writeAsStringAsync(
-    snapshotPath(fileName),
-    image.encodeToBase64(),
-    {
-      encoding: FileSystem.EncodingType.Base64,
-    }
-  );
-};
-
-const ensureImageDirExists = async () => {
-  const dirInfo = await FileSystem.getInfoAsync(IMAGE_DIR);
-  if (!dirInfo.exists) {
-    console.log("Image directory doesn't exist, creating...");
-    await FileSystem.makeDirectoryAsync(IMAGE_DIR, { intermediates: true });
-  }
-};
-
-export const snapshotPath = (filename: string) => {
-  return `${IMAGE_DIR}/${filename}.png`;
 };

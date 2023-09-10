@@ -35,4 +35,5 @@ export type SnapShotContextDigestedType = PropsWithChildren<{
   takeSnapShot?: TakeSnapshotType;
   setTakeSnapShot: (args: TakeSnapshotType) => void;
   image: SnapShotImageType;
+  setImage: (args: SnapShotImageType) => void;
 }>;
