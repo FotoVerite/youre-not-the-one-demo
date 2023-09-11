@@ -9,7 +9,7 @@ import {
 const notificationReducer = produce(
   (
     draft: NotificationType[],
-    action: NotificationsReducerActionsType
+    action: NotificationsReducerActionsType,
   ): NotificationType[] => {
     switch (action.type) {
       case NOTIFICATIONS_REDUCER_ACTIONS.ADD: {
@@ -45,7 +45,7 @@ const notificationReducer = produce(
       default:
         return draft;
     }
-  }
+  },
 );
 
 export default notificationReducer;

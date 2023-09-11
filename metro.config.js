@@ -14,6 +14,7 @@ module.exports = (async () => {
     ...config,
     resolver: {
       ...config.resolver,
+      resolverMainFields: ["sbmodern", "react-native", "browser", "main"],
       sourceExts: [...sourceExts, "mjs"],
     },
   };

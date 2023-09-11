@@ -78,7 +78,7 @@ const NotificationPopup: FC<PropType> = ({
           translateY: interpolate(
             translateY.value,
             [0, 1],
-            [-500, 500 + height.current]
+            [-500, 500 + height.current],
           ),
         },
       ],

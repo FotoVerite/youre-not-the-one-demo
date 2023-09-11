@@ -27,7 +27,7 @@ const NotificationSwipe: FC<PropType> = ({
             {
               duration: 250,
             },
-            () => runOnJS(dispatchDeactivation)
+            () => runOnJS(dispatchDeactivation),
           );
         } else {
           translateX.value = withTiming(0, { duration: 150 });

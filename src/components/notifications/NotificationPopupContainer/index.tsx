@@ -1,11 +1,9 @@
-import React, { FC, useContext, useEffect, useMemo, useState } from "react";
+import React, { FC, useMemo } from "react";
 import { StyleSheet, View } from "react-native";
 import { Z_INDEX } from "src/constants/zIndex";
-import { theme } from "src/theme";
-
 import { useInsetDimensions } from "src/utility/useInsetDimensions";
+
 import NotificationPopup from "./NotificationPopup";
-import { NotificationsContext, useNotificationContext } from "../context";
 import {
   NotificationType,
   NotificationsReducerActionsType,
@@ -19,7 +17,6 @@ const NotificationPopupContainer: FC<{
   const activeNotifications = useMemo(() => {
     return notifications.filter((notification) => notification.active);
   }, [notifications]);
-  console.log(activeNotifications.length);
   return (
     <View pointerEvents="box-none" style={[styles.screen, { width, height }]}>
       {activeNotifications.map((notification, idx) => (

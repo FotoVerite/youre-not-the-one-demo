@@ -1,42 +1,46 @@
+import AppEventsContextProvider from "@Components/appEvents/context";
 import NotificationsContextProvider from "@Components/notifications/context";
+import Messages from "@Components/phoneApplications/Messages/components/Messages";
 import SnapShotContextProvider from "@Components/snapShot/context";
+import Constants from "expo-constants";
 import * as ScreenOrientation from "expo-screen-orientation";
-import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
-import { Platform, StyleSheet, Text, View } from "react-native";
+import { Platform } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import FontsContextProvider from "src/contexts/fonts";
 
-export default function App() {
+const App = () => {
   useEffect(() => {
     if (Platform.OS !== "web") {
       ScreenOrientation.lockAsync(
-        ScreenOrientation.OrientationLock.PORTRAIT_UP
+        ScreenOrientation.OrientationLock.PORTRAIT_UP,
       );
     }
   }, []);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaProvider>
-        <SnapShotContextProvider>
-          <NotificationsContextProvider>
-            <View style={styles.container}>
-              <Text>Open up App.tsx to start working on your app!</Text>
-              <StatusBar style="auto" />
-            </View>
-          </NotificationsContextProvider>
-        </SnapShotContextProvider>
-      </SafeAreaProvider>
+      <FontsContextProvider>
+        <SafeAreaProvider>
+          <AppEventsContextProvider>
+            <SnapShotContextProvider>
+              <NotificationsContextProvider>
+                <Messages />
+              </NotificationsContextProvider>
+            </SnapShotContextProvider>
+          </AppEventsContextProvider>
+        </SafeAreaProvider>
+      </FontsContextProvider>
     </GestureHandlerRootView>
   );
+};
+
+let AppEntryPoint = App;
+
+// Render Storybook if storybookEnabled is true
+if (Constants?.expoConfig?.extra?.storybookEnabled === "true") {
+  AppEntryPoint = require("./.storybook").default;
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
+export default AppEntryPoint;

@@ -43,7 +43,7 @@ const Notification: FC<NotificationDisplayType> = ({
         <View style={styles.contentContainer}>
           <Row style={styles.header}>
             <View style={styles.content}>
-              <Text style={styles.text} numberOfLines={1}>
+              <Text style={styles.title} numberOfLines={1}>
                 {title}
               </Text>
               <Text style={styles.text}>{content}</Text>
@@ -96,8 +96,13 @@ const styles = StyleSheet.create({
   date: {
     marginLeft: "auto",
     marginTop: -1,
-    color: "#343434",
+    color: "#5a5858",
     fontSize: 13,
+  },
+  title: {
+    color: "#4b4a4a",
+    marginBottom: 1,
+    fontWeight: "bold",
   },
   text: {
     color: "#343434",
