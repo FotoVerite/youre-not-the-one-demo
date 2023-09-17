@@ -1,29 +1,29 @@
-import { DigestedConversationImageItemType } from "@Components/phoneApplications/Messages/hooks/useConversation/digestion/types";
-import { useImage, Canvas, Group, Image } from "@shopify/react-native-skia";
+import {
+  Canvas,
+  Group,
+  Image as SkiaImage,
+  SkImage,
+} from "@shopify/react-native-skia";
 import React, { FC } from "react";
-import { TouchableWithoutFeedback, View } from "react-native";
+import { TouchableWithoutFeedback, View, StyleSheet } from "react-native";
 
+import { SkBubbleType } from "../types";
 import { useBubbleClip } from "../useBubbleClip";
 
-export const SkImageBubble: FC<DigestedConversationImageItemType> = ({
+export const SkSnapshotBubble: FC<SkBubbleType> = ({
   content,
-  width,
   height,
-  leftSide,
+  addressee,
   isLastInExchange,
+  width,
 }) => {
-  const image = useImage(content);
   const clipFunction = useBubbleClip(
     width,
     height,
     16,
-    leftSide,
+    addressee,
     isLastInExchange ? 1 : 0
   );
-
-  if (!image) {
-    return null;
-  }
 
   return (
     <TouchableWithoutFeedback onPress={() => {}}>
@@ -37,8 +37,8 @@ export const SkImageBubble: FC<DigestedConversationImageItemType> = ({
           ]}
         >
           <Group clip={clipFunction}>
-            <Image
-              image={image}
+            <SkiaImage
+              image={content as unknown as SkImage}
               fit="fill"
               x={0}
               y={0}

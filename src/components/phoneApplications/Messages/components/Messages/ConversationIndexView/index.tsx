@@ -1,4 +1,4 @@
-import { ConversationType } from "@Components/phoneApplications/Messages/hooks/useConversations/types";
+import { ConversationListType } from "@Components/phoneApplications/Messages/hooks/useConversations/types";
 import { FC } from "react";
 import { Animated, StyleSheet } from "react-native";
 import { useAnimatedRef, useSharedValue } from "react-native-reanimated";
@@ -7,10 +7,10 @@ import Header from "./Header";
 import List from "./List";
 
 const ConversationIndexView: FC<{
-  viewable: ConversationType[];
+  viewable: ConversationListType[];
 }> = ({ viewable }) => {
   const shrink = useSharedValue(0);
-  const aref = useAnimatedRef<Animated.FlatList<ConversationType>>();
+  const aref = useAnimatedRef<Animated.FlatList<ConversationListType>>();
 
   // useEffect(() => {
   //   if (context.newMessage.state) {

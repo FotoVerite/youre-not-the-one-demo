@@ -1,21 +1,11 @@
-import { ConversationType } from "@Components/phoneApplications/Messages/hooks/useConversations/types";
+import { ConversationListType } from "@Components/phoneApplications/Messages/hooks/useConversations/types";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import React, { FC, memo } from "react";
 import { StyleSheet, Image, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "src/theme";
 import { Row } from "src/utility/layout";
 
-const ConversationListItem: FC<
-  Pick<
-    ConversationType,
-    | "heroImage"
-    | "hasAvailableRoute"
-    | "interfaceColor"
-    | "name"
-    | "logline_timestamp"
-    | "logline_content"
-  >
-> = ({
+const ConversationListItem: FC<Omit<ConversationListType, "tags">> = ({
   heroImage,
   hasAvailableRoute,
   logline_content,

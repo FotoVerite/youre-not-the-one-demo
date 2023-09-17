@@ -1,5 +1,3 @@
-import { EFFECT_TYPE } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
-import { DigestedConversationStringItemType } from "@Components/phoneApplications/Messages/hooks/useConversation/digestion/types";
 import {
   Canvas,
   Group,
@@ -7,23 +5,18 @@ import {
   LinearGradient,
   vec,
 } from "@shopify/react-native-skia";
-import { FC } from "react";
-import Animated, { SharedValue } from "react-native-reanimated";
+import { FC, ReactNode } from "react";
 
+import { SkBubbleTypeWithGradient } from "../types";
 import { useBubbleClip } from "../useBubbleClip";
 import { useHeightDeterminedGradient } from "../useHeightDeterminedGradient";
 
-export const SkStringBubble: FC<
-  DigestedConversationStringItemType & {
-    scrollHandler: SharedValue<number>;
-    scrollRef: React.RefObject<Animated.ScrollView>;
-  }
-> = ({
+export const SkStringBubble: FC<SkBubbleTypeWithGradient> = ({
   colors,
   scrollHandler,
   offset,
   content,
-  leftSide,
+  addressee,
   width,
   height,
   effect,
@@ -32,7 +25,7 @@ export const SkStringBubble: FC<
   const computedColors = useHeightDeterminedGradient(
     colors,
     offset,
-    leftSide,
+    addressee,
     scrollHandler
   );
 
@@ -40,7 +33,7 @@ export const SkStringBubble: FC<
     width,
     height,
     16,
-    leftSide,
+    addressee,
     isLastInExchange ? 1 : 0
   );
   //const glitchEffect = useGlitchEffect(height, width, content, clip);
@@ -60,7 +53,7 @@ export const SkStringBubble: FC<
           />
         </Rect>
       </Group>
-      <Group color="white">{content}</Group>
+      <Group color="white">{content as ReactNode[]}</Group>
       {/* {effect?.type === EFFECT_TYPE.GLITCH && glitchEffect} */}
     </Canvas>
   );

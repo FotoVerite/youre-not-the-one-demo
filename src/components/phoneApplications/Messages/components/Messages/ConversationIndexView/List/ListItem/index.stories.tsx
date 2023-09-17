@@ -17,6 +17,7 @@ export const Default = {
     logline_content: "This is a conversation item's content",
     logline_timestamp: "11:30 PM",
     name: "This is a conversation item's title",
+    tags: [],
   },
   decorators: [
     (Story: ElementType) => (

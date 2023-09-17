@@ -1,3 +1,4 @@
+import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
 import { DigestedConversationVCardItemType } from "@Components/phoneApplications/Messages/hooks/useConversation/digestion/types";
 import {
   Canvas,
@@ -8,32 +9,26 @@ import {
 } from "@shopify/react-native-skia";
 import { FC } from "react";
 import { TouchableWithoutFeedback, View } from "react-native";
-import Animated, { SharedValue } from "react-native-reanimated";
 
 import useInitials from "./useInitials";
+import { SkBubbleTypeWithGradient } from "../types";
 import { useBubbleClip } from "../useBubbleClip";
 import { useHeightDeterminedGradient } from "../useHeightDeterminedGradient";
 
-export const SkVcardBubble: FC<
-  DigestedConversationVCardItemType & {
-    scrollHandler: SharedValue<number>;
-    scrollRef: React.RefObject<Animated.ScrollView>;
-  }
-> = ({
+export const SkVcardBubble: FC<SkBubbleTypeWithGradient> = ({
   colors,
   scrollHandler,
   offset,
   content,
-  leftSide,
+  addressee,
   width,
   height,
-  paddingBottom,
   isLastInExchange,
 }) => {
   const computedColors = useHeightDeterminedGradient(
     colors,
     offset,
-    leftSide,
+    addressee,
     scrollHandler
   );
 
@@ -41,11 +36,15 @@ export const SkVcardBubble: FC<
     width,
     height,
     16,
-    leftSide,
+    addressee,
     isLastInExchange ? 1 : 0
   );
 
-  const initialsCircle = useInitials(width, height, content, paddingBottom);
+  const initialsCircle = useInitials(
+    width,
+    height,
+    content as MESSAGE_CONTACT_NAME
+  );
 
   return (
     <TouchableWithoutFeedback onPress={() => {}}>

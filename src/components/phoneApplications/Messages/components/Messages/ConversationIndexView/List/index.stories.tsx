@@ -1,3 +1,5 @@
+import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
+import { ConversationListType } from "@Components/phoneApplications/Messages/hooks/useConversations/types";
 import { ElementType } from "react";
 import { View } from "react-native";
 
@@ -14,27 +16,27 @@ export default {
       </View>
     ),
   ],
-  argTypes: {
-    onPinTask: { action: "onPinTask" },
-    onArchiveTask: { action: "onArchiveTask" },
-  },
 };
 
-export const Default = {
+export const Default: { args: { viewable: ConversationListType[] } } = {
   args: {
     // Shaping the stories through args composition.
     // The data was inherited from the Default story in Task.stories.js.
     viewable: [
-      { ...ListStory.args, name: "Spam", interfaceColor: "blue" },
       {
         ...ListStory.args,
-        name: "Matthew Bergman",
+        name: MESSAGE_CONTACT_NAME.SPAM1,
+        interfaceColor: "blue",
+      },
+      {
+        ...ListStory.args,
+        name: MESSAGE_CONTACT_NAME.GRACE_RUSSO,
         hasAvailableRoute: false,
       },
-      { ...ListStory.args, name: "Alice" },
+      { ...ListStory.args, name: MESSAGE_CONTACT_NAME.ALICE },
       {
         ...ListStory.args,
-        name: "Sally",
+        name: MESSAGE_CONTACT_NAME.CHRIS,
         hasAvailableRoute: false,
       },
     ],

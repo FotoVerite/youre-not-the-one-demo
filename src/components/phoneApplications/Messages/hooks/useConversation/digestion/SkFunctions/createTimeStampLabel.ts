@@ -10,9 +10,10 @@ const HEIGHT = 30;
 export const createTimeStampLabel = (
   time: string,
   width: number,
-  offset: number,
+  offset: number
 ): DigestedConversationTimeType => {
   const listItem = {
+    ID: crypto.randomUUID(),
     height: HEIGHT,
     width,
     paddingBottom: 0,

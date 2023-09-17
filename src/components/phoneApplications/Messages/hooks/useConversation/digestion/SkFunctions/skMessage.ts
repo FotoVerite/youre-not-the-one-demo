@@ -37,17 +37,18 @@ export const SkMessage = (
   const BOTTOM_PADDING_FOR_LAST_IN_BLOCK = 8;
   const ADDED_HEIGHT_FOR_VISIBLE_NAME = 20;
   const { group, width, offset, font } = itemConfiguration;
-  const leftSide = name !== "Self";
+  const addressee = name !== "Self";
 
   const calculations = calculateWidthHeightAndContent(
     message,
     width,
-    leftSide,
+    addressee,
     font
   );
 
   const skItem = {
-    alignItems: leftSide ? "flex-start" : "flex-end",
+    ID: crypto.randomUUID(),
+    alignItems: addressee ? "flex-start" : "flex-end",
     content: calculations.content,
     height:
       group && isLastInExchange && name !== MESSAGE_CONTACT_NAME.SELF
@@ -62,10 +63,12 @@ export const SkMessage = (
     colors: MESSAGE_CONTACT_INFO[name].colors,
     cursorVector: calculations.cursorVector,
     avatar: isLastInExchange ? MESSAGE_CONTACT_INFO[name].avatar : undefined,
-    leftSide,
+    addressee,
     isLastInExchange,
     type: message.type,
-    reaction: message.reaction,
+    reactionName: message.reaction?.name,
+    reactionColor: message.reaction?.color,
+    reactionDelay: message.reaction?.delay,
     contentDelay: message.contentDelay,
     typingDelay: message.typingDelay,
     effect: message.effect,
@@ -74,25 +77,13 @@ export const SkMessage = (
   return skItem;
 };
 
-const createPath = (
-  calculations: CalculationsType,
-  tail: boolean,
-  flip: boolean
-) => {
-  const clip = BubblePath(calculations.width, calculations.height, 16, tail);
-  if (flip) {
-    flipPath(clip, calculations.width);
-  }
-  return clip;
-};
-
 const calculateWidthHeightAndContent = (
   message: ContentWithMetaType,
   width: number,
-  leftSide: boolean,
+  addressee: boolean,
   font: SkFont
 ): CalculationsType => {
-  const itemWidth = leftSide ? width * 0.7 - 30 : width * 0.7;
+  const itemWidth = addressee ? width * 0.7 - 30 : width * 0.7;
   switch (message.type) {
     case MESSAGE_CONTENT.EMOJI:
       return {
@@ -137,7 +128,13 @@ const calculateWidthHeightAndContent = (
       };
     case MESSAGE_CONTENT.STRING: {
       const [boxHeight, boxWidth, textNodes, cursorVector] =
-        GetDimensionsAndSkiaNodes(font, font, message.content, width, leftSide);
+        GetDimensionsAndSkiaNodes(
+          font,
+          font,
+          message.content,
+          width,
+          addressee
+        );
       return {
         width: boxWidth,
         height: boxHeight + BUBBLE_PADDING,
@@ -151,7 +148,7 @@ const calculateWidthHeightAndContent = (
         font,
         message.content,
         width,
-        leftSide
+        addressee
       );
       return {
         width: glyphWidth,

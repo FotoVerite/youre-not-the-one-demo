@@ -1,5 +1,6 @@
 import { RouteConditionsType } from "./routes/types";
 import { MESSAGE_CONTACT_NAME } from "../constants";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 export enum MESSAGE_CONTENT {
   EMOJI = "emoji",
@@ -26,7 +27,13 @@ export type MessageEffectType = {
   conditions?: RouteConditionsType;
 };
 
-export type ReactionType = { name: string; color: string; delay?: number };
+export type FontAwesomeGlyphs = keyof typeof FontAwesome.glyphMap;
+
+export type ReactionType = {
+  name: FontAwesomeGlyphs;
+  color: string;
+  delay?: number;
+};
 
 interface AbstractContentWithMetaType {
   contentDelay?: number;
@@ -85,7 +92,7 @@ export type ContentWithMetaType =
   | VCardContentWithMeta;
 
 export const isContentWithMeta = (
-  content: ContentWithMetaType | string,
+  content: ContentWithMetaType | string
 ): content is ContentWithMetaType => {
   return (content as ContentWithMetaType).type !== undefined;
 };

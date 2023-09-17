@@ -1,13 +1,13 @@
-import { DigestedConversationStringItemType } from "@Components/phoneApplications/Messages/hooks/useConversation/digestion/types";
+import { GetDimensionsAndSkiaNodes } from "@Components/phoneApplications/Messages/hooks/useConversation/digestion/SkFunctions/skiaCalculations";
 import { FC } from "react";
 import Animated, { SharedValue } from "react-native-reanimated";
+import { useFonts } from "src/contexts/fonts/hooks/useFonts";
 
 import { SkStringBubble } from "..";
-import { useFonts } from "src/contexts/fonts/hooks/useFonts";
-import { GetDimensionsAndSkiaNodes } from "@Components/phoneApplications/Messages/hooks/useConversation/digestion/SkFunctions/skiaCalculations";
+import { SkBubbleTypeWithGradient } from "../../types";
 
 export type SkStringWrapperType = Omit<
-  DigestedConversationStringItemType,
+  SkBubbleTypeWithGradient,
   "content" | "height" | "width"
 > & {
   scrollHandler: SharedValue<number>;
@@ -27,7 +27,7 @@ export const SkStringBubbleWrapper: FC<SkStringWrapperType> = (props) => {
       fonts?.SFPro,
       props.content,
       400,
-      props.leftSide
+      props.addressee
     );
   return (
     <SkStringBubble

@@ -10,6 +10,7 @@ import { FlexAlignType, ImageSourcePropType } from "react-native";
 
 import { MESSAGE_CONTACT_NAME } from "../../../constants";
 import {
+  FontAwesomeGlyphs,
   MESSAGE_CONTENT,
   MessageEffectType,
   ReactionType,
@@ -48,6 +49,7 @@ export interface SkItemConfigurationType extends BaseConfigType {
 }
 
 export interface AbstractDigestedConversationItemType {
+  ID: string;
   height: number;
   width: number;
   offset: number;
@@ -73,10 +75,13 @@ export interface AbstractMetaDigestedConversationItemType
   avatar?: ImageSourcePropType;
   colors: string[];
   cursorVector: SkPoint;
-  name: MESSAGE_CONTACT_NAME;
-  leftSide: boolean;
-  reaction?: ReactionType;
   effect?: MessageEffectType;
+  group?: boolean;
+  name: MESSAGE_CONTACT_NAME;
+  addressee: boolean;
+  reactionColor?: string;
+  reactionDelay?: number;
+  reactionName?: FontAwesomeGlyphs;
 }
 
 export interface DigestedConversationStringItemType

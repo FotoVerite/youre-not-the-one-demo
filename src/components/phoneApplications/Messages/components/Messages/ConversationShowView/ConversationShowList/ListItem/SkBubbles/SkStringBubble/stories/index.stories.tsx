@@ -1,36 +1,40 @@
-import image from "@Components/notifications/NotificationPopupContainer/NotificationPopup/assets/default.jpeg";
-import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
+import {
+  MESSAGE_CONTACT_INFO,
+  MESSAGE_CONTACT_NAME,
+} from "@Components/phoneApplications/Messages/constants";
 import { MESSAGE_CONTENT } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
-import { DigestedConversationImageItemType } from "@Components/phoneApplications/Messages/hooks/useConversation/digestion/types";
+import { DigestedConversationStringItemType } from "@Components/phoneApplications/Messages/hooks/useConversation/digestion/types";
 import { vec } from "@shopify/react-native-skia";
 import { ElementType } from "react";
 import { View } from "react-native";
-import { theme } from "src/theme";
 
-import { SkImageBubble } from ".";
+import {
+  SkStringBubbleWrapper,
+  SkStringWrapperType,
+} from "./SkStringBubbleWrapper";
 
 export default {
-  title: "Bubbles/SkImageBubble",
-  component: SkImageBubble,
+  title: "Bubbles/SkStringBubble",
+  component: SkStringBubbleWrapper,
 };
 
 export const Default: {
-  args: DigestedConversationImageItemType;
+  args: SkStringWrapperType;
   decorators: any;
 } = {
   args: {
-    width: 300,
-    height: 300,
-    leftSide: true,
+    addressee: true,
     isLastInExchange: false,
-    content: image,
-    type: MESSAGE_CONTENT.IMAGE,
+    content: "We have a global",
+    type: MESSAGE_CONTENT.STRING,
     alignItems: "center",
-    colors: [],
+    colors: MESSAGE_CONTACT_INFO["1-222-666-1337"].colors,
     cursorVector: vec(0, 0),
     name: MESSAGE_CONTACT_NAME.ALICE,
     offset: 0,
     paddingBottom: 0,
+    scrollHandler: { value: 100 },
+    scrollRef: null,
   },
   decorators: [
     (Story: ElementType) => (

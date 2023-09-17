@@ -7,7 +7,6 @@ const useInitials = (
   width: number,
   height: number,
   name: MESSAGE_CONTACT_NAME,
-  paddingBottom: number,
   circleColor: string = "white",
   fontColor: string = "black"
 ) => {

@@ -1,4 +1,4 @@
-import { ConversationType } from "@Components/phoneApplications/Messages/hooks/useConversations/types";
+import { ConversationListType } from "@Components/phoneApplications/Messages/hooks/useConversations/types";
 import React, { FC, RefObject } from "react";
 import { ListRenderItem, StyleSheet, View } from "react-native";
 import Animated from "react-native-reanimated";
@@ -12,7 +12,7 @@ function Separator() {
 function ListHeader() {
   return <View style={{ height: 50 }} />;
 }
-const renderItem: ListRenderItem<ConversationType> = ({ item }) => (
+const renderItem: ListRenderItem<ConversationListType> = ({ item }) => (
   <ConversationListItem
     heroImage={item.heroImage}
     hasAvailableRoute={item.hasAvailableRoute}
@@ -24,8 +24,8 @@ const renderItem: ListRenderItem<ConversationType> = ({ item }) => (
 );
 
 const List: FC<{
-  viewable: ConversationType[];
-  aref: RefObject<Animated.FlatList<ConversationType>>;
+  viewable: ConversationListType[];
+  aref: RefObject<Animated.FlatList<ConversationListType>>;
 }> = ({ aref, viewable }) => {
   return (
     <Animated.FlatList
@@ -34,7 +34,7 @@ const List: FC<{
       style={styles.list}
       data={viewable}
       renderItem={renderItem}
-      keyExtractor={(item: ConversationType, index) =>
+      keyExtractor={(item: ConversationListType, index) =>
         index + `-conversation-${item.name}`
       }
       ListHeaderComponent={ListHeader}
