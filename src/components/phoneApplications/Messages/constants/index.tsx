@@ -1,6 +1,7 @@
 import { ImageSourcePropType } from "react-native";
 
 import defaultAvatar from "../assets/avatars/unknown.jpeg";
+
 type InfoType = {
   avatar: ImageSourcePropType;
   colors: string[];
@@ -52,7 +53,7 @@ export const MESSAGE_CONTACT_INFO: {
   //     colors: ["#6b6b6d", "#363243"],
   //   },
 
-  //   "Fuck Face": { avatar: gregAvatar, colors: ["#48ee4e", "#363243"] },
+  "Fuck Face": { avatar: defaultAvatar, colors: ["#48ee4e", "#363243"] },
   //   "Grace Russo": { avatar: graceAvatar, colors: ["#EE6548", "#363243"] },
   //   [MESSAGE_CONTACT_NAME.LEO]: {
   //     avatar: defaultAvatar,
@@ -65,7 +66,7 @@ export const MESSAGE_CONTACT_INFO: {
   //   Mileena: { avatar: meleenaAvatar, colors: ["#ff0095", "#80194d"] },
   //   "Maybe: Michael": { avatar: gregAvatar, colors: ["#f54295", "#8900fa"] },
   //   "Movie Night": { avatar: darkoAvatar, colors: ["#6b6b6d", "#363243"] },
-  //   Self: { avatar: defaultAvatar, colors: ["blue", "#363243"] },
+  Self: { avatar: defaultAvatar, colors: ["blue", "#363243"] },
   //   [MESSAGE_CONTACT_NAME.SPAM2]: {
   //     avatar: defaultAvatar,
   //     colors: ["#6b6b6d", "#363243"],

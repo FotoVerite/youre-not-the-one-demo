@@ -8,8 +8,12 @@ import {
   ConversationReducerActionsType,
 } from "./reducer/type";
 import { ConversationType } from "../useConversations/types";
+import { digestConversation } from "./digestion";
 
-export const useConversation = (width: number) => {
+export const useConversation = (
+  width: number,
+  conversation: ConversationType
+) => {
   const eventContext = useAppEventsContext();
   const fontsContext = useFontsContext();
 
@@ -24,14 +28,14 @@ export const useConversation = (width: number) => {
 
   const [state, dispatch] = useReducer(
     createConversationReducer(config),
-    undefined,
+    undefined
   );
 
   const reducerResolver = useCallback(
     (action: ConversationReducerActionsType) => {
       dispatch(action);
     },
-    [],
+    [dispatch]
   );
 
   const _digestConversation = useCallback(
@@ -42,7 +46,7 @@ export const useConversation = (width: number) => {
         payload: digested,
       });
     },
-    [config, events],
+    [config, events]
   );
 
   useEffect(() => {
@@ -52,19 +56,17 @@ export const useConversation = (width: number) => {
   }, [state?.eventAction, eventContext.dispatch]);
 
   useEffect(() => {
-    dispatch({
-      type: CONVERSATION_REDUCER_ACTIONS.REFRESH_AVAILABLE_ROUTE,
-      payload: events,
-    });
+    if (state) {
+      dispatch({
+        type: CONVERSATION_REDUCER_ACTIONS.REFRESH_AVAILABLE_ROUTE,
+        payload: events,
+      });
+    }
   }, [events]);
 
-  useEffect(() => {
-    NotificationEmitter.on(EMITTER_EVENTS.NOTIFICATION, (name) => {
-      const _conversation = conversations.filter((c) => c.name === name)[0];
-      digestConvo(_conversation);
-    });
-    return () => {
-      NotificationEmitter.off(EMITTER_EVENTS.NOTIFICATION, () => {});
-    };
-  }, [conversations, digestConvo]);
+  useMemo(() => {
+    _digestConversation(conversation);
+  }, [conversation]);
+
+  return [state, reducerResolver] as const;
 };

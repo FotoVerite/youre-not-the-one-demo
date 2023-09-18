@@ -12,49 +12,48 @@ import {
 import { MESSAGE_CONTENT } from "../../contentWithMetaTypes";
 import { findAvailableRoutes } from "../../routes/available";
 import { convertMessageToString } from "../../useConversations/determineLogLine";
-import { getListHeight } from "../digestion";
-import {
-  createSkBubbleFromMessage,
-  createSkBubbleFromPayload,
-} from "../digestion/SkFunctions/createSkBubble";
+import { createSkBubbleFromPayload } from "../digestion/SkFunctions/createSkBubble";
 import { createTimeStampLabel } from "../digestion/SkFunctions/createTimeStampLabel";
+import { convertBlockToMessagePayloadType } from "../digestion/digestRoute";
 import {
   DigestedConversationType,
   DigestedConversationListItem,
   BaseConfigType,
   DigestedMessageProps,
 } from "../digestion/types";
-import { convertBlockToMessagePayloadType } from "../digestion/digestRoute";
+import { getListHeight } from "../digestion/utility";
 
 const createConversationReducer =
   (config: BaseConfigType) =>
-  (state: DigestedConversationType, action: ConversationReducerActionsType) =>
+  (
+    state: DigestedConversationType | undefined,
+    action: ConversationReducerActionsType
+  ) =>
     conversationReducer(state, action, config);
 
 const conversationReducer = produce(
   (
-    draft: DigestedConversationType,
+    draft: DigestedConversationType | undefined,
     action: ConversationReducerActionsType,
     config: BaseConfigType
   ): DigestedConversationType | undefined => {
+    if (action.type === CONVERSATION_REDUCER_ACTIONS.ADD_CONVERSATION) {
+      return addConversation(action.payload);
+    }
     if (draft === undefined) {
       return draft;
     }
     switch (action.type) {
-      case CONVERSATION_REDUCER_ACTIONS.ADD_CONVERSATION:
-        return addConversation(config, draft, action.payload);
       case CONVERSATION_REDUCER_ACTIONS.BLOCK:
         return block(draft);
       case CONVERSATION_REDUCER_ACTIONS.CONTINUE_ROUTE:
         return continueRoute(config, draft);
       case CONVERSATION_REDUCER_ACTIONS.REFRESH_AVAILABLE_ROUTE:
-        return refreshAvailableRoute(config, draft, action.payload);
+        return refreshAvailableRoute(draft, action.payload);
       case CONVERSATION_REDUCER_ACTIONS.START_ROUTE:
         return startRoute(config, draft, action.payload);
       case CONVERSATION_REDUCER_ACTIONS.UPDATE_MESSAGE:
-        return updateMessage(draft, action.payload.props, action.payload.index);
-      case CONVERSATION_REDUCER_ACTIONS.RESET:
-        return undefined;
+        return updateMessage(draft, action.payload.props, action.payload.ID);
       case CONVERSATION_REDUCER_ACTIONS.SKIP_ROUTE:
         return _skipRoute(config, draft);
       default:
@@ -64,7 +63,6 @@ const conversationReducer = produce(
 );
 
 const refreshAvailableRoute = (
-  config: BaseConfigType,
   draft: DigestedConversationType,
   events: AppEventsType
 ) => {
@@ -84,9 +82,6 @@ const startRoute = (
   draft: DigestedConversationType,
   payload: { chosenOption: string }
 ) => {
-  if (draft.routes == null) {
-    return draft;
-  }
   const route = draft.routes.find((r) => r.id === draft.availableRoute?.id);
   if (route == null) {
     return draft;
@@ -134,10 +129,7 @@ const addNewTimeBlockToExchanges = (
   draft.exchanges.push(timeItem);
 };
 
-const block = (draft: DigestedConversationType | undefined) => {
-  if (draft == null) {
-    return draft;
-  }
+const block = (draft: DigestedConversationType) => {
   draft.eventAction = {
     type: APP_EVENTS_ACTIONS.MESSAGE_APP_BLOCK_CONVERSATION,
     payload: { name: draft.name },
@@ -226,7 +218,7 @@ const _skipRoute = (
     );
     return ret;
   }, [] as DigestedConversationListItem[]);
-  draft.exchanges.concat(path);
+  draft.exchanges = draft.exchanges.concat(path);
 
   draft.eventAction = {
     type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_UPDATE,
@@ -253,14 +245,7 @@ const removePreviousTail = (draftMessage: DigestedConversationListItem) => {
   }
 };
 
-const addConversation = (
-  config: BaseConfigType,
-  draft: DigestedConversationType | undefined | null,
-  conversation: DigestedConversationType
-) => {
-  if (draft?.chosenRoute && draft?.nextMessageInQueue == null) {
-    return draft;
-  }
+const addConversation = (conversation: DigestedConversationType) => {
   conversation.exchanges.forEach((message) => {
     message.typingDelay = undefined;
     message.contentDelay = undefined;
@@ -273,17 +258,17 @@ const addConversation = (
 };
 
 const updateMessage = (
-  draft: DigestedConversationType | undefined,
+  draft: DigestedConversationType,
   props: DigestedMessageProps,
-  index: number
+  ID: string
 ) => {
-  if (draft == null) {
-    return draft;
+  const index = draft.exchanges.findIndex((draft) => draft.ID === ID);
+  if (index !== undefined) {
+    draft.exchanges[index] = {
+      ...draft.exchanges[index],
+      ...props,
+    } as DigestedConversationListItem;
   }
-  draft.exchanges[index] = {
-    ...draft.exchanges[index],
-    ...props,
-  } as DigestedConversationListItem;
   return draft;
 };
 

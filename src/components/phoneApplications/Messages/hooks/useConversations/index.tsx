@@ -15,8 +15,9 @@ import {
   messageAppConditionsMet,
 } from "../routes/available";
 import { determineLoglineAndTimeOfLastMessage } from "./determineLogLine";
+import { greg } from "../../assets/messages/greg";
 
-const _conversations: ConversationFileType[] = [spam1];
+const _conversations: ConversationFileType[] = [spam1, greg];
 
 const viewableConversationsFilter =
   (events: AppEventsType) => (conversation: ConversationFileType) =>

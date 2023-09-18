@@ -17,22 +17,13 @@ export const NotificationsContext = React.createContext<
 const NotificationsContextProvider: FC<NotificationsContextTypeDigest> = ({
   children,
 }) => {
-  const [notifications, _dispatch] = useReducer(notificationReducer, [
-    {
-      index: 0,
-      active: true,
-      title: "control",
-      content: "control",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-  ]);
+  const [notifications, _dispatch] = useReducer(notificationReducer, []);
 
   const dispatch = useCallback(
     (args: NotificationsReducerActionsType) => {
       _dispatch(args);
     },
-    [_dispatch],
+    [_dispatch]
   );
   return (
     <NotificationsContext.Provider

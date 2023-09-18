@@ -1,3 +1,4 @@
+import * as Crypto from "expo-crypto";
 import moment from "moment";
 import { formatTimeStamp } from "src/utility/datetime";
 
@@ -13,7 +14,7 @@ export const createTimeStampLabel = (
   offset: number
 ): DigestedConversationTimeType => {
   const listItem = {
-    ID: crypto.randomUUID(),
+    ID: Crypto.randomUUID(),
     height: HEIGHT,
     width,
     paddingBottom: 0,

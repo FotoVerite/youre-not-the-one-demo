@@ -63,7 +63,7 @@ type UpdateMessageActionType = {
   type: CONVERSATION_REDUCER_ACTIONS.UPDATE_MESSAGE;
   payload: {
     props: DigestedMessageProps;
-    index: number;
+    ID: string;
   };
 };
 

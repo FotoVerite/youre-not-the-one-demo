@@ -45,7 +45,7 @@ export type ConversationType = {
   logline_content: string;
   logline_timestamp: string;
   name: MESSAGE_CONTACT_NAME;
-  routes?: MessageRouteType[];
+  routes: MessageRouteType[];
   tags: string[];
 };
 export type ConversationRecords = Record<

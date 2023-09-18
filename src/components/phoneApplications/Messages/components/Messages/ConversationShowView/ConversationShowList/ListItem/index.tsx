@@ -4,13 +4,16 @@ import { FC, memo } from "react";
 import { ExchangeWrapper } from "./ExchangeWrapper";
 import { ConversationShowListItem } from "./types";
 import useBubbleReducer from "./useBubbleReducer";
+import SentMessageContainer from "./SentMessageContainer";
+import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
 
 const ListItem: FC<ConversationShowListItem> = (props) => {
   const item = useBubbleReducer(props);
+  let bubble;
   if (props.type === MESSAGE_CONTENT.TIME) {
-    return item;
+    bubble = item;
   } else {
-    return (
+    bubble = (
       <ExchangeWrapper
         addressee={props.addressee}
         alignItems={props.alignItems}
@@ -29,6 +32,18 @@ const ListItem: FC<ConversationShowListItem> = (props) => {
       </ExchangeWrapper>
     );
   }
+  if (props.type !== MESSAGE_CONTENT.TIME && props.contentDelay) {
+    if (props.name === MESSAGE_CONTACT_NAME.SELF) {
+      return (
+        <SentMessageContainer contentDelay={props.contentDelay}>
+          {bubble}
+        </SentMessageContainer>
+      );
+    } else {
+      return bubble;
+    }
+  } else {
+    return bubble;
+  }
 };
-
-export default memo(ListItem, () => true);
+export default memo(ListItem);

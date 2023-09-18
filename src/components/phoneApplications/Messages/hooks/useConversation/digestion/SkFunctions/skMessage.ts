@@ -3,18 +3,19 @@ import {
   MESSAGE_CONTACT_NAME,
 } from "@Components/phoneApplications/Messages/constants";
 import { Vector, SkFont } from "@shopify/react-native-skia";
+import * as Crypto from "expo-crypto";
 import { Image, ImageSourcePropType } from "react-native";
 
 import {
   calculatedItemWidth,
   GetDimensionsAndSkiaNodes,
 } from "./skiaCalculations";
-import { BUBBLE_PADDING } from "..";
 import {
   ContentWithMetaType,
   MESSAGE_CONTENT,
 } from "../../../contentWithMetaTypes";
 import { SkItemConfigurationType, BubbleItemType } from "../types";
+import { BUBBLE_PADDING } from "../utility";
 
 type CalculationsType = {
   height: number;
@@ -47,7 +48,7 @@ export const SkMessage = (
   );
 
   const skItem = {
-    ID: crypto.randomUUID(),
+    ID: Crypto.randomUUID(),
     alignItems: addressee ? "flex-start" : "flex-end",
     content: calculations.content,
     height:

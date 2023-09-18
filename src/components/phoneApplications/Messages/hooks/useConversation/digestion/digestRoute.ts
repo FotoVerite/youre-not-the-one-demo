@@ -1,6 +1,5 @@
 import { AppEventsType } from "@Components/appEvents/reducer/types";
 
-import { getListHeight } from ".";
 import { createSkBubbleFromPayload } from "./SkFunctions/createSkBubble";
 import { createTimeStampLabel } from "./SkFunctions/createTimeStampLabel";
 import {
@@ -15,11 +14,12 @@ import {
   ConversationExchangeType,
   ExchangeBlockType,
 } from "../../useConversations/types";
+import { getListHeight } from "./utility";
 
 export const appendSeenRoutes = (
   digested: DigestedConversationType,
   event: AppEventsType,
-  config: BaseConfigType,
+  config: BaseConfigType
 ) => {
   if (digested.routes == null) {
     return digested.exchanges;
@@ -28,7 +28,7 @@ export const appendSeenRoutes = (
     digested.name,
     event,
     digested.routes,
-    digested.notificationRoutes,
+    digested.notificationRoutes
   );
 
   return seenRoutes.reduce((digestedExchanges, routes) => {
@@ -40,7 +40,7 @@ export const appendRoute = (
   exchanges: DigestedConversationListItem[],
   route: RouteObjectType,
   group: boolean = false,
-  config: BaseConfigType,
+  config: BaseConfigType
 ) => {
   const offset = getListHeight(exchanges);
   const conversationBlock: ConversationExchangeType = {
@@ -48,7 +48,7 @@ export const appendRoute = (
     exchanges: route.exchanges,
   };
   return exchanges.concat(
-    digestExchanges(config, [conversationBlock], group, offset),
+    digestExchanges(config, [conversationBlock], group, offset)
   );
 };
 
@@ -56,34 +56,33 @@ export const convertBlockToMessagePayloadType = (block: ExchangeBlockType[]) =>
   block.reduce((ret, exchange) => {
     const name = exchange.name;
     const size = exchange.messages.length - 1;
-    ret.concat(
+    return ret.concat(
       exchange.messages.map((messageContent, index) => {
         return {
           messageContent,
           name,
           isLastInExchange: size === index,
         } as MessagePayloadType;
-      }),
+      })
     );
-    return ret;
   }, [] as MessagePayloadType[]);
 
 export const convertFromPayloadsToSkItems = (
   configuration: SkItemConfigurationType,
   payloads: MessagePayloadType[],
-  time: string,
+  time: string
 ) => {
   const skTime = createTimeStampLabel(
     time,
     configuration.width,
-    configuration.offset,
+    configuration.offset
   );
   return payloads.reduce(
     (ret, payload) => {
       ret.push(createSkBubbleFromPayload(configuration, payload));
       return ret;
     },
-    [skTime] as DigestedConversationListItem[],
+    [skTime] as DigestedConversationListItem[]
   );
 };
 
@@ -91,9 +90,8 @@ export const digestExchanges = (
   configuration: BaseConfigType,
   conversationExchanges: ConversationExchangeType[],
   group: boolean = false,
-  offset: number = 50,
+  offset: number = 50
 ) => {
-  const ret: DigestedConversationListItem[] = [];
   const itemConfiguration: SkItemConfigurationType = {
     font: configuration.font,
     emojiFont: configuration.emojiFont,
@@ -101,13 +99,10 @@ export const digestExchanges = (
     offset,
     group,
   };
-  conversationExchanges.reduce((ret, block) => {
+  return conversationExchanges.reduce((ret, block) => {
     const payloads = convertBlockToMessagePayloadType(block.exchanges);
-    ret.concat(
-      convertFromPayloadsToSkItems(itemConfiguration, payloads, block.time),
+    return ret.concat(
+      convertFromPayloadsToSkItems(itemConfiguration, payloads, block.time)
     );
-    return ret;
   }, [] as DigestedConversationListItem[]);
-
-  return ret;
 };

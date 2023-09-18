@@ -20,6 +20,8 @@
     "@shopify/react-native-skia": "0.1.196",
     "eventemitter3": "^5.0.1",
     "expo": "~49.0.8",
+    "expo-blur": "~12.4.1",
+    "expo-crypto": "~12.4.1",
     "expo-file-system": "~15.4.3",
     "expo-screen-orientation": "^6.0.5",
     "expo-status-bar": "~1.6.0",

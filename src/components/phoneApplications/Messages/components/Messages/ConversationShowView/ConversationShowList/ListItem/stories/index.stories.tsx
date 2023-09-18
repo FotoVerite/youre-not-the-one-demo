@@ -16,6 +16,9 @@ import { SkBubbleType } from "../SkBubbles/types";
 export default {
   component: ExchangeWrapper,
   title: "ConversationList/Wrapper",
+  args: {
+    avatar: unknown,
+  },
   decorators: [
     (Story: ElementType) => (
       <View style={{ padding: 24, flex: 1 }}>
@@ -39,8 +42,8 @@ export const Default: {
   args: {
     addressee: false,
     alignItems: "flex-end",
-    avatar: unknown,
     colors: MESSAGE_CONTACT_INFO[MESSAGE_CONTACT_NAME.SPAM1].colors,
+    children: <SkImageBubble {...{ ...SkImageStory.args, addressee: false }} />,
     group: false,
     height: SkImageStory.args.height,
     paddingBottom: 20,
@@ -48,7 +51,6 @@ export const Default: {
     reactionName: "heart",
     reactionColor: "red",
     reactionAnimated: false,
-    children: <SkImageBubble {...{ ...SkImageStory.args, addressee: false }} />,
   },
   decorators: [],
 };
@@ -62,6 +64,7 @@ export const AsAssignee: {
     alignItems: "flex-start",
     avatar: unknown,
     colors: MESSAGE_CONTACT_INFO[MESSAGE_CONTACT_NAME.SPAM1].colors,
+    children: <SkImageBubble {...{ ...SkImageStory.args, addressee: true }} />,
     group: false,
     height: SkImageStory.args.height,
     paddingBottom: 20,
@@ -69,7 +72,28 @@ export const AsAssignee: {
     reactionName: "heart",
     reactionColor: "red",
     reactionAnimated: false,
+  },
+  decorators: [],
+};
+
+export const WithReactionDelay: {
+  args: ConversationExchangeWrapperType;
+  decorators: any;
+} = {
+  args: {
+    addressee: true,
+    alignItems: "flex-start",
+    avatar: unknown,
+    colors: MESSAGE_CONTACT_INFO[MESSAGE_CONTACT_NAME.SPAM1].colors,
     children: <SkImageBubble {...{ ...SkImageStory.args, addressee: true }} />,
+    group: false,
+    height: SkImageStory.args.height,
+    paddingBottom: 20,
+    name: MESSAGE_CONTACT_NAME.SPAM1,
+    reactionName: "heart",
+    reactionColor: "red",
+    reactionAnimated: true,
+    reactionDelay: 2000,
   },
   decorators: [],
 };

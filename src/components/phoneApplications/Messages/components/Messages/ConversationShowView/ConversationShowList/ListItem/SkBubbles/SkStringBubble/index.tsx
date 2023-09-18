@@ -34,7 +34,7 @@ export const SkStringBubble: FC<SkBubbleTypeWithGradient> = ({
     height,
     16,
     addressee,
-    isLastInExchange ? 1 : 0
+    isLastInExchange ? 0 : 1
   );
   //const glitchEffect = useGlitchEffect(height, width, content, clip);
   return (

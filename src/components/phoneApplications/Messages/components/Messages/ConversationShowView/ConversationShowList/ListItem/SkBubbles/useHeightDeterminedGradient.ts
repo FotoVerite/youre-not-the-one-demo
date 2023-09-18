@@ -35,7 +35,7 @@ export const useHeightDeterminedGradient = (
       [colors[1], darkenedColor2]
     );
     return [color1, color2];
-  }, [currentlyFromTop]);
+  }, [currentlyFromTop.value]);
 
   return computedColors;
 };

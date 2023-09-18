@@ -1,3 +1,6 @@
+import ConversationEmitter, {
+  CONVERSATION_EMITTER_EVENTS,
+} from "@Components/phoneApplications/Messages/emitters";
 import { ConversationListType } from "@Components/phoneApplications/Messages/hooks/useConversations/types";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import React, { FC, memo } from "react";
@@ -14,7 +17,11 @@ const ConversationListItem: FC<Omit<ConversationListType, "tags">> = ({
   name,
 }) => {
   return (
-    <TouchableOpacity onPress={() => {}}>
+    <TouchableOpacity
+      onPress={() =>
+        ConversationEmitter.emit(CONVERSATION_EMITTER_EVENTS.SHOW, { name })
+      }
+    >
       <Row>
         <View
           style={[

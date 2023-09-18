@@ -9,6 +9,7 @@ import Animated, {
 
 import ListItem from "./ListItem";
 import { ConversationShowListItem } from "./ListItem/types";
+import { theme } from "src/theme";
 
 function ListHeader() {
   return <View style={{ height: 50 }} />;
@@ -26,6 +27,9 @@ const getItemLayout = (
   index,
 });
 
+const keyExtractor = (item: DigestedConversationListItem, index: number) =>
+  index + `-conversation-${item.ID}`;
+
 const ConversationList: FC<{
   exchanges: DigestedConversationListItem[];
 }> = ({ exchanges }) => {
@@ -40,7 +44,6 @@ const ConversationList: FC<{
       } as ConversationShowListItem;
     });
   }, [exchanges, scrollHandler, scrollRef]);
-
   return (
     <Animated.FlatList
       ref={scrollRef}
@@ -49,6 +52,7 @@ const ConversationList: FC<{
       ListHeaderComponent={ListHeader}
       renderItem={renderItem}
       scrollEventThrottle={16}
+      keyExtractor={keyExtractor}
       getItemLayout={getItemLayout}
     />
   );
@@ -57,10 +61,6 @@ const ConversationList: FC<{
 export default ConversationList;
 
 const styles = StyleSheet.create({
-  screen: {
-    flexGrow: 1,
-    flex: 1,
-  },
   itemSeparator: {
     height: 1,
     marginVertical: 10,
@@ -69,5 +69,6 @@ const styles = StyleSheet.create({
 
   list: {
     flexGrow: 1,
+    marginHorizontal: theme.spacing.p1,
   },
 });

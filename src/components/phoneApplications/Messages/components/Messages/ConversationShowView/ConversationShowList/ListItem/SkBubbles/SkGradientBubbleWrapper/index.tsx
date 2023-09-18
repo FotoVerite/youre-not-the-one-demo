@@ -30,7 +30,6 @@ export const SkGradientBubbleWrapper: FC<
     addressee,
     scrollHandler
   );
-
   const clipFunction = useBubbleClip(
     width,
     height,

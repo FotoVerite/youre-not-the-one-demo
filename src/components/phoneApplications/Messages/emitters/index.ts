@@ -4,7 +4,9 @@ import { MESSAGE_CONTACT_NAME } from "../constants";
 
 export enum CONVERSATION_EMITTER_EVENTS {
   SHOW = "SHOW_CONVERSATION",
-  SHOW_AS_NEW = "SHOW_CONVERSATION_AS_NEW_CONVERSATION",
+  RESET = "RESET_CONVERSATION",
+  START_ROUTE = "START_ROUTE",
+  CONTINUE = "CONTINUE_ROUTE",
 }
 const eventEmitter = new EventEmitter<
   CONVERSATION_EMITTER_EVENTS,
@@ -13,18 +15,36 @@ const eventEmitter = new EventEmitter<
 const ConversationEmitter = {
   on: (
     event: CONVERSATION_EMITTER_EVENTS,
-    fn: (name: MESSAGE_CONTACT_NAME) => void,
+    fn: (payload: {
+      name: MESSAGE_CONTACT_NAME;
+      type?: "new" | "base";
+      additional?: string;
+    }) => void
   ) => eventEmitter.on(event, fn),
   once: (
     event: CONVERSATION_EMITTER_EVENTS,
-    fn: (name: MESSAGE_CONTACT_NAME) => void,
+    fn: (payload: {
+      name: MESSAGE_CONTACT_NAME;
+      type?: "new" | "base";
+      additional?: string;
+    }) => void
   ) => eventEmitter.once(event, fn),
   off: (
     event: CONVERSATION_EMITTER_EVENTS,
-    fn: (name: MESSAGE_CONTACT_NAME) => void,
+    fn: (payload: {
+      name: MESSAGE_CONTACT_NAME;
+      type?: "new" | "base";
+      additional?: string;
+    }) => void
   ) => eventEmitter.off(event, fn),
-  emit: (event: CONVERSATION_EMITTER_EVENTS, payload: MESSAGE_CONTACT_NAME) =>
-    eventEmitter.emit(event, payload),
+  emit: (
+    event: CONVERSATION_EMITTER_EVENTS,
+    payload: {
+      name: MESSAGE_CONTACT_NAME;
+      type?: "new" | "base";
+      additional?: string;
+    }
+  ) => eventEmitter.emit(event, payload),
 };
 Object.freeze(ConversationEmitter);
 export default ConversationEmitter;
