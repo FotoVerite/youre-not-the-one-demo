@@ -8,8 +8,8 @@ import { ElementType } from "react";
 import { View } from "react-native";
 import FontsContextProvider from "src/contexts/fonts";
 
-import { SkBubbleTypeWithGradient } from "../types";
 import { SkNumberBubble } from ".";
+import { SkBubbleTypeWithGradient } from "../types";
 
 export default {
   title: "Bubbles/SkNumberBubble",

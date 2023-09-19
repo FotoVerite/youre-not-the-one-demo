@@ -1,21 +1,19 @@
 import { MESSAGE_CONTENT } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
-import {
-  BubbleItemType,
-  DigestedConversationListItem,
-} from "@Components/phoneApplications/Messages/hooks/useConversation/digestion/types";
-import Animated, { SharedValue } from "react-native-reanimated";
 
+import { ReadLabel } from "./ReadLabel";
 import { SkImageBubble } from "./SkBubbles/SkImageBubble";
 import { SkNumberBubble } from "./SkBubbles/SkNumberBubble";
 import { SkStringBubble } from "./SkBubbles/SkStringBubble";
 import { SkVcardBubble } from "./SkBubbles/SkVcardBubble";
 import { TimeStamp } from "./Timestamp";
-import { ConversationShowListItem } from "./types";
+import { ConversationShowListItemWithoutDispatch } from "./types";
 
-const useBubbleReducer = (props: ConversationShowListItem) => {
+const useBubbleResolver = (props: ConversationShowListItemWithoutDispatch) => {
   switch (props.type) {
     case MESSAGE_CONTENT.TIME:
       return <TimeStamp content={props.content} height={props.height} />;
+    case MESSAGE_CONTENT.READ_LABEL:
+      return <ReadLabel content={props.content} height={props.height} />;
     case MESSAGE_CONTENT.EMOJI:
       return <></>;
     case MESSAGE_CONTENT.IMAGE: {
@@ -29,7 +27,7 @@ const useBubbleReducer = (props: ConversationShowListItem) => {
     case MESSAGE_CONTENT.SNAPSHOT:
       return <></>;
     case MESSAGE_CONTENT.STRING:
-      return <SkStringBubble {...props} />;
+      return <SkStringBubble {...props} key={`bubble-${props.ID}`} />;
     case MESSAGE_CONTENT.VCARD:
       return <SkVcardBubble {...props} />;
     default:
@@ -37,4 +35,4 @@ const useBubbleReducer = (props: ConversationShowListItem) => {
   }
 };
 
-export default useBubbleReducer;
+export default useBubbleResolver;

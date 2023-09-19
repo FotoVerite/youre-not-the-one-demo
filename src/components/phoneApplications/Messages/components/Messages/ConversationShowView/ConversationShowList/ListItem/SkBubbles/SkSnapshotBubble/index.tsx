@@ -22,7 +22,7 @@ export const SkSnapshotBubble: FC<SkBubbleType> = ({
     height,
     16,
     addressee,
-    isLastInExchange ? 1 : 0
+    isLastInExchange ? 1 : 0,
   );
 
   return (

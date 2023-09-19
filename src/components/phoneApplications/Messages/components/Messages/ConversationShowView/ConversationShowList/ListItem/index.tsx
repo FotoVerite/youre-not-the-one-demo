@@ -1,16 +1,22 @@
+import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
 import { MESSAGE_CONTENT } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
+import {
+  isDigestedBubble,
+  isDigestedLabel,
+} from "@Components/phoneApplications/Messages/hooks/useConversation/digestion/types";
 import { FC, memo } from "react";
 
 import { ExchangeWrapper } from "./ExchangeWrapper";
-import { ConversationShowListItem } from "./types";
-import useBubbleReducer from "./useBubbleReducer";
 import SentMessageContainer from "./SentMessageContainer";
-import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
+import { TypingContainer } from "./TypingContainer";
+import { ConversationShowListItem } from "./types";
+import useBubbleResolver from "./useBubbleResolver";
 
 const ListItem: FC<ConversationShowListItem> = (props) => {
-  const item = useBubbleReducer(props);
-  let bubble;
-  if (props.type === MESSAGE_CONTENT.TIME) {
+  const { dispatch, ...propsWithoutDispatch } = props;
+  const item = useBubbleResolver(propsWithoutDispatch);
+  let bubble: React.JSX.Element;
+  if (isDigestedLabel(props)) {
     bubble = item;
   } else {
     bubble = (
@@ -32,15 +38,19 @@ const ListItem: FC<ConversationShowListItem> = (props) => {
       </ExchangeWrapper>
     );
   }
-  if (props.type !== MESSAGE_CONTENT.TIME && props.contentDelay) {
+  if (isDigestedBubble(props)) {
     if (props.name === MESSAGE_CONTACT_NAME.SELF) {
       return (
-        <SentMessageContainer contentDelay={props.contentDelay}>
+        <SentMessageContainer
+          contentDelay={props.contentDelay}
+          dispatch={dispatch}
+          height={props.height + props.paddingBottom}
+        >
           {bubble}
         </SentMessageContainer>
       );
     } else {
-      return bubble;
+      return <TypingContainer {...props}>{bubble}</TypingContainer>;
     }
   } else {
     return bubble;

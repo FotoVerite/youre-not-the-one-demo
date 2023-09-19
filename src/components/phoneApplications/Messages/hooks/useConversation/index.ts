@@ -2,17 +2,17 @@ import { useAppEventsContext } from "@Components/appEvents/context";
 import React, { useCallback, useEffect, useMemo, useReducer } from "react";
 import { useFontsContext } from "src/contexts/fonts";
 
+import { digestConversation } from "./digestion";
 import createConversationReducer from "./reducer";
 import {
   CONVERSATION_REDUCER_ACTIONS,
   ConversationReducerActionsType,
 } from "./reducer/type";
 import { ConversationType } from "../useConversations/types";
-import { digestConversation } from "./digestion";
 
 export const useConversation = (
   width: number,
-  conversation: ConversationType
+  conversation?: ConversationType,
 ) => {
   const eventContext = useAppEventsContext();
   const fontsContext = useFontsContext();
@@ -28,25 +28,28 @@ export const useConversation = (
 
   const [state, dispatch] = useReducer(
     createConversationReducer(config),
-    undefined
+    undefined,
   );
 
   const reducerResolver = useCallback(
     (action: ConversationReducerActionsType) => {
       dispatch(action);
     },
-    [dispatch]
+    [dispatch],
   );
 
   const _digestConversation = useCallback(
-    async (_conversation: ConversationType) => {
+    async (_conversation?: ConversationType) => {
+      if (!_conversation) {
+        return;
+      }
       const digested = await digestConversation(config, _conversation, events);
       dispatch({
         type: CONVERSATION_REDUCER_ACTIONS.ADD_CONVERSATION,
         payload: digested,
       });
     },
-    [config, events]
+    [config, events],
   );
 
   useEffect(() => {
@@ -68,5 +71,5 @@ export const useConversation = (
     _digestConversation(conversation);
   }, [conversation]);
 
-  return [state, reducerResolver] as const;
+  return [state, reducerResolver, _digestConversation] as const;
 };

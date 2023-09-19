@@ -16,7 +16,7 @@ const MessageTextInput: FC<{
   const [buttonState, setButtonState] = useState(
     text != null
       ? MESSAGE_SEND_BUTTON_STATE.SENDABLE
-      : MESSAGE_SEND_BUTTON_STATE.INACTIVE
+      : MESSAGE_SEND_BUTTON_STATE.INACTIVE,
   );
 
   useEffect(() => {
@@ -46,7 +46,7 @@ const MessageTextInput: FC<{
               setButtonState(
                 isOpen
                   ? MESSAGE_SEND_BUTTON_STATE.HAS_CONTENT
-                  : MESSAGE_SEND_BUTTON_STATE.OPEN
+                  : MESSAGE_SEND_BUTTON_STATE.OPEN,
               );
               return !isOpen;
             });

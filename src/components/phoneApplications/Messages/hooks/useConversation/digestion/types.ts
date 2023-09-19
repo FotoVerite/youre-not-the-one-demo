@@ -54,7 +54,6 @@ export interface AbstractDigestedConversationItemType {
   width: number;
   offset: number;
   paddingBottom: number;
-  isLastInExchange: boolean;
   contentDelay?: number;
   typingDelay?: number;
   lastMessageSent?: boolean;
@@ -65,8 +64,13 @@ export interface AbstractDigestedConversationItemType {
 export interface DigestedConversationTimeType
   extends AbstractDigestedConversationItemType {
   content: string;
-  alignItems: undefined;
   type: MESSAGE_CONTENT.TIME;
+}
+
+export interface DigestedConversationReadLabelType
+  extends AbstractDigestedConversationItemType {
+  content: string;
+  type: MESSAGE_CONTENT.READ_LABEL;
 }
 
 export interface AbstractMetaDigestedConversationItemType
@@ -76,6 +80,7 @@ export interface AbstractMetaDigestedConversationItemType
   colors: string[];
   cursorVector: SkPoint;
   effect?: MessageEffectType;
+  isLastInExchange: boolean;
   group?: boolean;
   name: MESSAGE_CONTACT_NAME;
   addressee: boolean;
@@ -138,6 +143,7 @@ export type DigestedConversationListItem =
   | DigestedConversationGlyphItemType
   | DigestedConversationNumberItemType
   | DigestedConversationTimeType
+  | DigestedConversationReadLabelType
   | DigestedConversationBackgroundSnapShotItemType
   | DigestedConversationSnapShotItemType
   | DigestedConversationStringItemType
@@ -145,8 +151,12 @@ export type DigestedConversationListItem =
 
 export type BubbleItemType = Exclude<
   DigestedConversationListItem,
-  DigestedConversationTimeType
+  DigestedConversationTimeType | DigestedConversationReadLabelType
 >;
+
+export type DigestedLabelType =
+  | DigestedConversationTimeType
+  | DigestedConversationReadLabelType;
 
 export type MessagePayloadType = {
   messageContent: MessageContentType;
@@ -169,4 +179,20 @@ export type DigestedConversationType = Omit<
 
 export type DigestedMessageProps = {
   [index in keyof DigestedConversationListItem]?: DigestedConversationListItem[index];
+};
+
+export const isDigestedBubble = (
+  exchange: DigestedConversationListItem,
+): exchange is BubbleItemType => {
+  return ![MESSAGE_CONTENT.TIME, MESSAGE_CONTENT.READ_LABEL].includes(
+    exchange.type,
+  );
+};
+
+export const isDigestedLabel = (
+  exchange: DigestedConversationListItem,
+): exchange is DigestedLabelType => {
+  return [MESSAGE_CONTENT.TIME, MESSAGE_CONTENT.READ_LABEL].includes(
+    exchange.type,
+  );
 };

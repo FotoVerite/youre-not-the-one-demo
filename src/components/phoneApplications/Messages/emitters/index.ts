@@ -5,8 +5,6 @@ import { MESSAGE_CONTACT_NAME } from "../constants";
 export enum CONVERSATION_EMITTER_EVENTS {
   SHOW = "SHOW_CONVERSATION",
   RESET = "RESET_CONVERSATION",
-  START_ROUTE = "START_ROUTE",
-  CONTINUE = "CONTINUE_ROUTE",
 }
 const eventEmitter = new EventEmitter<
   CONVERSATION_EMITTER_EVENTS,
@@ -19,7 +17,7 @@ const ConversationEmitter = {
       name: MESSAGE_CONTACT_NAME;
       type?: "new" | "base";
       additional?: string;
-    }) => void
+    }) => void,
   ) => eventEmitter.on(event, fn),
   once: (
     event: CONVERSATION_EMITTER_EVENTS,
@@ -27,7 +25,7 @@ const ConversationEmitter = {
       name: MESSAGE_CONTACT_NAME;
       type?: "new" | "base";
       additional?: string;
-    }) => void
+    }) => void,
   ) => eventEmitter.once(event, fn),
   off: (
     event: CONVERSATION_EMITTER_EVENTS,
@@ -35,7 +33,7 @@ const ConversationEmitter = {
       name: MESSAGE_CONTACT_NAME;
       type?: "new" | "base";
       additional?: string;
-    }) => void
+    }) => void,
   ) => eventEmitter.off(event, fn),
   emit: (
     event: CONVERSATION_EMITTER_EVENTS,
@@ -43,7 +41,7 @@ const ConversationEmitter = {
       name: MESSAGE_CONTACT_NAME;
       type?: "new" | "base";
       additional?: string;
-    }
+    },
   ) => eventEmitter.emit(event, payload),
 };
 Object.freeze(ConversationEmitter);

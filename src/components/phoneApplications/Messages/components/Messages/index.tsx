@@ -2,11 +2,11 @@ import { FC, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import ConversationIndexView from "./ConversationIndexView";
+import ConversationShowView from "./ConversationShowView";
 import ConversationEmitter, {
   CONVERSATION_EMITTER_EVENTS,
 } from "../../emitters";
 import { useConversations } from "../../hooks/useConversations";
-import ConversationShowView from "./ConversationShowView";
 import { ConversationType } from "../../hooks/useConversations/types";
 
 const Messages: FC = () => {
@@ -21,7 +21,7 @@ const Messages: FC = () => {
           const _conversation = available[name];
           setConversation(_conversation);
         }
-      }
+      },
     );
     return () => {
       ConversationEmitter.off(CONVERSATION_EMITTER_EVENTS.SHOW, () => {});
@@ -35,7 +35,7 @@ const Messages: FC = () => {
         if (!type) {
           setConversation(undefined);
         }
-      }
+      },
     );
     return () => {
       ConversationEmitter.off(CONVERSATION_EMITTER_EVENTS.RESET, () => {});

@@ -5,6 +5,7 @@ import Animated, {
   interpolate,
   useAnimatedStyle,
 } from "react-native-reanimated";
+import { theme } from "src/theme";
 import { useInsetDimensions } from "src/utility/useInsetDimensions";
 
 const SlideInTransitionContainer: FC<
@@ -49,5 +50,6 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     position: "absolute",
+    backgroundColor: theme.colors.muted,
   },
 });

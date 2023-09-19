@@ -36,7 +36,7 @@ const Header: FC<{
 
   return (
     <Animated.View style={[styles.header]}>
-      {Platform.OS === "ios" && <BlurView style={styles.blur} intensity={5} />}
+      {Platform.OS === "ios" && <BlurView style={styles.blur} intensity={20} />}
       {Platform.OS !== "ios" && (
         <View style={[styles.blur, { backgroundColor: theme.colors.muted }]} />
       )}
@@ -84,6 +84,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "100%",
     top: 0,
+    backgroundColor: "#ffffff79",
   },
   blur: {
     zIndex: 3,

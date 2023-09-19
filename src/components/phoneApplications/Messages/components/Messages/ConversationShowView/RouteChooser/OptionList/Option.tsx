@@ -1,8 +1,8 @@
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import React, { FC } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "src/theme";
 import { Row } from "src/utility/layout";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 const Option: FC<{
   cb: () => void;
@@ -22,7 +22,7 @@ const Option: FC<{
               <Text style={styles.content}>{option}</Text>
               <FontAwesome
                 name="chevron-right"
-                color={"black"}
+                color="black"
                 size={24}
                 style={styles.icon}
               />

@@ -1,7 +1,9 @@
 import SlideInTransitionContainer from "@Components/SlideInTransitionContainer";
+import { useConversation } from "@Components/phoneApplications/Messages/hooks/useConversation";
+import { CONVERSATION_REDUCER_ACTIONS } from "@Components/phoneApplications/Messages/hooks/useConversation/reducer/type";
 import { ConversationType } from "@Components/phoneApplications/Messages/hooks/useConversations/types";
-import { FC } from "react";
-import { theme } from "src/theme";
+import { FC, useEffect, useRef, useState } from "react";
+import { useInsetDimensions } from "src/utility/useInsetDimensions";
 
 import ConversationContainer from "./ConversationContainer";
 import Header from "./Header.tsx";
@@ -9,6 +11,17 @@ import Header from "./Header.tsx";
 const ConversationShowView: FC<{
   conversation?: ConversationType;
 }> = ({ conversation }) => {
+  const { width } = useInsetDimensions();
+  const [state, dispatch, digestConversation] = useConversation(width);
+
+  useEffect(() => {
+    if (conversation) {
+      digestConversation(conversation);
+    } else {
+      dispatch({ type: CONVERSATION_REDUCER_ACTIONS.RESET });
+    }
+  }, [conversation]);
+
   // const slideIn = useAnimatedObserver(conversation);
   // const { width, height } = useInsetDimensions();
 
@@ -43,19 +56,16 @@ const ConversationShowView: FC<{
   //   };
   // }, [context.newMessage.state]);
   return (
-    <SlideInTransitionContainer
-      toObserve={conversation}
-      viewOverrides={{ backgroundColor: theme.colors.muted }}
-    >
-      {conversation && (
+    <SlideInTransitionContainer toObserve={state}>
+      {state && (
         <>
+          <ConversationContainer conversation={state} dispatch={dispatch} />
           <Header
-            color={conversation.interfaceColor}
-            name={conversation?.name}
+            color={state.interfaceColor}
+            name={state?.name}
             visible={0}
             shrink={0}
           />
-          <ConversationContainer conversation={conversation} />
         </>
       )}
     </SlideInTransitionContainer>

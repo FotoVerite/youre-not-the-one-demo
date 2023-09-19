@@ -14,7 +14,7 @@ export const generateLineQueue = (
   emojiFont: SkFont,
   sentence: string,
   width: number,
-  addressee: boolean
+  addressee: boolean,
 ) => {
   const LEFT_PADDING = addressee ? 24 : 8;
   const lineQueue: LineQueueType = [];
@@ -109,7 +109,7 @@ const getWidthFromGlyphs = (font: SkFont, text: string) => {
 const generateTextNodes = (
   lineQueue: LineQueueType,
   font: SkFont,
-  emojiFont: SkFont
+  emojiFont: SkFont,
 ) => {
   const lineCount = lineQueue.length;
   const textElements = lineQueue
@@ -122,7 +122,7 @@ const generateTextNodes = (
           font={section.type === "text" ? font : emojiFont}
           key={`Text-${section.content}-${sIdx}`}
         />
-      ))
+      )),
     )
     .flat();
 
@@ -133,7 +133,7 @@ const generateTextNodes = (
       lastSection.starts +
       getWidthFromGlyphs(
         lastSection.type === "text" ? font : emojiFont,
-        lastSection.content
+        lastSection.content,
       ) -
       3,
     y: lineCount * 19 + 4,
@@ -144,7 +144,7 @@ const generateTextNodes = (
 const generateGlyphs = (
   lineQueue: LineQueueType,
   font: SkFont,
-  emojiFont: SkFont
+  emojiFont: SkFont,
 ) => {
   const lineCount = lineQueue.length;
   const returnItem: { text: GlyphContent; emoji: GlyphContent } = {
@@ -157,8 +157,8 @@ const generateGlyphs = (
       (section, sIdx) =>
         (returnItem[section.type].glyphs = returnItem[
           section.type
-        ].glyphs.concat(getGlyphIdsAndWidths(section, font, index)))
-    )
+        ].glyphs.concat(getGlyphIdsAndWidths(section, font, index))),
+    ),
   );
 
   return [lineCount, returnItem] as const;
@@ -167,7 +167,7 @@ const generateGlyphs = (
 const getGlyphIdsAndWidths = (
   section: SectionType,
   font: SkFont,
-  lineNumber: number
+  lineNumber: number,
 ): Glyph[] => {
   const glyphIds = font.getGlyphIDs(section.content);
   const widths = font.getGlyphWidths(glyphIds);
@@ -185,7 +185,7 @@ const getGlyphIdsAndWidths = (
 export const calculatedItemWidth = (
   font: SkFont,
   sentence: string,
-  maxWidth: number
+  maxWidth: number,
 ) => {
   const LINE_PADDING = 40;
   const RIGHT_SIDE_PADDING = 8;
@@ -198,7 +198,7 @@ export const GetDimensionsAndSkiaNodes = (
   emojiFont: SkFont,
   sentence: string,
   width: number,
-  addressee: boolean
+  addressee: boolean,
 ) => {
   const LINE_HEIGHT = 19;
   const LINE_PADDING = 40;
@@ -208,18 +208,18 @@ export const GetDimensionsAndSkiaNodes = (
     emojiFont,
     sentence,
     MAX_WIDTH - LINE_PADDING,
-    addressee
+    addressee,
   );
   const calculatedWidth = lineQueue.reduce((acc, line) => {
     return Math.max(
       acc,
-      calculatedItemWidth(font, line.map((p) => p.content).join(""), MAX_WIDTH)
+      calculatedItemWidth(font, line.map((p) => p.content).join(""), MAX_WIDTH),
     );
   }, 0);
   const [lineCount, textNodes, cursorVectors] = generateTextNodes(
     lineQueue,
     font,
-    emojiFont
+    emojiFont,
   );
 
   return [
@@ -235,7 +235,7 @@ export const generateSkiaNode = (
   emojiFont: SkFont,
   sentence: string,
   width: number,
-  addressee: boolean
+  addressee: boolean,
 ) => {
   const LINE_HEIGHT = 19;
   const LINE_PADDING = 40;
@@ -244,18 +244,18 @@ export const generateSkiaNode = (
     emojiFont,
     sentence,
     width - LINE_PADDING,
-    addressee
+    addressee,
   );
   const calculatedWidth = lineQueue.reduce((acc, line) => {
     return Math.max(
       acc,
-      calculatedItemWidth(font, line.map((p) => p.content).join(""), width)
+      calculatedItemWidth(font, line.map((p) => p.content).join(""), width),
     );
   }, 0);
   const [lineCount, textNodes, cursorVectors] = generateTextNodes(
     lineQueue,
     font,
-    emojiFont
+    emojiFont,
   );
 
   return [
@@ -270,7 +270,7 @@ export const GetDimensionsAndSkiaGlyphs = (
   font: SkFont,
   sentence: string,
   width: number,
-  addressee: boolean
+  addressee: boolean,
 ) => {
   const LINE_HEIGHT = 19;
   const LINE_PADDING = 40;
@@ -279,14 +279,14 @@ export const GetDimensionsAndSkiaGlyphs = (
   let calculatedWidth = font.getTextWidth(sentence) + LINE_PADDING;
   calculatedWidth = Math.min(
     calculatedWidth + RIGHT_SIDE_PADDING,
-    MAX_WIDTH + 8
+    MAX_WIDTH + 8,
   );
   const lineQueue = generateLineQueue(
     font,
     font,
     sentence,
     MAX_WIDTH - LINE_PADDING,
-    addressee
+    addressee,
   );
   const [lineCount, glyphs] = generateGlyphs(lineQueue, font, font);
 

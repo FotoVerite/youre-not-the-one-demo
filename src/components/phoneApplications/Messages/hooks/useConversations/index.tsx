@@ -3,19 +3,19 @@ import { AppEventsType } from "@Components/appEvents/reducer/types";
 import { produce } from "immer";
 import { useEffect, useMemo, useState } from "react";
 
+import { determineLoglineAndTimeOfLastMessage } from "./determineLogLine";
 import {
   ConversationFileType,
   ConversationListType,
   ConversationRecords,
 } from "./types";
+import { greg } from "../../assets/messages/greg";
 import { spam1 } from "../../assets/messages/spam1";
 import { MESSAGE_CONTACT_NAME } from "../../constants";
 import {
   findAvailableRoutes,
   messageAppConditionsMet,
 } from "../routes/available";
-import { determineLoglineAndTimeOfLastMessage } from "./determineLogLine";
-import { greg } from "../../assets/messages/greg";
 
 const _conversations: ConversationFileType[] = [spam1, greg];
 
@@ -27,7 +27,7 @@ const viewableConversationsFilter =
 
 const conversationHasExchange = (
   conversation: ConversationFileType,
-  events: AppEventsType
+  events: AppEventsType,
 ) =>
   conversation.exchanges.length > 0 ||
   Object.keys(events.Messages[conversation.name].routes).length > 0;
@@ -47,7 +47,7 @@ export const sortConversations =
 
 const convertFromConversationFromFileToListType = (
   conversation: ConversationFileType,
-  events: AppEventsType
+  events: AppEventsType,
 ): ConversationListType => {
   const {
     blockable,
@@ -63,7 +63,7 @@ const convertFromConversationFromFileToListType = (
     findAvailableRoutes(props.name, routes || [], events).length > 0;
   const { time, content } = determineLoglineAndTimeOfLastMessage(
     conversation,
-    events
+    events,
   );
 
   return {
@@ -80,7 +80,7 @@ export const useConversations = (override?: ConversationFileType[]) => {
   const eventsContext = useAppEventsContext();
   const events = eventsContext.state;
   const [conversations, setConversations] = useState(
-    override || _conversations
+    override || _conversations,
   );
   const viewableConversations = useMemo(() => {
     return produce(conversations, (draft) => {
@@ -107,12 +107,12 @@ export const useConversations = (override?: ConversationFileType[]) => {
         produce(conversations, (draft) => {
           determinedBlockedConversations.forEach((name) => {
             const index = draft.findIndex(
-              (_conversation) => _conversation.name === name
+              (_conversation) => _conversation.name === name,
             );
             draft[index].blocked = true;
           });
           return draft;
-        })
+        }),
       );
     }
   }, [determinedBlockedConversations]);

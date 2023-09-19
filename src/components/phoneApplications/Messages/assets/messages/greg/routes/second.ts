@@ -1,18 +1,19 @@
-import {MessageRouteType} from 'components/apps/Messages/context/types';
-import {CONTACT_NAMES} from 'components/apps/Messages/context/usersMapping';
-import {GREG_ROUTE_IDS} from './routes';
-import {MESSAGE_TYPE} from 'components/apps/Messages/reducers/conversationReducer/digestion/types';
+import { MessageRouteType } from "components/apps/Messages/context/types";
+import { CONTACT_NAMES } from "components/apps/Messages/context/usersMapping";
+import { MESSAGE_TYPE } from "components/apps/Messages/reducers/conversationReducer/digestion/types";
+
+import { GREG_ROUTE_IDS } from "./routes";
 
 export enum SECOND_OPTION {
-  A = 'TES',
-  B = 'I ASDjust started looking',
-  C = 'ADS',
+  A = "TES",
+  B = "I ASDjust started looking",
+  C = "ADS",
 }
 
 const exchanges = [
   {
     name: CONTACT_NAMES.ZOLA,
-    messages: ['Why are you txting me then?'],
+    messages: ["Why are you txting me then?"],
   },
   {
     name: CONTACT_NAMES.GREG,
@@ -24,7 +25,7 @@ const exchanges = [
       },
       {
         type: MESSAGE_TYPE.STRING,
-        message: 'You just hate to hear it',
+        message: "You just hate to hear it",
         typingDelay: -500,
       },
       {
@@ -34,12 +35,12 @@ const exchanges = [
       },
       {
         type: MESSAGE_TYPE.STRING,
-        message: 'Plus I actually message you.',
+        message: "Plus I actually message you.",
         typingDelay: -700,
       },
       {
         type: MESSAGE_TYPE.EMOJI,
-        message: '😉',
+        message: "😉",
       },
     ],
   },

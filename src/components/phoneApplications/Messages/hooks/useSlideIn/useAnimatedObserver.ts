@@ -8,7 +8,7 @@ export const useAnimatedObserver = (watched: any, delay?: number) => {
     if (watched != null) {
       sharedValue.value = withDelay(
         delay || 0,
-        withTiming(1, { duration: 750 })
+        withTiming(1, { duration: 750 }),
       );
     } else {
       sharedValue.value = withTiming(0, { duration: 750 });

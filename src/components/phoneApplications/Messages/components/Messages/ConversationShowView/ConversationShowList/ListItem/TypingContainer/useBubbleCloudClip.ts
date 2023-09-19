@@ -51,37 +51,18 @@ const flipPath = (path: SkPath, width: number): SkPath => {
   return path;
 };
 
-export const useBubbleClip = (
+export const useBubbleCloudClip = (
   width: number,
   height: number,
   cr: number,
-  flipped: boolean,
-  initialState: 0 | 1,
 ) => {
-  const isLastInExchange = useSharedValue(initialState);
-
   const clip = useMemo(() => {
-    return flipped
-      ? flipPath(BubblePath(width, height, cr, false), width)
-      : BubblePath(width, height, cr, false);
-  }, [flipped, width, height, cr]);
+    const path = flipPath(BubblePath(width, height, cr, false), width);
+    path.addCircle(13, 26, 7);
+    path.addCircle(13, 26, 7);
+    path.addCircle(4, 33, 3);
+    return path;
+  }, [width, height, cr]);
 
-  const clipWithTail = useMemo(() => {
-    return flipped
-      ? flipPath(BubblePath(width, height, cr, true), width)
-      : BubblePath(width, height, cr, true);
-  }, [flipped, width, height, cr]);
-
-  useEffect(() => {
-    isLastInExchange.value = withSpring(initialState, { duration: 750 });
-  }, [initialState]);
-
-  const animatedPath = useDerivedValue(() => {
-    const interpolateValue = clip.interpolate(
-      clipWithTail,
-      isLastInExchange.value,
-    );
-    return interpolateValue || clip;
-  }, [clip, clipWithTail, isLastInExchange]);
-  return animatedPath;
+  return clip;
 };

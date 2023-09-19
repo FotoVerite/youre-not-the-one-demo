@@ -76,7 +76,7 @@ const OptionList: FC<
         style={[
           styles.optionList,
           {
-            width: width,
+            width,
           },
         ]}
         onLayout={(layout: LayoutChangeEvent) => {

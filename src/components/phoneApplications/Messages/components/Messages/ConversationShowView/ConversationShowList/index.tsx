@@ -1,17 +1,23 @@
 import { DigestedConversationListItem } from "@Components/phoneApplications/Messages/hooks/useConversation/digestion/types";
+import { ConversationReducerActionsType } from "@Components/phoneApplications/Messages/hooks/useConversation/reducer/type";
 import { ConversationListType } from "@Components/phoneApplications/Messages/hooks/useConversations/types";
-import React, { FC, RefObject, useCallback, useMemo } from "react";
+import React, { FC, RefObject, useCallback, useEffect, useMemo } from "react";
 import { ListRenderItem, StyleSheet, View } from "react-native";
 import Animated, {
   useAnimatedRef,
   useScrollViewOffset,
 } from "react-native-reanimated";
+import { theme } from "src/theme";
 
 import ListItem from "./ListItem";
 import { ConversationShowListItem } from "./ListItem/types";
-import { theme } from "src/theme";
+import ListOffsetEmitter, { LIST_EMITTER_EVENTS } from "./emitters";
 
 function ListHeader() {
+  return <View style={{ height: 50 }} />;
+}
+
+function ListFooter() {
   return <View style={{ height: 50 }} />;
 }
 const renderItem: ListRenderItem<ConversationShowListItem> = ({ item }) => (
@@ -20,7 +26,7 @@ const renderItem: ListRenderItem<ConversationShowListItem> = ({ item }) => (
 
 const getItemLayout = (
   data: ArrayLike<ConversationShowListItem> | null | undefined,
-  index: number
+  index: number,
 ) => ({
   length: data ? data[index].height + data[index].paddingBottom : 0,
   offset: data ? data[index].offset : 0,
@@ -32,7 +38,8 @@ const keyExtractor = (item: DigestedConversationListItem, index: number) =>
 
 const ConversationList: FC<{
   exchanges: DigestedConversationListItem[];
-}> = ({ exchanges }) => {
+  dispatch: (action: ConversationReducerActionsType) => void;
+}> = ({ dispatch, exchanges }) => {
   const scrollRef = useAnimatedRef<Animated.FlatList<any>>();
   const scrollHandler = useScrollViewOffset(scrollRef as any);
 
@@ -40,16 +47,30 @@ const ConversationList: FC<{
     return exchanges.map((item) => {
       return {
         ...item,
-        ...{ scrollRef, scrollHandler },
+        ...{ scrollRef, scrollHandler, dispatch },
       } as ConversationShowListItem;
     });
-  }, [exchanges, scrollHandler, scrollRef]);
+  }, [exchanges, dispatch, scrollHandler, scrollRef]);
+
+  useEffect(() => {
+    ListOffsetEmitter.on(LIST_EMITTER_EVENTS.ADD_TO_OFFSET, (amount) => {
+      scrollRef?.current.scrollToOffset({
+        offset: scrollHandler.value + amount,
+        animated: true,
+      });
+    });
+    return () => {
+      ListOffsetEmitter.off(LIST_EMITTER_EVENTS.ADD_TO_OFFSET, () => {});
+    };
+  }, [ListOffsetEmitter, scrollRef]);
+
   return (
     <Animated.FlatList
       ref={scrollRef}
       style={styles.list}
       data={data}
       ListHeaderComponent={ListHeader}
+      ListFooterComponent={ListFooter}
       renderItem={renderItem}
       scrollEventThrottle={16}
       keyExtractor={keyExtractor}
@@ -61,14 +82,8 @@ const ConversationList: FC<{
 export default ConversationList;
 
 const styles = StyleSheet.create({
-  itemSeparator: {
-    height: 1,
-    marginVertical: 10,
-    backgroundColor: "gray",
-  },
-
   list: {
     flexGrow: 1,
-    marginHorizontal: theme.spacing.p1,
+    paddingHorizontal: theme.spacing.p1,
   },
 });

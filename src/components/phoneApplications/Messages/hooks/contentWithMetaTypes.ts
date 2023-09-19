@@ -1,6 +1,7 @@
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+
 import { RouteConditionsType } from "./routes/types";
 import { MESSAGE_CONTACT_NAME } from "../constants";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 export enum MESSAGE_CONTENT {
   EMOJI = "emoji",
@@ -9,6 +10,7 @@ export enum MESSAGE_CONTENT {
   GLYPH = "glyph",
   NUMBER = "number",
   BACKGROUND_SNAPSHOT = "background-snapshot",
+  READ_LABEL = "read-label",
   SNAPSHOT = "snapshot",
   STRING = "string",
   VCARD = "vcard",
@@ -92,7 +94,7 @@ export type ContentWithMetaType =
   | VCardContentWithMeta;
 
 export const isContentWithMeta = (
-  content: ContentWithMetaType | string
+  content: ContentWithMetaType | string,
 ): content is ContentWithMetaType => {
   return (content as ContentWithMetaType).type !== undefined;
 };

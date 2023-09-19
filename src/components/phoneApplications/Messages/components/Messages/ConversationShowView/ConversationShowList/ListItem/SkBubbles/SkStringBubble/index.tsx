@@ -26,7 +26,7 @@ export const SkStringBubble: FC<SkBubbleTypeWithGradient> = ({
     colors,
     offset,
     addressee,
-    scrollHandler
+    scrollHandler,
   );
 
   const clipFunction = useBubbleClip(
@@ -34,7 +34,7 @@ export const SkStringBubble: FC<SkBubbleTypeWithGradient> = ({
     height,
     16,
     addressee,
-    isLastInExchange ? 0 : 1
+    isLastInExchange ? 0 : 1,
   );
   //const glitchEffect = useGlitchEffect(height, width, content, clip);
   return (

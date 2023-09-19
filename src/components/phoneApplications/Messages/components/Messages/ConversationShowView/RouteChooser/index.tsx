@@ -1,22 +1,25 @@
+import ConversationEmitter, {
+  CONVERSATION_EMITTER_EVENTS,
+} from "@Components/phoneApplications/Messages/emitters";
 import { DigestedConversationType } from "@Components/phoneApplications/Messages/hooks/useConversation/digestion/types";
 import { CONVERSATION_REDUCER_ACTIONS } from "@Components/phoneApplications/Messages/hooks/useConversation/reducer/type";
+import { ConversationDispatchType } from "@Components/phoneApplications/Messages/hooks/useConversation/types";
 import { convertMessageToString } from "@Components/phoneApplications/Messages/hooks/useConversations/determineLogLine";
 import { BlurView } from "expo-blur";
 import { FC, useState, useEffect, useMemo, useCallback, memo } from "react";
-import { useWindowDimensions, Platform, StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 import Animated from "react-native-reanimated";
 import { useInsetDimensions } from "src/utility/useInsetDimensions";
 
 import MessageTextInput from "./MessageTextInput";
 import OptionList from "./OptionList";
 import Option from "./OptionList/Option";
-import ConversationEmitter, {
-  CONVERSATION_EMITTER_EVENTS,
-} from "@Components/phoneApplications/Messages/emitters";
 
-const RootChooser: FC<{ conversation: DigestedConversationType }> = ({
-  conversation,
-}) => {
+const RootChooser: FC<
+  {
+    conversation: DigestedConversationType;
+  } & ConversationDispatchType
+> = ({ conversation, dispatch }) => {
   const [optionListOpen, openOptionList] = useState(false);
   const [chosenOption, setChosenOption] = useState<string>("...");
 
@@ -45,19 +48,19 @@ const RootChooser: FC<{ conversation: DigestedConversationType }> = ({
 
   const callback = useCallback(() => {
     if (nextMessageInQueue) {
-      //return dispatch({ type: CONVERSATION_REDUCER_ACTIONS.CONTINUE_ROUTE });
+      dispatch({ type: CONVERSATION_REDUCER_ACTIONS.CONTINUE_ROUTE });
     }
     if (availableRoute) {
       const { options } = availableRoute;
       if (options.length === 1) {
-        ConversationEmitter.emit(CONVERSATION_EMITTER_EVENTS.START_ROUTE, {
-          name: conversation.name,
-          additional: options[0],
+        dispatch({
+          type: CONVERSATION_REDUCER_ACTIONS.START_ROUTE,
+          payload: { chosenOption: options[0] },
         });
       } else if (chosenOption !== "...") {
-        ConversationEmitter.emit(CONVERSATION_EMITTER_EVENTS.START_ROUTE, {
-          name: conversation.name,
-          additional: chosenOption,
+        dispatch({
+          type: CONVERSATION_REDUCER_ACTIONS.START_ROUTE,
+          payload: { chosenOption },
         });
       }
     }

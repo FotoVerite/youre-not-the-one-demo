@@ -29,7 +29,7 @@ export const SkVcardBubble: FC<SkBubbleTypeWithGradient> = ({
     colors,
     offset,
     addressee,
-    scrollHandler
+    scrollHandler,
   );
 
   const clipFunction = useBubbleClip(
@@ -37,13 +37,13 @@ export const SkVcardBubble: FC<SkBubbleTypeWithGradient> = ({
     height,
     16,
     addressee,
-    isLastInExchange ? 1 : 0
+    isLastInExchange ? 1 : 0,
   );
 
   const initialsCircle = useInitials(
     width,
     height,
-    content as MESSAGE_CONTACT_NAME
+    content as MESSAGE_CONTACT_NAME,
   );
 
   return (

@@ -54,10 +54,10 @@ export const ChevronButton: FC<{
         chevronState.value = withRepeat(
           withSequence(
             withTiming(0.8, { duration: 1000, easing: Easing.bounce }),
-            withTiming(0, { duration: 750, easing: Easing.bounce })
+            withTiming(0, { duration: 750, easing: Easing.bounce }),
           ),
           -1,
-          true
+          true,
         );
         break;
       case MESSAGE_SEND_BUTTON_STATE.OPEN:
@@ -88,7 +88,7 @@ export const ChevronButton: FC<{
       backgroundColor: interpolateColor(
         buttonSendable.value,
         [0, 1, 2],
-        ["transparent", "purple", "black"]
+        ["transparent", "purple", "black"],
       ),
       transform: [
         {
@@ -103,7 +103,7 @@ export const ChevronButton: FC<{
       color: interpolateColor(
         chevronState.value,
         [0, 1, 2],
-        ["black", "purple", "white"]
+        ["black", "purple", "white"],
       ),
     };
   }, [buttonActive]);

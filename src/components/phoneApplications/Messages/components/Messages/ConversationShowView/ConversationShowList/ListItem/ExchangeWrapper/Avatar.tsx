@@ -7,12 +7,12 @@ export const Avatar: FC<{
   addressee: boolean;
   paddingBottom: number;
 }> = ({ addressee, avatar, paddingBottom }) => {
-  if (!avatar || !addressee) {
+  if (!addressee) {
     return;
   }
   return (
     <View style={[styles.avatarContainer, { marginBottom: paddingBottom }]}>
-      <Image source={avatar} style={styles.avatar} />
+      {avatar && <Image source={avatar} style={styles.avatar} />}
     </View>
   );
 };

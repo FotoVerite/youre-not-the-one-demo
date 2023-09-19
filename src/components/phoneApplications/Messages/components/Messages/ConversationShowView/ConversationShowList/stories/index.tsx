@@ -1,5 +1,6 @@
 import { ElementType } from "react";
 import { View } from "react-native";
+
 import ConversationList from "..";
 
 export default {

@@ -18,7 +18,7 @@ export const SkImageBubble: FC<SkBubbleType> = ({
     height,
     16,
     addressee,
-    isLastInExchange ? 1 : 0
+    isLastInExchange ? 0 : 1,
   );
 
   if (!image) {

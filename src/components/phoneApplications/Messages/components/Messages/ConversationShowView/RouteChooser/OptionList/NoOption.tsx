@@ -18,11 +18,11 @@ const NoOption: FC<{
           <Row style={styles.infoRow}>
             <Row style={styles.dateRow}>
               <Text style={styles.content}>
-                {"I have nothing to say to them at the moment."}
+                I have nothing to say to them at the moment.
               </Text>
               <FontAwesome
                 name="chevron-right"
-                color={"black"}
+                color="black"
                 size={24}
                 style={styles.icon}
               />

@@ -54,7 +54,7 @@ const DisplayedText: FC<{
           { easing: Easing.out(Easing.circle) },
           () => {
             blurAndRemove();
-          }
+          },
         );
         break;
       default:
@@ -68,7 +68,7 @@ const DisplayedText: FC<{
     fontContext.fonts.NotoColor,
     text,
     width - 78,
-    false
+    false,
   );
 
   const textAnimation = useAnimatedStyle(() => {

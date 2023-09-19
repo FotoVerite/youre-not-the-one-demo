@@ -27,7 +27,7 @@ export const SkStringBubbleWrapper: FC<SkStringWrapperType> = (props) => {
       fonts?.SFPro,
       props.content,
       400,
-      props.addressee
+      props.addressee,
     );
   return (
     <SkStringBubble
