@@ -1,6 +1,6 @@
 import { useAnimatedObserver } from "@Components/phoneApplications/Messages/hooks/useSlideIn/useAnimatedObserver";
 import { FC, PropsWithChildren, useEffect, useRef } from "react";
-import { StyleSheet, ViewStyle } from "react-native";
+import { StyleSheet, ViewStyle, useWindowDimensions } from "react-native";
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -17,12 +17,18 @@ const SlideInTransitionContainer: FC<
 > = ({ toObserve, children, slideInfFrom, viewOverrides }) => {
   const slideIn = useAnimatedObserver(toObserve);
   const { width, height } = useInsetDimensions();
+  const { width: windowWith, height: windowHeight } = useWindowDimensions();
+  const fromLeft = !slideInfFrom || slideInfFrom === "left";
 
   const storedChildren = useRef(children);
 
   const animatedStyle = useAnimatedStyle(() => {
-    const translate = interpolate(slideIn.value, [0, 1], [width, 0]);
-    if (!slideInfFrom || slideInfFrom === "left") {
+    const translate = interpolate(
+      slideIn.value,
+      [0, 1],
+      [fromLeft ? windowWith : windowHeight, 0]
+    );
+    if (fromLeft) {
       return { transform: [{ translateX: translate }] };
     } else {
       return { transform: [{ translateY: translate }] };

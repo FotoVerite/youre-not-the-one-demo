@@ -8,6 +8,7 @@ import ConversationEmitter, {
 } from "../../emitters";
 import { useConversations } from "../../hooks/useConversations";
 import { ConversationType } from "../../hooks/useConversations/types";
+import MediaContextProvider from "../../context/Media";
 
 const Messages: FC = () => {
   const [viewable, available] = useConversations();
@@ -21,7 +22,7 @@ const Messages: FC = () => {
           const _conversation = available[name];
           setConversation(_conversation);
         }
-      },
+      }
     );
     return () => {
       ConversationEmitter.off(CONVERSATION_EMITTER_EVENTS.SHOW, () => {});
@@ -35,7 +36,7 @@ const Messages: FC = () => {
         if (!type) {
           setConversation(undefined);
         }
-      },
+      }
     );
     return () => {
       ConversationEmitter.off(CONVERSATION_EMITTER_EVENTS.RESET, () => {});
@@ -45,7 +46,9 @@ const Messages: FC = () => {
   return (
     <View style={[styles.layout]}>
       <ConversationIndexView viewable={viewable} />
-      <ConversationShowView conversation={conversation} />
+      <MediaContextProvider>
+        <ConversationShowView conversation={conversation} />
+      </MediaContextProvider>
     </View>
   );
 };

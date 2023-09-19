@@ -1,6 +1,14 @@
+import {
+  MediaImageElement,
+  useMediaContext,
+} from "@Components/phoneApplications/Messages/context/Media";
 import { useImage, Canvas, Group, Image } from "@shopify/react-native-skia";
 import React, { FC } from "react";
-import { TouchableWithoutFeedback, View } from "react-native";
+import {
+  ImageSourcePropType,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 
 import { SkBubbleType } from "../types";
 import { useBubbleClip } from "../useBubbleClip";
@@ -12,13 +20,14 @@ export const SkImageBubble: FC<SkBubbleType> = ({
   addressee,
   isLastInExchange,
 }) => {
+  const setMedia = useMediaContext().setMedia;
   const image = useImage(content as string);
   const clipFunction = useBubbleClip(
     width,
     height,
     16,
     addressee,
-    isLastInExchange ? 0 : 1,
+    isLastInExchange ? 0 : 1
   );
 
   if (!image) {
@@ -26,7 +35,16 @@ export const SkImageBubble: FC<SkBubbleType> = ({
   }
 
   return (
-    <TouchableWithoutFeedback onPress={() => {}}>
+    <TouchableWithoutFeedback
+      onPress={() => {
+        setMedia(
+          <MediaImageElement
+            source={content as ImageSourcePropType}
+            aspectRatio={width / height}
+          />
+        );
+      }}
+    >
       <View>
         <Canvas
           style={[
