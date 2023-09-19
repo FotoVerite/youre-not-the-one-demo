@@ -12,7 +12,7 @@ import { SentMessageContainerType } from "../types";
 
 const SentMessageContainer: FC<
   SentMessageContainerType & PropsWithChildren
-> = ({ dispatch, children, contentDelay, height }) => {
+> = ({ dispatch, children, contentDelay, height, resolved }) => {
   const opacity = useSharedValue(contentDelay ? 0 : 1);
   const fadeInAnimation = useAnimatedStyle(() => {
     return { opacity: opacity.value };
@@ -26,11 +26,11 @@ const SentMessageContainer: FC<
   };
 
   useEffect(() => {
-    if (contentDelay) {
+    if (contentDelay && resolved) {
       opacity.value = withTiming(1);
       continueRoute(contentDelay + 250);
     }
-  }, [contentDelay]);
+  }, [contentDelay, resolved]);
 
   return (
     <Animated.View style={[fadeInAnimation, { height }]}>

@@ -5,7 +5,7 @@ import {
   LinearGradient,
   vec,
 } from "@shopify/react-native-skia";
-import { FC, PropsWithChildren } from "react";
+import { FC, PropsWithChildren, useEffect } from "react";
 import { View } from "react-native";
 
 import { SkBubbleTypeWithGradient } from "../types";
@@ -22,21 +22,26 @@ export const SkGradientBubbleWrapper: FC<
   isLastInExchange,
   offset,
   scrollHandler,
+  setAsResolved,
   width,
 }) => {
   const computedColors = useHeightDeterminedGradient(
     colors,
     offset,
     addressee,
-    scrollHandler,
+    scrollHandler
   );
   const clipFunction = useBubbleClip(
     width,
     height,
     16,
     addressee,
-    isLastInExchange ? 1 : 0,
+    isLastInExchange ? 0 : 1
   );
+
+  useEffect(() => {
+    setAsResolved(true);
+  }, [setAsResolved]);
 
   return (
     <View>

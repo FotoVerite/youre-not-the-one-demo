@@ -55,7 +55,12 @@ const conversationReducer = produce(
       case CONVERSATION_REDUCER_ACTIONS.START_ROUTE:
         return startRoute(config, draft, action.payload);
       case CONVERSATION_REDUCER_ACTIONS.UPDATE_MESSAGE:
-        return updateMessage(draft, action.payload.props, action.payload.ID);
+        return updateMessage(
+          config,
+          draft,
+          action.payload.props,
+          action.payload.ID
+        );
       case CONVERSATION_REDUCER_ACTIONS.SKIP_ROUTE:
         return _skipRoute(config, draft);
       case CONVERSATION_REDUCER_ACTIONS.RESET:
@@ -158,7 +163,7 @@ const continueRoute = (
   const nextMessage = draft.activePath[0];
   const offset = getListHeight(draft.exchanges);
   if (nextMessage == null) {
-    return finishRoute(config, draft, draft.availableRoute.id);
+    return finishRoute(draft, draft.availableRoute.id);
   }
 
   if (
@@ -185,7 +190,10 @@ const continueRoute = (
       previousMessage.isLastInExchange = false;
     }
     draft.exchanges.push(message);
-    if (message.name === MESSAGE_CONTACT_NAME.SELF) {
+    if (
+      message.name === MESSAGE_CONTACT_NAME.SELF &&
+      message.type !== MESSAGE_CONTENT.SNAPSHOT
+    ) {
       draft.exchanges = appendReadLabel(draft.exchanges, config.width);
     }
     draft.activePath.shift();
@@ -204,11 +212,7 @@ const continueRoute = (
   return draft;
 };
 
-const finishRoute = (
-  config: BaseConfigType,
-  draft: DigestedConversationType,
-  routeID: number
-) => {
+const finishRoute = (draft: DigestedConversationType, routeID: number) => {
   draft.eventAction = {
     type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_UPDATE,
     payload: {
@@ -285,6 +289,7 @@ const addConversation = (conversation: DigestedConversationType) => {
 };
 
 const updateMessage = (
+  config: BaseConfigType,
   draft: DigestedConversationType,
   props: DigestedMessageProps,
   ID: string
@@ -296,6 +301,7 @@ const updateMessage = (
       ...props,
     } as DigestedConversationListItem;
   }
+  draft.exchanges = appendReadLabel(draft.exchanges, config.width);
   return draft;
 };
 
@@ -316,7 +322,6 @@ const _createCleanupAction = (draft: DigestedConversationType) => {
   }
   const finished = forewordToIndex === -1;
   forewordToIndex = forewordToIndex === -1 ? toEnd : forewordToIndex;
-  console.log(forewordToIndex, draft.routeAtIndex);
   draft.cleanupAction = {
     type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_UPDATE,
     payload: {

@@ -24,6 +24,7 @@ import { ConversationShowBubbleItem } from "../types";
 export const TypingContainer: FC<
   ConversationShowBubbleItem & {
     dispatch: (action: ConversationReducerActionsType) => void;
+    resolved: boolean;
   } & PropsWithChildren
 > = (props) => {
   const containerOpacity = useSharedValue(props.contentDelay ? 0 : 1);
@@ -57,14 +58,14 @@ export const TypingContainer: FC<
           if (finished) {
             runOnJS(continueRoute)(props.contentDelay || 0);
           }
-        }),
+        })
       );
     };
 
-    if (props.contentDelay) {
+    if (props.contentDelay && props.resolved) {
       showTyping(props.typingDelay);
     }
-  }, [containerOpacity, opacity, props.typingDelay]);
+  }, [containerOpacity, opacity, props.typingDelay, props.resolved]);
 
   return (
     <Animated.View

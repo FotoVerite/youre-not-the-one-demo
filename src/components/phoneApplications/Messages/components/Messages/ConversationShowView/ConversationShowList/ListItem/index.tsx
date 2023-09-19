@@ -4,7 +4,7 @@ import {
   isDigestedBubble,
   isDigestedLabel,
 } from "@Components/phoneApplications/Messages/hooks/useConversation/digestion/types";
-import { FC, memo } from "react";
+import { FC, memo, useCallback, useState } from "react";
 
 import { ExchangeWrapper } from "./ExchangeWrapper";
 import SentMessageContainer from "./SentMessageContainer";
@@ -13,8 +13,15 @@ import { ConversationShowListItem } from "./types";
 import useBubbleResolver from "./useBubbleResolver";
 
 const ListItem: FC<ConversationShowListItem> = (props) => {
-  const { dispatch, ...propsWithoutDispatch } = props;
-  const item = useBubbleResolver(propsWithoutDispatch);
+  const [resolved, _setAsResolved] = useState(false);
+
+  const setAsResolved = useCallback(
+    (isResolved: boolean) => {
+      _setAsResolved(isResolved);
+    },
+    [_setAsResolved]
+  );
+  const item = useBubbleResolver({ ...props, setAsResolved });
   let bubble: React.JSX.Element;
   if (isDigestedLabel(props)) {
     bubble = item;
@@ -42,15 +49,20 @@ const ListItem: FC<ConversationShowListItem> = (props) => {
     if (props.name === MESSAGE_CONTACT_NAME.SELF) {
       return (
         <SentMessageContainer
+          resolved={resolved}
           contentDelay={props.contentDelay}
-          dispatch={dispatch}
+          dispatch={props.dispatch}
           height={props.height + props.paddingBottom}
         >
           {bubble}
         </SentMessageContainer>
       );
     } else {
-      return <TypingContainer {...props}>{bubble}</TypingContainer>;
+      return (
+        <TypingContainer {...props} resolved={resolved}>
+          {bubble}
+        </TypingContainer>
+      );
     }
   } else {
     return bubble;

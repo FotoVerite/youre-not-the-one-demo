@@ -60,6 +60,7 @@ const SnapShotContextProvider: FC<SnapShotContextDigestType> = (props) => {
         switch (image.type) {
           case SNAPSHOT_TYPES.SILENT:
             writeImageToFs(image.uri, image.filename);
+            _setImage(undefined);
             break;
           case SNAPSHOT_TYPES.WITH_INDICATOR:
             writeImageToFs(image.uri, image.filename);
@@ -72,7 +73,11 @@ const SnapShotContextProvider: FC<SnapShotContextDigestType> = (props) => {
         }
       }
     };
-    if (image) {
+    if (
+      image &&
+      (image.type === SNAPSHOT_TYPES.SILENT ||
+        image.type === SNAPSHOT_TYPES.WITH_INDICATOR)
+    ) {
       processImage().catch(console.error);
     }
   }, [image]);
@@ -81,14 +86,14 @@ const SnapShotContextProvider: FC<SnapShotContextDigestType> = (props) => {
     (args: TakeSnapshotType) => {
       _setTakeSnapShot(args);
     },
-    [_setTakeSnapShot],
+    [_setTakeSnapShot]
   );
 
   const setImage = useCallback(
     (args: SnapShotImageType) => {
       _setImage(args);
     },
-    [_setTakeSnapShot],
+    [_setTakeSnapShot]
   );
 
   return (

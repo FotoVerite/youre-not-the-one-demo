@@ -1,6 +1,4 @@
 import { AppEventsType } from "@Components/appEvents/reducer/types";
-import moment from "moment";
-import { formatTimeStamp } from "src/utility/datetime";
 
 import {
   convertBlockToMessagePayloadType,

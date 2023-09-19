@@ -3,7 +3,7 @@ import {
   useMediaContext,
 } from "@Components/phoneApplications/Messages/context/Media";
 import { useImage, Canvas, Group, Image } from "@shopify/react-native-skia";
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import {
   ImageSourcePropType,
   TouchableWithoutFeedback,
@@ -19,6 +19,7 @@ export const SkImageBubble: FC<SkBubbleType> = ({
   height,
   addressee,
   isLastInExchange,
+  setAsResolved,
 }) => {
   const setMedia = useMediaContext().setMedia;
   const image = useImage(content as string);
@@ -29,6 +30,12 @@ export const SkImageBubble: FC<SkBubbleType> = ({
     addressee,
     isLastInExchange ? 0 : 1
   );
+
+  useEffect(() => {
+    if (image) {
+      setAsResolved(true);
+    }
+  }, [image, setAsResolved]);
 
   if (!image) {
     return null;

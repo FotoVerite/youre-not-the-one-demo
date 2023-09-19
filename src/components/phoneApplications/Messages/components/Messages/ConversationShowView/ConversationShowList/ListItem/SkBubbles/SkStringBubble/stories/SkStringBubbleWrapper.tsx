@@ -21,14 +21,13 @@ export const SkStringBubbleWrapper: FC<SkStringWrapperType> = (props) => {
     return null;
   }
 
-  const [boxHeight, boxWidth, textNodes, cursorVector] =
-    GetDimensionsAndSkiaNodes(
-      fonts?.HelveticaNeue,
-      fonts?.SFPro,
-      props.content,
-      400,
-      props.addressee,
-    );
+  const [boxHeight, boxWidth, textNodes] = GetDimensionsAndSkiaNodes(
+    fonts?.HelveticaNeue,
+    fonts?.SFPro,
+    props.content,
+    400,
+    props.addressee
+  );
   return (
     <SkStringBubble
       {...props}

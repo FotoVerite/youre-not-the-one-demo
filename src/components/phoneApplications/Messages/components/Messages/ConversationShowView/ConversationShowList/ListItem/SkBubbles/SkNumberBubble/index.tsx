@@ -8,7 +8,6 @@ import { SkBubbleTypeWithGradient } from "../types";
 
 export const SkNumberBubble: FC<SkBubbleTypeWithGradient> = (props) => {
   const number = useNumber(props.height, props.content as MESSAGE_CONTACT_NAME);
-
   return (
     <TouchableWithoutFeedback onPress={() => {}}>
       <SkGradientBubbleWrapper {...props}>{number}</SkGradientBubbleWrapper>

@@ -10,20 +10,18 @@ export type ConversationShowListItem = DigestedConversationListItem & {
   scrollHandler: SharedValue<number>;
   scrollRef: React.RefObject<Animated.FlatList<DigestedConversationListItem>>;
   dispatch: (action: ConversationReducerActionsType) => void;
+  setAsResolved: (isResolved: boolean) => void;
 };
-
-export type ConversationShowListItemWithoutDispatch =
-  DigestedConversationListItem & {
-    scrollHandler: SharedValue<number>;
-    scrollRef: React.RefObject<Animated.FlatList<DigestedConversationListItem>>;
-  };
 
 export type ConversationShowBubbleItem = BubbleItemType & {
   scrollHandler: SharedValue<number>;
   scrollRef: React.RefObject<Animated.FlatList<DigestedConversationListItem>>;
+  dispatch: (action: ConversationReducerActionsType) => void;
+  setAsResolved: (isResolved: boolean) => void;
 };
 
 export type SentMessageContainerType = {
   contentDelay?: number;
   height: number;
+  resolved: boolean;
 } & ConversationDispatchType;

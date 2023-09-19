@@ -18,6 +18,12 @@ const SELF = MESSAGE_CONTACT_NAME.SELF;
 
 const exchanges: ExchangeBlockType[] = [
   {
+    name: SELF,
+    messages: [
+      { type: MESSAGE_CONTENT.SNAPSHOT, content: { filename: "SNAPSHOT" } },
+    ],
+  },
+  {
     name: SPAM1,
     messages: [
       "Hi my name is Kaori and I'm new to the area.",
