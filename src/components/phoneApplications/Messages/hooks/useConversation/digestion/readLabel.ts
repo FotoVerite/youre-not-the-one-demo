@@ -1,12 +1,42 @@
+import { AppEventsType } from "@Components/appEvents/reducer/types";
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
 
 import { createReadLabel } from "./SkFunctions/createReadLabel";
-import { DigestedConversationListItem, isDigestedLabel } from "./types";
+import {
+  DigestedConversationListItem,
+  DigestedConversationType,
+  isDigestedLabel,
+} from "./types";
 import { MESSAGE_CONTENT } from "../../contentWithMetaTypes";
+import { getSeenRoutes, getUnfinishedRouteID } from "../../routes/seen";
+
+export const lastRouteTime = (
+  digested: DigestedConversationType,
+  events: AppEventsType
+) => {
+  const unfinishedID = getUnfinishedRouteID(
+    digested.name,
+    events,
+    digested.routes || []
+  );
+  if (unfinishedID) {
+    return events.Messages[digested.name].routes[
+      unfinishedID
+    ].createdAt.toISOString();
+  }
+  const seenRoutes = getSeenRoutes(
+    digested.name,
+    events,
+    digested.routes,
+    digested.notificationRoutes
+  );
+  return seenRoutes[0] ? seenRoutes[0].createdAt.toISOString() : undefined;
+};
 
 export const appendReadLabel = (
   exchanges: DigestedConversationListItem[],
   width: number,
+  readTime?: string
 ) => {
   const previousRead =
     exchanges
@@ -32,9 +62,9 @@ export const appendReadLabel = (
       .slice(-1)[0].index + 1;
 
   const readLabel = createReadLabel(
-    new Date().toISOString(),
+    readTime ? readTime : new Date().toISOString(),
     width,
-    exchanges[spliceIndex - 1].offset,
+    exchanges[spliceIndex - 1].offset
   );
   exchanges.splice(spliceIndex, 0, readLabel);
   return exchanges.map((item, index) => {
@@ -49,7 +79,7 @@ export const appendReadLabel = (
 
 const markPreviousReadForRemoval = (
   previousIndex: number,
-  exchanges: DigestedConversationListItem[],
+  exchanges: DigestedConversationListItem[]
 ) => {
   if (previousIndex === -1) {
     return exchanges;

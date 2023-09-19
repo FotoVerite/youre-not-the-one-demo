@@ -8,9 +8,9 @@ import { DigestedConversationTimeType } from "../types";
 const HEIGHT = 30;
 
 export const createTimeStampLabel = (
-  time: string,
+  time: string | Date,
   width: number,
-  offset: number,
+  offset: number
 ): DigestedConversationTimeType => {
   const listItem = {
     ID: Crypto.randomUUID(),

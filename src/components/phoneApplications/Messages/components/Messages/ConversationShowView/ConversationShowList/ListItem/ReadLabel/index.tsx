@@ -1,7 +1,12 @@
 import { duration } from "moment";
-import React, { FC, useEffect } from "react";
+import React, { FC, useEffect, useRef } from "react";
 import { StyleSheet, Text } from "react-native";
-import Animated, { useSharedValue, withTiming } from "react-native-reanimated";
+import Animated, {
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 import { theme } from "src/theme";
 
 export const ReadLabel: FC<{ content: string; height: number }> = ({
@@ -9,11 +14,19 @@ export const ReadLabel: FC<{ content: string; height: number }> = ({
   content,
 }) => {
   const animatedHeight = useSharedValue(height);
+  const initialHeight = useRef(height);
   useEffect(() => {
     animatedHeight.value = withTiming(height, { duration: 400 });
   }, [height]);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      height: animatedHeight.value,
+      opacity: interpolate(height, [initialHeight.current, 0], [1, 0]),
+    };
+  }, [height]);
   return (
-    <Animated.View style={{ height: animatedHeight }}>
+    <Animated.View style={animatedStyle}>
       <Text style={[styles.text]}>{content}</Text>
     </Animated.View>
   );

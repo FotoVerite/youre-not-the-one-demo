@@ -1,7 +1,7 @@
 import { AppEventsType } from "@Components/appEvents/reducer/types";
 
 import { appendSeenRoutes, digestExchanges } from "./digestRoute";
-import { appendReadLabel } from "./readLabel";
+import { appendReadLabel, lastRouteTime } from "./readLabel";
 import { resolveSnapshots } from "./snapshotResolver";
 import {
   DigestedConversationListItem,
@@ -15,12 +15,12 @@ import { ConversationType } from "../../useConversations/types";
 const combineIntoDigestedConversationType = (
   exchanges: DigestedConversationListItem[],
   props: Omit<ConversationType, "exchanges">,
-  events: AppEventsType,
+  events: AppEventsType
 ): DigestedConversationType => {
   const availableRoute = findAvailableRoutes(
     props.name,
     props.routes || [],
-    events,
+    events
   )[0];
   return {
     ...props,
@@ -33,24 +33,28 @@ const combineIntoDigestedConversationType = (
 export const digestConversation = async (
   config: BaseConfigType,
   conversation: ConversationType,
-  events: AppEventsType,
+  events: AppEventsType
 ) => {
   const { exchanges, ...conversationProps } = conversation;
 
   const digestedExchanges = digestExchanges(
     config,
     exchanges,
-    conversationProps.group,
+    conversationProps.group
   );
   const digested = combineIntoDigestedConversationType(
     digestedExchanges,
     conversationProps,
-    events,
+    events
   );
 
   digested.exchanges = appendSeenRoutes(digested, events, config);
   digestUnfinishedRoute(digested, events, config);
   digested.exchanges = await resolveSnapshots(digested.exchanges);
-  digested.exchanges = appendReadLabel(digested.exchanges, config.width);
+  digested.exchanges = appendReadLabel(
+    digested.exchanges,
+    config.width,
+    lastRouteTime(digested, events)
+  );
   return digested;
 };

@@ -1,11 +1,5 @@
 import { AppEventsReducerActionsType } from "@Components/appEvents/reducer/types";
-import {
-  Glyph,
-  SkFont,
-  SkImage,
-  SkPath,
-  SkPoint,
-} from "@shopify/react-native-skia";
+import { Glyph, SkFont, SkImage, SkPoint } from "@shopify/react-native-skia";
 import { FlexAlignType, ImageSourcePropType } from "react-native";
 
 import { MESSAGE_CONTACT_NAME } from "../../../constants";
@@ -13,7 +7,6 @@ import {
   FontAwesomeGlyphs,
   MESSAGE_CONTENT,
   MessageEffectType,
-  ReactionType,
 } from "../../contentWithMetaTypes";
 import { MessageRouteType } from "../../routes/types";
 import {
@@ -171,6 +164,7 @@ export type DigestedConversationType = Omit<
   activePath: MessagePayloadType[];
   availableRoute?: MessageRouteType;
   chosenRoute?: string;
+  cleanupAction?: AppEventsReducerActionsType;
   eventAction?: AppEventsReducerActionsType;
   nextMessageInQueue?: MessageContentType;
   exchanges: DigestedConversationListItem[];
@@ -182,17 +176,17 @@ export type DigestedMessageProps = {
 };
 
 export const isDigestedBubble = (
-  exchange: DigestedConversationListItem,
+  exchange: DigestedConversationListItem
 ): exchange is BubbleItemType => {
   return ![MESSAGE_CONTENT.TIME, MESSAGE_CONTENT.READ_LABEL].includes(
-    exchange.type,
+    exchange.type
   );
 };
 
 export const isDigestedLabel = (
-  exchange: DigestedConversationListItem,
+  exchange: DigestedConversationListItem
 ): exchange is DigestedLabelType => {
   return [MESSAGE_CONTENT.TIME, MESSAGE_CONTENT.READ_LABEL].includes(
-    exchange.type,
+    exchange.type
   );
 };
