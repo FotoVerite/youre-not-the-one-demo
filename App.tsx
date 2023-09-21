@@ -14,7 +14,7 @@ const App = () => {
   useEffect(() => {
     if (Platform.OS !== "web") {
       ScreenOrientation.lockAsync(
-        ScreenOrientation.OrientationLock.PORTRAIT_UP,
+        ScreenOrientation.OrientationLock.PORTRAIT_UP
       );
     }
   }, []);
@@ -23,13 +23,13 @@ const App = () => {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <FontsContextProvider>
         <SafeAreaProvider>
-          <AppEventsContextProvider>
-            <SnapShotContextProvider>
-              <NotificationsContextProvider>
+          <SnapShotContextProvider>
+            <NotificationsContextProvider>
+              <AppEventsContextProvider>
                 <Messages />
-              </NotificationsContextProvider>
-            </SnapShotContextProvider>
-          </AppEventsContextProvider>
+              </AppEventsContextProvider>
+            </NotificationsContextProvider>
+          </SnapShotContextProvider>
         </SafeAreaProvider>
       </FontsContextProvider>
     </GestureHandlerRootView>

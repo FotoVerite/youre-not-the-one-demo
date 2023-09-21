@@ -1,4 +1,5 @@
 import { useAppEventsContext } from "@Components/appEvents/context";
+import { AppEventsReducerActionsType } from "@Components/appEvents/reducer/types";
 import React, {
   useCallback,
   useEffect,
@@ -7,6 +8,7 @@ import React, {
   useRef,
 } from "react";
 import { useFontsContext } from "src/contexts/fonts";
+import { LOG, LOG_COLORS } from "src/utility/logger";
 
 import { digestConversation } from "./digestion";
 import createConversationReducer from "./reducer";
@@ -15,18 +17,15 @@ import {
   ConversationReducerActionsType,
 } from "./reducer/type";
 import { ConversationType } from "../useConversations/types";
-import { AppEventsReducerActionsType } from "@Components/appEvents/reducer/types";
-import { LOG, LOG_COLORS } from "src/utility/logger";
 
 export const useConversation = (
   width: number,
   conversation?: ConversationType
 ) => {
-  const eventContext = useAppEventsContext();
+  const { state: events, dispatch: eventsDispatch } = useAppEventsContext();
   const fontsContext = useFontsContext();
   const cleanupAction = useRef<AppEventsReducerActionsType>();
 
-  const events = eventContext.state;
   const config = useMemo(() => {
     return {
       font: fontsContext.fonts.HelveticaNeue,
@@ -64,9 +63,9 @@ export const useConversation = (
 
   useEffect(() => {
     if (state?.eventAction != null) {
-      eventContext.dispatch(state.eventAction);
+      eventsDispatch(state.eventAction);
     }
-  }, [state?.eventAction, eventContext.dispatch]);
+  }, [state?.eventAction, eventsDispatch]);
 
   useEffect(() => {
     if (state) {
@@ -75,15 +74,15 @@ export const useConversation = (
         payload: events,
       });
     }
-  }, [events]);
+  }, [events, state]);
 
   useEffect(() => {
     if (!state && cleanupAction.current) {
       LOG(LOG_COLORS.FgYellow, "Cleanup Action Called", cleanupAction.current);
-      eventContext.dispatch(cleanupAction.current);
+      eventsDispatch(cleanupAction.current);
       cleanupAction.current = undefined;
     }
-  }, [state]);
+  }, [eventsDispatch, state]);
 
   useEffect(() => {
     cleanupAction.current = state?.cleanupAction;
@@ -91,7 +90,7 @@ export const useConversation = (
 
   useMemo(() => {
     _digestConversation(conversation);
-  }, [conversation]);
+  }, [_digestConversation, conversation]);
 
   return [state, reducerResolver, _digestConversation] as const;
 };

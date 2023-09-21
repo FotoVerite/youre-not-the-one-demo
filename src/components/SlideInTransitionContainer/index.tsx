@@ -39,7 +39,7 @@ const SlideInTransitionContainer: FC<
     if (toObserve != null) {
       storedChildren.current = children;
     }
-  }, [toObserve]);
+  }, [children, toObserve]);
 
   return (
     <Animated.View

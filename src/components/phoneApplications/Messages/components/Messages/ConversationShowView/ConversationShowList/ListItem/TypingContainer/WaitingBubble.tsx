@@ -10,9 +10,8 @@ import {
   vec,
 } from "@shopify/react-native-skia";
 import React, { FC } from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import Animated, { SharedValue } from "react-native-reanimated";
-import { theme } from "src/theme";
 
 import { Dot } from "./Dot";
 import { useBubbleCloudClip } from "./useBubbleCloudClip";
@@ -32,7 +31,7 @@ export const WaitingBubble: FC<
     props.colors,
     props.offset,
     true,
-    props.scrollHandler,
+    props.scrollHandler
   );
 
   const dotHeight = (height - 2.5) / 2;

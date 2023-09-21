@@ -1,13 +1,14 @@
 import { MESSAGE_CONTENT } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
 
+import { EmojiBubble } from "./EmojiBubble";
 import { ReadLabel } from "./ReadLabel";
 import { SkImageBubble } from "./SkBubbles/SkImageBubble";
 import { SkNumberBubble } from "./SkBubbles/SkNumberBubble";
+import { SkSnapshotBubble } from "./SkBubbles/SkSnapshotBubble";
 import { SkStringBubble } from "./SkBubbles/SkStringBubble";
 import { SkVcardBubble } from "./SkBubbles/SkVcardBubble";
 import { TimeStamp } from "./Timestamp";
 import { ConversationShowListItem } from "./types";
-import { SkSnapshotBubble } from "./SkBubbles/SkSnapshotBubble";
 
 const useBubbleResolver = (props: ConversationShowListItem) => {
   switch (props.type) {
@@ -15,8 +16,10 @@ const useBubbleResolver = (props: ConversationShowListItem) => {
       return <TimeStamp content={props.content} height={props.height} />;
     case MESSAGE_CONTENT.READ_LABEL:
       return <ReadLabel content={props.content} height={props.height} />;
-    case MESSAGE_CONTENT.EMOJI:
-      return <></>;
+    case MESSAGE_CONTENT.EMOJI: {
+      const { scrollHandler, scrollRef, ...propsWithoutScroll } = props;
+      return <EmojiBubble {...propsWithoutScroll} />;
+    }
     case MESSAGE_CONTENT.IMAGE: {
       const { scrollHandler, scrollRef, ...propsWithoutScroll } = props;
       return <SkImageBubble {...propsWithoutScroll} />;

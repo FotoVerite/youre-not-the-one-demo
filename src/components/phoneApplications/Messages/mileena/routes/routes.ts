@@ -1,0 +1,4 @@
+export enum MILEENA_ROUTE_IDS {
+  MY_QUADS,
+  BUT_SERIOUSLY,
+}

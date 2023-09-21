@@ -18,14 +18,14 @@ export const convertPathToExchanges = (path: ExchangeBlockType[]) => {
       }
       return acc;
     },
-    [] as { name: MESSAGE_CONTACT_NAME; content: MessageContentType }[],
+    [] as { name: MESSAGE_CONTACT_NAME; content: MessageContentType }[]
   );
 };
 
 const getSeenExchangesFromUnfinishedRoute = (
   id: string,
   conversation: ConversationFileType,
-  events: AppEventsType,
+  events: AppEventsType
 ) => {
   const event = events.Messages[conversation.name].routes[id];
   const route = conversation.routes?.find((r) => r.id.toString() === id);
@@ -49,7 +49,7 @@ export const formatConversationTime = (date: Moment): string => {
   }
 };
 
-const getLastMessageFromExchanges = (exchanges: ExchangeBlockType[]) => {
+export const getLastMessageFromExchanges = (exchanges: ExchangeBlockType[]) => {
   const exchange = exchanges.slice(-1)[0];
   if (exchange == null) {
     return "";
@@ -84,7 +84,7 @@ export const convertMessageToString = (message: MessageContentType) => {
 
 export const determineLoglineAndTimeOfLastMessage = (
   conversation: ConversationFileType,
-  events: AppEventsType,
+  events: AppEventsType
 ): { time: string; content: string } => {
   const { name, routes, notificationRoutes } = conversation;
   const routeEvent = getLastSeenRoute(name, events, routes, notificationRoutes);
@@ -93,7 +93,7 @@ export const determineLoglineAndTimeOfLastMessage = (
     const [updatedAt, seen] = getSeenExchangesFromUnfinishedRoute(
       unfinishedID,
       conversation,
-      events,
+      events
     );
     if (seen && seen.length > 0) {
       const lastExchange = seen.pop()!;

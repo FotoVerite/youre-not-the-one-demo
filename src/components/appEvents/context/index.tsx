@@ -1,5 +1,17 @@
+import { useNotificationContext } from "@Components/notifications/context";
+import {
+  NOTIFICATIONS_REDUCER_ACTIONS,
+  NotificationDataType,
+} from "@Components/notifications/reducer/types";
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
-import React, { FC, useCallback, useContext, useReducer } from "react";
+import React, {
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useReducer,
+  useRef,
+} from "react";
 import { PHONE_APPLICATION_NAMES } from "src/constants/phoneApplicationNames";
 import { LOG, LOG_COLORS } from "src/utility/logger";
 
@@ -19,8 +31,10 @@ const AppEventsContext = React.createContext<
 >(undefined);
 
 const AppEventsContextProvider: FC<AppEventsContextTypeDigest> = (props) => {
+  const sentNotifications = useRef<NotificationDataType[]>([]);
+  const { dispatch: notificationDispatch } = useNotificationContext();
   const setDefaultMessageEventState = (
-    state: MessageAppEventsContainerType,
+    state: MessageAppEventsContainerType
   ) => {
     for (const name of Object.values(MESSAGE_CONTACT_NAME)) {
       if (state[name] === undefined) {
@@ -32,13 +46,27 @@ const AppEventsContextProvider: FC<AppEventsContextTypeDigest> = (props) => {
 
   const [events, dispatch] = useReducer(eventsReducer, {
     [PHONE_APPLICATION_NAMES.MESSAGES]: setDefaultMessageEventState({}),
+    NOTIFICATIONS: [],
   });
   const memoizedDispatch = useCallback(
     (action: AppEventsReducerActionsType) => {
       dispatch(action);
     },
-    [],
+    []
   );
+
+  useEffect(() => {
+    const newNotifications = events.NOTIFICATIONS.filter(
+      (notification) => !sentNotifications.current.includes(notification)
+    );
+    newNotifications.forEach((notification) =>
+      notificationDispatch({
+        type: NOTIFICATIONS_REDUCER_ACTIONS.ADD,
+        payload: notification,
+      })
+    );
+    sentNotifications.current.concat(newNotifications);
+  }, [events.NOTIFICATIONS, notificationDispatch]);
 
   return (
     <AppEventsContext.Provider

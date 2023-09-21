@@ -41,13 +41,13 @@ export const TypingContainer: FC<
     return { opacity: interpolate(opacity.value, [1, 0], [0, 1]) };
   });
 
-  const continueRoute = async (delay: number) => {
-    ListOffsetEmitter.emit(LIST_EMITTER_EVENTS.ADD_TO_OFFSET, props.height);
-    await delayFor(delay);
-    props.dispatch({ type: CONVERSATION_REDUCER_ACTIONS.CONTINUE_ROUTE });
-  };
-
   useEffect(() => {
+    const continueRoute = async (delay: number) => {
+      ListOffsetEmitter.emit(LIST_EMITTER_EVENTS.ADD_TO_OFFSET, props.height);
+      await delayFor(delay);
+      props.dispatch({ type: CONVERSATION_REDUCER_ACTIONS.CONTINUE_ROUTE });
+    };
+
     const showTyping = async (delay?: number) => {
       await delayFor(10);
       ListOffsetEmitter.emit(LIST_EMITTER_EVENTS.ADD_TO_OFFSET, 45);
@@ -65,7 +65,14 @@ export const TypingContainer: FC<
     if (props.contentDelay && props.resolved) {
       showTyping(props.typingDelay);
     }
-  }, [containerOpacity, opacity, props.typingDelay, props.resolved]);
+  }, [
+    containerOpacity,
+    opacity,
+    props.typingDelay,
+    props.resolved,
+    props.contentDelay,
+    props,
+  ]);
 
   return (
     <Animated.View
@@ -74,9 +81,11 @@ export const TypingContainer: FC<
         containerOpacityAnimation,
       ]}
     >
-      <Animated.View style={[styles.waiting, waitingOpacity]}>
-        <WaitingBubble {...props} />
-      </Animated.View>
+      {opacity.value !== 0 && (
+        <Animated.View style={[styles.waiting, waitingOpacity]}>
+          <WaitingBubble {...props} />
+        </Animated.View>
+      )}
       <Animated.View style={[styles.main, textOpacity]}>
         {props.children}
       </Animated.View>

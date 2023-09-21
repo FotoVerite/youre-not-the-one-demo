@@ -5,6 +5,7 @@ import { createReadLabel } from "./SkFunctions/createReadLabel";
 import {
   DigestedConversationListItem,
   DigestedConversationType,
+  isDigestedBubble,
   isDigestedLabel,
 } from "./types";
 import { MESSAGE_CONTENT } from "../../contentWithMetaTypes";
@@ -33,23 +34,42 @@ export const lastRouteTime = (
   return seenRoutes[0] ? seenRoutes[0].createdAt.toISOString() : undefined;
 };
 
+type FilterType = {
+  type: MESSAGE_CONTENT;
+  index: number;
+};
+const filterByType = (
+  exchanges: DigestedConversationListItem[],
+  type: MESSAGE_CONTENT
+): FilterType | undefined => {
+  return exchanges
+    .map((item, index) => {
+      return {
+        type: item.type,
+        index,
+      };
+    })
+    .filter((item) => item.type === type)
+    .slice(-1)[0];
+};
+
 export const appendReadLabel = (
   exchanges: DigestedConversationListItem[],
   width: number,
   readTime?: string
 ) => {
+  const hasSentMessage =
+    exchanges.filter(
+      (e) => isDigestedBubble(e) && e.name === MESSAGE_CONTACT_NAME.SELF
+    ).length > 0;
+  if (!hasSentMessage) {
+    return exchanges;
+  }
   const previousRead =
-    exchanges
-      .map((item, index) => {
-        return {
-          type: item.type,
-          index,
-        };
-      })
-      .filter((item) => item.type === MESSAGE_CONTENT.READ_LABEL)
-      .slice(-1)[0]?.index || -1;
+    filterByType(exchanges, MESSAGE_CONTENT.READ_LABEL)?.index || -1;
 
   exchanges = markPreviousReadForRemoval(previousRead, exchanges);
+
   const spliceIndex =
     exchanges
       .map((item, index) => {
@@ -66,6 +86,7 @@ export const appendReadLabel = (
     width,
     exchanges[spliceIndex - 1].offset
   );
+
   exchanges.splice(spliceIndex, 0, readLabel);
   return exchanges.map((item, index) => {
     if (index <= spliceIndex) {

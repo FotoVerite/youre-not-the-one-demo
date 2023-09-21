@@ -1,4 +1,5 @@
 import { produce } from "immer";
+import { LOG, LOG_COLORS } from "src/utility/logger";
 
 import {
   NOTIFICATIONS_REDUCER_ACTIONS,
@@ -9,11 +10,12 @@ import {
 const notificationReducer = produce(
   (
     draft: NotificationType[],
-    action: NotificationsReducerActionsType,
+    action: NotificationsReducerActionsType
   ): NotificationType[] => {
     switch (action.type) {
       case NOTIFICATIONS_REDUCER_ACTIONS.ADD: {
         // Needs Ternary since active is a simple boolean
+        LOG(LOG_COLORS.FgMagenta, "NOTIFICATION SENT", action.payload.title);
         const active =
           action.payload.active != null ? action.payload.active : true;
         const notification: NotificationType = {
@@ -45,7 +47,7 @@ const notificationReducer = produce(
       default:
         return draft;
     }
-  },
+  }
 );
 
 export default notificationReducer;

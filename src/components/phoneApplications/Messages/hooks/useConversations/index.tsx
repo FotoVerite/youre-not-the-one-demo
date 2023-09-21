@@ -10,14 +10,16 @@ import {
   ConversationRecords,
 } from "./types";
 import { greg } from "../../assets/messages/greg";
+import { leo } from "../../assets/messages/leo";
 import { spam1 } from "../../assets/messages/spam1";
+import { zara } from "../../assets/messages/zara";
 import { MESSAGE_CONTACT_NAME } from "../../constants";
 import {
   findAvailableRoutes,
   messageAppConditionsMet,
 } from "../routes/available";
 
-const _conversations: ConversationFileType[] = [spam1, greg];
+const _conversations: ConversationFileType[] = [spam1, greg, leo, zara];
 
 const viewableConversationsFilter =
   (events: AppEventsType) => (conversation: ConversationFileType) =>
@@ -27,7 +29,7 @@ const viewableConversationsFilter =
 
 const conversationHasExchange = (
   conversation: ConversationFileType,
-  events: AppEventsType,
+  events: AppEventsType
 ) =>
   conversation.exchanges.length > 0 ||
   Object.keys(events.Messages[conversation.name].routes).length > 0;
@@ -47,7 +49,7 @@ export const sortConversations =
 
 const convertFromConversationFromFileToListType = (
   conversation: ConversationFileType,
-  events: AppEventsType,
+  events: AppEventsType
 ): ConversationListType => {
   const {
     blockable,
@@ -63,7 +65,7 @@ const convertFromConversationFromFileToListType = (
     findAvailableRoutes(props.name, routes || [], events).length > 0;
   const { time, content } = determineLoglineAndTimeOfLastMessage(
     conversation,
-    events,
+    events
   );
 
   return {
@@ -80,7 +82,7 @@ export const useConversations = (override?: ConversationFileType[]) => {
   const eventsContext = useAppEventsContext();
   const events = eventsContext.state;
   const [conversations, setConversations] = useState(
-    override || _conversations,
+    override || _conversations
   );
   const viewableConversations = useMemo(() => {
     return produce(conversations, (draft) => {
@@ -99,7 +101,7 @@ export const useConversations = (override?: ConversationFileType[]) => {
     return Object.entries(events.Messages)
       .filter((contact) => contact[1].blocked)
       .map((contact) => contact[0] as MESSAGE_CONTACT_NAME);
-  }, [conversations, events]);
+  }, [events]);
 
   useEffect(() => {
     if (determinedBlockedConversations.length > 0) {
@@ -107,15 +109,15 @@ export const useConversations = (override?: ConversationFileType[]) => {
         produce(conversations, (draft) => {
           determinedBlockedConversations.forEach((name) => {
             const index = draft.findIndex(
-              (_conversation) => _conversation.name === name,
+              (_conversation) => _conversation.name === name
             );
             draft[index].blocked = true;
           });
           return draft;
-        }),
+        })
       );
     }
-  }, [determinedBlockedConversations]);
+  }, [conversations, determinedBlockedConversations]);
 
   const conversationsRecords: ConversationRecords = useMemo(() => {
     return viewableConversations.reduce((result, conversation) => {
@@ -123,5 +125,9 @@ export const useConversations = (override?: ConversationFileType[]) => {
     }, {} as ConversationRecords);
   }, [viewableConversations]);
 
-  return [displayedConversations, conversationsRecords] as const;
+  return [
+    viewableConversations,
+    displayedConversations,
+    conversationsRecords,
+  ] as const;
 };

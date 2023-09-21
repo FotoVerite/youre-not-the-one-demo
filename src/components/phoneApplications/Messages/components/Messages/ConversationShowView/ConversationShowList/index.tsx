@@ -6,12 +6,14 @@ import { ListRenderItem, StyleSheet, View } from "react-native";
 import Animated, {
   useAnimatedRef,
   useScrollViewOffset,
+  useSharedValue,
 } from "react-native-reanimated";
 import { theme } from "src/theme";
 
 import ListItem from "./ListItem";
 import { ConversationShowListItem } from "./ListItem/types";
 import ListOffsetEmitter, { LIST_EMITTER_EVENTS } from "./emitters";
+import Footer from "./Footer";
 
 function ListHeader() {
   return <View style={{ height: 50 }} />;
@@ -26,7 +28,7 @@ const renderItem: ListRenderItem<ConversationShowListItem> = ({ item }) => (
 
 const getItemLayout = (
   data: ArrayLike<ConversationShowListItem> | null | undefined,
-  index: number,
+  index: number
 ) => ({
   length: data ? data[index].height + data[index].paddingBottom : 0,
   offset: data ? data[index].offset : 0,
@@ -52,6 +54,18 @@ const ConversationList: FC<{
     });
   }, [exchanges, dispatch, scrollHandler, scrollRef]);
 
+  const footerHeight = useSharedValue(0);
+
+  const memoizedFooter = useMemo(() => {
+    return (
+      <Footer
+        blockable={false}
+        dispatch={dispatch}
+        footerHeight={footerHeight}
+      />
+    );
+  }, [dispatch]);
+
   useEffect(() => {
     ListOffsetEmitter.on(LIST_EMITTER_EVENTS.ADD_TO_OFFSET, (amount) => {
       scrollRef?.current.scrollToOffset({
@@ -62,7 +76,7 @@ const ConversationList: FC<{
     return () => {
       ListOffsetEmitter.off(LIST_EMITTER_EVENTS.ADD_TO_OFFSET, () => {});
     };
-  }, [ListOffsetEmitter, scrollRef]);
+  }, [scrollHandler, scrollRef]);
 
   return (
     <Animated.FlatList
@@ -70,7 +84,7 @@ const ConversationList: FC<{
       style={styles.list}
       data={data}
       ListHeaderComponent={ListHeader}
-      ListFooterComponent={ListFooter}
+      ListFooterComponent={memoizedFooter}
       renderItem={renderItem}
       scrollEventThrottle={16}
       keyExtractor={keyExtractor}

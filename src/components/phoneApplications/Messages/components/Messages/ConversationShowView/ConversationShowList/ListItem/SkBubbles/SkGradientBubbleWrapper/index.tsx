@@ -38,7 +38,6 @@ export const SkGradientBubbleWrapper: FC<
     addressee,
     isLastInExchange ? 0 : 1
   );
-
   useEffect(() => {
     setAsResolved(true);
   }, [setAsResolved]);

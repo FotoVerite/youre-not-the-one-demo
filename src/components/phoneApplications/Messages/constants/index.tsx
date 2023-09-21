@@ -1,6 +1,7 @@
 import { ImageSourcePropType } from "react-native";
 
 import defaultAvatar from "../assets/avatars/unknown.jpeg";
+import zaraAvatar from "../assets/avatars/Zara.jpg";
 
 type InfoType = {
   avatar: ImageSourcePropType;
@@ -30,7 +31,7 @@ export enum MESSAGE_CONTACT_NAME {
   STEVE_LITT = "Steve-0",
   TEST = "Test",
   TEST2 = "Test2",
-  ZOLA = "Maybe: Zara",
+  ZARA = "Maybe: Zara",
   DEFAULT = "Default",
   SEAMLESS = "30368",
   SPAM1 = "1-222-666-1337",
@@ -55,10 +56,10 @@ export const MESSAGE_CONTACT_INFO: {
 
   "Fuck Face": { avatar: defaultAvatar, colors: ["#48ee4e", "#363243"] },
   //   "Grace Russo": { avatar: graceAvatar, colors: ["#EE6548", "#363243"] },
-  //   [MESSAGE_CONTACT_NAME.LEO]: {
-  //     avatar: defaultAvatar,
-  //     colors: ["#f5d742", "#363243"],
-  //   },
+  [MESSAGE_CONTACT_NAME.LEO]: {
+    avatar: defaultAvatar,
+    colors: ["#f5d742", "#363243"],
+  },
   //   [MESSAGE_CONTACT_NAME.LENNY]: {
   //     avatar: defaultAvatar,
   //     colors: ["#6b6b6d", "#363243"],
@@ -82,10 +83,10 @@ export const MESSAGE_CONTACT_INFO: {
   //   "Steve-0": { avatar: steveLitt, colors: ["#FF002D", "#C3596B"] },
   //   Test: { avatar: defaultAvatar, colors: ["#FF002D", "#C3596B"] },
   //   Test2: { avatar: defaultAvatar, colors: ["#FF002D", "#C3596B"] },
-  //   [MESSAGE_CONTACT_NAME.ZOLA]: {
-  //     avatar: zaraAvatar,
-  //     colors: ["#b46be4", "#363243"],
-  //   },
+  [MESSAGE_CONTACT_NAME.ZARA]: {
+    avatar: zaraAvatar,
+    colors: ["#b46be4", "#363243"],
+  },
   //   30368: { avatar: defaultAvatar, colors: ["#6b6b6d", "#363243"] },
   //   Default: { avatar: defaultAvatar, colors: ["#6b6b6d", "#363243"] },
 };

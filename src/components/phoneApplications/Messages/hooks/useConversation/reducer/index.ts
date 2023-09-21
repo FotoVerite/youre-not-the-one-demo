@@ -268,14 +268,6 @@ const _skipRoute = (
   return draft;
 };
 
-const removePreviousTail = (draftMessage: DigestedConversationListItem) => {
-  if (draftMessage.type === MESSAGE_CONTENT.TIME) {
-    return;
-  }
-  if (draftMessage.name !== MESSAGE_CONTACT_NAME.SELF) {
-  }
-};
-
 const addConversation = (conversation: DigestedConversationType) => {
   conversation.exchanges.forEach((message) => {
     message.typingDelay = undefined;

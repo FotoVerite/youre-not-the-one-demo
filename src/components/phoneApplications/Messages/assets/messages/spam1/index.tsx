@@ -15,7 +15,7 @@ export const spam1: ConversationFileType = {
   name: NAME,
   tags: [NAME],
   // conditions: {
-  //   [CONTACT_NAMES.ZOLA]: {
+  //   [MESSAGE_CONTACT_NAME.ZARA]: {
   //     routes: {
   //       [ZARA_ROUTE_IDS.YOUR_NEW_VIDEO]: {},
   //     },
@@ -25,14 +25,14 @@ export const spam1: ConversationFileType = {
   //   {
   //     type: EFFECT_TYPE.LOGLINE_REPLACEMENT,
   //     conditions: {
-  //       [CONTACT_NAMES.MICHAEL]: { views: { gt: 1 } },
-  //       [CONTACT_NAMES.ZOLA]: { views: { gt: 8 } },
+  //       [MESSAGE_CONTACT_NAME.MICHAEL]: { views: { gt: 1 } },
+  //       [MESSAGE_CONTACT_NAME.ZARA]: { views: { gt: 8 } },
   //     },
   //     data: <Jumbled message="You'll never be good enough" />,
   //   },
   //   {
   //     type: EFFECT_TYPE.LOGLINE_REPLACEMENT,
-  //     conditions: { [CONTACT_NAMES.MICHAEL]: { views: { gt: 1 } } },
+  //     conditions: { [MESSAGE_CONTACT_NAME.MICHAEL]: { views: { gt: 1 } } },
   //     data: <P>You're not the one</P>,
   //   },
   // ],

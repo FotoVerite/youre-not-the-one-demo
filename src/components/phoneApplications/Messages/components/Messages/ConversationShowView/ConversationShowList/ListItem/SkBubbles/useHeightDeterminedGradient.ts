@@ -9,13 +9,13 @@ export const useHeightDeterminedGradient = (
   colors: string[],
   offset: number,
   darker: boolean,
-  scrollHandler: SharedValue<number>,
+  scrollHandler: SharedValue<number>
 ) => {
   const COLOR_CHANGE_HEIGHT = useWindowDimensions().height / 2;
   const currentlyFromTop = useDerivedValue(() => {
     return Math.max(
       0,
-      Math.min(offset - scrollHandler.value, COLOR_CHANGE_HEIGHT),
+      Math.min(offset - scrollHandler.value, COLOR_CHANGE_HEIGHT)
     );
   }, [scrollHandler]);
 
@@ -26,13 +26,13 @@ export const useHeightDeterminedGradient = (
     const color1 = interpolateColor(
       currentlyFromTop.value,
       [0, COLOR_CHANGE_HEIGHT],
-      [colors[0], darkenedColor1],
+      [colors[0], darkenedColor1]
     );
 
     const color2 = interpolateColor(
       currentlyFromTop.value,
       [0, COLOR_CHANGE_HEIGHT],
-      [colors[1], darkenedColor2],
+      [colors[1], darkenedColor2]
     );
     return [color1, color2];
   }, [currentlyFromTop.value]);

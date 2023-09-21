@@ -1,18 +1,25 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import ConversationIndexView from "./ConversationIndexView";
 import ConversationShowView from "./ConversationShowView";
+import MediaContextProvider from "../../context/Media";
 import ConversationEmitter, {
   CONVERSATION_EMITTER_EVENTS,
 } from "../../emitters";
 import { useConversations } from "../../hooks/useConversations";
 import { ConversationType } from "../../hooks/useConversations/types";
-import MediaContextProvider from "../../context/Media";
+import { useConversationNotifier } from "../../hooks/useConversationNotifier";
 
 const Messages: FC = () => {
-  const [viewable, available] = useConversations();
+  const [viewable, displayed, available] = useConversations();
   const [conversation, setConversation] = useState<ConversationType>();
+
+  const activeConversations = useMemo(
+    () => (conversation?.name ? [conversation.name] : []),
+    [conversation]
+  );
+  useConversationNotifier(viewable, activeConversations);
 
   useEffect(() => {
     ConversationEmitter.on(
@@ -45,7 +52,7 @@ const Messages: FC = () => {
 
   return (
     <View style={[styles.layout]}>
-      <ConversationIndexView viewable={viewable} />
+      <ConversationIndexView viewable={displayed} />
       <MediaContextProvider>
         <ConversationShowView conversation={conversation} />
       </MediaContextProvider>

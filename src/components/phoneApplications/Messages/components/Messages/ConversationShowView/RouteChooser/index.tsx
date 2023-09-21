@@ -49,6 +49,7 @@ const RootChooser: FC<
   const callback = useCallback(() => {
     if (nextMessageInQueue) {
       dispatch({ type: CONVERSATION_REDUCER_ACTIONS.CONTINUE_ROUTE });
+      return;
     }
     if (availableRoute) {
       const { options } = availableRoute;
@@ -65,7 +66,7 @@ const RootChooser: FC<
       }
     }
     return () => {};
-  }, [nextMessageInQueue, availableRoute, chosenOption]);
+  }, [nextMessageInQueue, availableRoute, dispatch, chosenOption]);
 
   const Options = useMemo(() => {
     if (availableRoute) {

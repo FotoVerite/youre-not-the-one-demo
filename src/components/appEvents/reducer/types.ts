@@ -1,6 +1,10 @@
+import {
+  NotificationDataType,
+  NotificationType,
+} from "@Components/notifications/reducer/types";
 import { PHONE_APPLICATION_NAMES } from "src/constants/phoneApplicationNames";
 
-type CONTACT_NAMES = string;
+type MESSAGE_CONTACT_NAME = string;
 
 //-----MESSAGES-----//
 
@@ -31,28 +35,30 @@ export type MessageAppEventsType = {
 };
 
 export type MessageAppEventsContainerType = {
-  [key in CONTACT_NAMES]: MessageAppEventsType;
+  [key in MESSAGE_CONTACT_NAME]: MessageAppEventsType;
 };
 
 export type AppEventsType = {
   [PHONE_APPLICATION_NAMES.MESSAGES]: MessageAppEventsContainerType;
+  ["NOTIFICATIONS"]: NotificationDataType[];
 };
 
 export type AddMessageAppConversationSeenEventAction = {
   type: APP_EVENTS_ACTIONS.MESSAGE_APP_CONVERSATION_SEEN;
-  payload: { name: CONTACT_NAMES };
+  payload: { name: MESSAGE_CONTACT_NAME };
 };
 export type BlockMessageAppConversationEventAction = {
   type: APP_EVENTS_ACTIONS.MESSAGE_APP_BLOCK_CONVERSATION;
-  payload: { name: CONTACT_NAMES };
+  payload: { name: MESSAGE_CONTACT_NAME };
 };
 
 export type EventPropsPayloadType = {
-  name: CONTACT_NAMES;
+  name: MESSAGE_CONTACT_NAME;
   routeId: number;
   chosen?: string;
   finished?: boolean;
   atIndex?: number;
+  notification?: NotificationDataType;
 };
 
 export type CreateMessageAppRouteEventAction = {

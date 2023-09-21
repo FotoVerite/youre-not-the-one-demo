@@ -15,6 +15,7 @@ import {
   ConversationExchangeType,
   ExchangeBlockType,
 } from "../../useConversations/types";
+import constructWithOptions from "styled-components/dist/constructors/constructWithOptions";
 
 export const appendSeenRoutes = (
   digested: DigestedConversationType,
@@ -79,7 +80,9 @@ export const convertFromPayloadsToSkItems = (
   );
   return payloads.reduce(
     (ret, payload) => {
-      ret.push(createSkBubbleFromPayload(configuration, payload));
+      const item = createSkBubbleFromPayload(configuration, payload);
+      configuration.offset += item.height + item.paddingBottom;
+      ret.push(item);
       return ret;
     },
     [skTime] as DigestedConversationListItem[]

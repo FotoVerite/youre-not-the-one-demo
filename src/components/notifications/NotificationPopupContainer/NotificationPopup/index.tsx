@@ -46,21 +46,21 @@ const NotificationPopup: FC<PropType> = ({
   const opacity = useSharedValue(1);
   const height = useRef<number>(0);
 
-  const dispatchDeactivation = () => {
+  const dispatchDeactivation = useCallback(() => {
     dispatch({
       type: NOTIFICATIONS_REDUCER_ACTIONS.UPDATE,
       payload: { active: false, index },
     });
-  };
+  }, [dispatch, index]);
 
   const fadeOut = useCallback(() => {
     "worklet";
     opacity.value = withTiming(0, { duration: 500 }, (finished) => {
       if (finished) {
-        runOnJS(dispatchDeactivation);
+        runOnJS(dispatchDeactivation)();
       }
     });
-  }, [opacity]);
+  }, [dispatchDeactivation, opacity]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -68,7 +68,7 @@ const NotificationPopup: FC<PropType> = ({
     }, 5000);
     translateY.value = withTiming(1, { duration: 1000 });
     return () => clearTimeout(timer);
-  }, [opacity]);
+  }, [fadeOut, opacity, translateY]);
 
   const animatedContainerStyle = useAnimatedStyle(() => {
     return {
@@ -78,7 +78,7 @@ const NotificationPopup: FC<PropType> = ({
           translateY: interpolate(
             translateY.value,
             [0, 1],
-            [-500, 500 + height.current],
+            [-500, 500 + height.current]
           ),
         },
       ],
