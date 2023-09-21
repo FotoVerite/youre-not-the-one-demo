@@ -64,7 +64,7 @@ const ConversationList: FC<{
         footerHeight={footerHeight}
       />
     );
-  }, [dispatch]);
+  }, [dispatch, footerHeight]);
 
   useEffect(() => {
     ListOffsetEmitter.on(LIST_EMITTER_EVENTS.ADD_TO_OFFSET, (amount) => {
@@ -75,6 +75,17 @@ const ConversationList: FC<{
     });
     return () => {
       ListOffsetEmitter.off(LIST_EMITTER_EVENTS.ADD_TO_OFFSET, () => {});
+    };
+  }, [scrollHandler, scrollRef]);
+
+  useEffect(() => {
+    ListOffsetEmitter.on(LIST_EMITTER_EVENTS.END, (amount) => {
+      scrollRef?.current.scrollToEnd({
+        animated: true,
+      });
+    });
+    return () => {
+      ListOffsetEmitter.off(LIST_EMITTER_EVENTS.END, () => {});
     };
   }, [scrollHandler, scrollRef]);
 

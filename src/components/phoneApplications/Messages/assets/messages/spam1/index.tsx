@@ -68,5 +68,5 @@ export const spam1: ConversationFileType = {
       ],
     },
   ],
-  routes: [spam1_exchange_one, spam1_exchange_two],
+  routes: [spam1_exchange_one],
 };

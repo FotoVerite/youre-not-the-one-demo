@@ -14,7 +14,7 @@ import { MESSAGE_CONTACT_NAME } from "../../constants";
 const contactHasBeenViewedCheck = (
   name: MESSAGE_CONTACT_NAME,
   messageEvents: MessageAppEventsContainerType,
-  conditions: RouteConditionsType,
+  conditions: RouteConditionsType
 ) => {
   const viewCondition = conditions[name]?.views;
   if (viewCondition == null) {
@@ -39,7 +39,7 @@ const contactHasBeenViewedCheck = (
 
 const routeChosenSelected = (
   chosen?: string[],
-  viewed?: MessageRouteEventDataType,
+  viewed?: MessageRouteEventDataType
 ) => {
   if (!viewed || !viewed.chosen) {
     return false;
@@ -53,7 +53,7 @@ const routeChosenSelected = (
 
 const routeNotChosenSelected = (
   not_chosen?: string[],
-  viewed?: MessageRouteEventDataType,
+  viewed?: MessageRouteEventDataType
 ) => {
   if (!viewed || !viewed.chosen) {
     return false;
@@ -67,7 +67,7 @@ const routeNotChosenSelected = (
 
 const routeFinished = (
   finished?: boolean,
-  viewed?: MessageRouteEventDataType,
+  viewed?: MessageRouteEventDataType
 ) => {
   if (!viewed) {
     return false;
@@ -82,7 +82,7 @@ const routeFinished = (
 const routeHasBeenBlockedCheck = (
   name: MESSAGE_CONTACT_NAME,
   messageEvents: MessageAppEventsContainerType,
-  conditions: RouteConditionsType,
+  conditions: RouteConditionsType
 ) => {
   const blockCondition = conditions[name]?.blocked;
   if (!blockCondition) {
@@ -95,7 +95,7 @@ const routeHasBeenBlockedCheck = (
 const routeHasBeenChosenCheck = (
   name: MESSAGE_CONTACT_NAME,
   messageEvents: MessageAppEventsContainerType,
-  conditions: RouteConditionsType,
+  conditions: RouteConditionsType
 ) => {
   const routeConditions = conditions[name]?.routes || {};
   const routeConditionsKeys = Object.keys(routeConditions);
@@ -117,7 +117,7 @@ const routeHasBeenChosenCheck = (
 
 export const messageAppConditionsMet = (
   state: MessageAppEventsContainerType,
-  conditions?: RouteConditionsType,
+  conditions?: RouteConditionsType
 ) => {
   let ret = true;
   if (conditions == null) {
@@ -142,7 +142,7 @@ export const findAvailableRoutes = <
 >(
   name: MESSAGE_CONTACT_NAME,
   routes: AvailableRouteType[],
-  state: AppEventsType,
+  state: AppEventsType
 ) => {
   if (routes == null || routes.length === 0) {
     return [] as AvailableRouteType[];
@@ -150,8 +150,9 @@ export const findAvailableRoutes = <
     return routes.filter((route) => {
       // Convert number to string due to objects keys needing to be strings
       const finishedRoutes = Object.keys(
-        state.Messages[name]?.routes || {},
+        state.Messages[name]?.routes || {}
       ).filter((key) => state.Messages[name].routes[key].finished);
+
       return (
         !finishedRoutes.includes(route.id.toString()) &&
         (route.conditions == null ||

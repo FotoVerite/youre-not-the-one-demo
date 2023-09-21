@@ -10,7 +10,7 @@ const HEIGHT = 30;
 export const createReadLabel = (
   time: string,
   width: number,
-  offset: number,
+  offset: number
 ): DigestedConversationReadLabelType => {
   const listItem = {
     ID: Crypto.randomUUID(),

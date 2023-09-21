@@ -1,8 +1,11 @@
 import { CONVERSATION_REDUCER_ACTIONS } from "@Components/phoneApplications/Messages/hooks/useConversation/reducer/type";
+import { duration } from "moment";
 import { FC, PropsWithChildren, useEffect } from "react";
 import Animated, {
+  runOnJS,
   useAnimatedStyle,
   useSharedValue,
+  withDelay,
   withTiming,
 } from "react-native-reanimated";
 import { delayFor } from "src/utility/async";
@@ -18,19 +21,23 @@ const SentMessageContainer: FC<
     return { opacity: opacity.value };
   });
 
-  const continueRoute = async (delay: number) => {
-    await delayFor(10);
-    ListOffsetEmitter.emit(LIST_EMITTER_EVENTS.ADD_TO_OFFSET, height + 30);
-    await delayFor(delay);
-    dispatch({ type: CONVERSATION_REDUCER_ACTIONS.CONTINUE_ROUTE });
-  };
-
   useEffect(() => {
+    const continueRoute = async (delay: number) => {
+      await delayFor(10);
+      ListOffsetEmitter.emit(LIST_EMITTER_EVENTS.ADD_TO_OFFSET, height + 30);
+      await delayFor(delay);
+      dispatch({ type: CONVERSATION_REDUCER_ACTIONS.CONTINUE_ROUTE });
+    };
+
     if (contentDelay && resolved) {
-      opacity.value = withTiming(1);
-      continueRoute(contentDelay + 250);
+      opacity.value = withDelay(
+        250,
+        withTiming(1, { duration: 250 }, (finished) => {
+          runOnJS(continueRoute)(contentDelay);
+        })
+      );
     }
-  }, [contentDelay, resolved]);
+  }, [contentDelay, dispatch, height, opacity, resolved]);
 
   return (
     <Animated.View style={[fadeInAnimation, { height }]}>

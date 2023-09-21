@@ -80,6 +80,7 @@ const refreshAvailableRoute = (
     draft.routes || [],
     events
   ).shift();
+
   if (route && route.id !== draft.availableRoute?.id) {
     draft.availableRoute = route;
   }
@@ -101,8 +102,14 @@ const startRoute = (
   if (nextMessageContent == null) {
     return draft;
   }
-  const offset = getListHeight(draft.exchanges);
+  // Reset
+  draft.exchanges.forEach((e) => {
+    e.contentDelay = undefined;
+    e.typingDelay = undefined;
+  });
+  let offset = getListHeight(draft.exchanges);
   addNewTimeBlockToExchanges(config, draft, offset);
+  offset += 30;
   const message = createSkBubbleFromPayload(
     { ...config, ...{ group: draft.group || false, offset } },
     nextMessageContent
@@ -293,7 +300,7 @@ const updateMessage = (
       ...props,
     } as DigestedConversationListItem;
   }
-  draft.exchanges = appendReadLabel(draft.exchanges, config.width);
+  //draft.exchanges = appendReadLabel(draft.exchanges, config.width);
   return draft;
 };
 

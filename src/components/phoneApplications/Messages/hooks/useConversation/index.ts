@@ -68,13 +68,11 @@ export const useConversation = (
   }, [state?.eventAction, eventsDispatch]);
 
   useEffect(() => {
-    if (state) {
-      dispatch({
-        type: CONVERSATION_REDUCER_ACTIONS.REFRESH_AVAILABLE_ROUTE,
-        payload: events,
-      });
-    }
-  }, [events, state]);
+    dispatch({
+      type: CONVERSATION_REDUCER_ACTIONS.REFRESH_AVAILABLE_ROUTE,
+      payload: events,
+    });
+  }, [events]);
 
   useEffect(() => {
     if (!state && cleanupAction.current) {

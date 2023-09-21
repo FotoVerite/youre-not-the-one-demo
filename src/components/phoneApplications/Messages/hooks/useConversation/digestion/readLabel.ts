@@ -81,10 +81,11 @@ export const appendReadLabel = (
       .filter((item) => item.name === MESSAGE_CONTACT_NAME.SELF)
       .slice(-1)[0].index + 1;
 
+  const lastExchange = exchanges[spliceIndex - 1];
   const readLabel = createReadLabel(
     readTime ? readTime : new Date().toISOString(),
     width,
-    exchanges[spliceIndex - 1].offset
+    lastExchange.offset + lastExchange.height + lastExchange.paddingBottom
   );
 
   exchanges.splice(spliceIndex, 0, readLabel);
@@ -92,7 +93,7 @@ export const appendReadLabel = (
     if (index <= spliceIndex) {
       return item;
     } else {
-      item.offset += readLabel.offset;
+      item.offset += readLabel.height;
       return item;
     }
   });
@@ -108,10 +109,10 @@ const markPreviousReadForRemoval = (
   const decrement = exchanges[previousIndex].height;
   exchanges[previousIndex].height = 0;
   return exchanges.map((item, index) => {
-    if (index <= previousIndex) {
+    if (index < previousIndex) {
       return item;
     } else {
-      item.offset += decrement;
+      item.offset -= decrement;
       return item;
     }
   });
