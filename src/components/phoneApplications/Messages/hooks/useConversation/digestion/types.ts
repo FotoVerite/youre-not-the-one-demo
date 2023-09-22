@@ -167,12 +167,16 @@ export type DigestedConversationType = Omit<
   cleanupAction?: AppEventsReducerActionsType;
   eventAction?: AppEventsReducerActionsType;
   nextMessageInQueue?: MessageContentType;
+  previousExchangeProps?: Omit<DigestedBubbleProps, "ID"> & { ID: string };
   exchanges: DigestedConversationListItem[];
   routeAtIndex?: number;
 };
-
 export type DigestedMessageProps = {
   [index in keyof DigestedConversationListItem]?: DigestedConversationListItem[index];
+};
+
+export type DigestedBubbleProps = {
+  [index in keyof BubbleItemType]?: BubbleItemType[index];
 };
 
 export const isDigestedBubble = (

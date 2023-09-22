@@ -21,7 +21,6 @@ import {
   DigestedConversationListItem,
   BaseConfigType,
   DigestedMessageProps,
-  isDigestedBubble,
 } from "../digestion/types";
 import { getListHeight } from "../digestion/utility";
 
@@ -119,6 +118,12 @@ const startRoute = (
   if (message.name === MESSAGE_CONTACT_NAME.SELF) {
     draft.exchanges = appendReadLabel(draft.exchanges, config.width);
   }
+  draft.previousExchangeProps = {
+    contentDelay: undefined,
+    typingDelay: undefined,
+    ID: message.ID,
+    isLastInExchange: message.isLastInExchange,
+  };
   draft.activePath = pendingMessages;
   draft.chosenRoute = payload.chosenOption;
   draft.routeAtIndex = 1;
@@ -185,18 +190,26 @@ const continueRoute = (
       { ...config, ...{ group: draft.group || false, offset } },
       nextMessage
     );
+    const previous = draft.previousExchangeProps;
+
+    if (previous) {
+      const index = draft.exchanges.findIndex((e) => e.ID === previous.ID);
+      draft.exchanges[index] = {
+        ...draft.exchanges[index],
+        ...previous,
+      } as DigestedConversationListItem;
+    }
+    draft.previousExchangeProps = {
+      contentDelay: undefined,
+      typingDelay: undefined,
+      ID: message.ID,
+      isLastInExchange: message.isLastInExchange,
+    };
     message.contentDelay = message.contentDelay || 400;
     message.isLastInExchange = true;
-    const previousMessage = draft.exchanges.slice(-1)[0];
-    previousMessage.contentDelay = undefined;
-    previousMessage.typingDelay = undefined;
-    if (
-      isDigestedBubble(previousMessage) &&
-      previousMessage.name === message.name
-    ) {
-      previousMessage.isLastInExchange = false;
-    }
+
     draft.exchanges.push(message);
+
     if (
       message.name === MESSAGE_CONTACT_NAME.SELF &&
       message.type !== MESSAGE_CONTENT.SNAPSHOT

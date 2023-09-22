@@ -2,6 +2,11 @@ import React, { FC } from "react";
 import { TouchableWithoutFeedback, View, Text, StyleSheet } from "react-native";
 import { theme } from "src/theme";
 import { Row } from "src/utility/layout";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import ConversationEmitter, {
+  CONVERSATION_EMITTER_EVENTS,
+} from "@Components/phoneApplications/Messages/emitters";
+import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
 
 const Header: FC = () => {
   return (
@@ -21,11 +26,19 @@ const Header: FC = () => {
       </TouchableWithoutFeedback>
       <Text style={styles.header}>Messages</Text>
       <View style={[styles.spacer]}>
-        <TouchableWithoutFeedback style={{}} onPress={() => {}}>
+        <TouchableWithoutFeedback
+          style={{}}
+          onPress={() => {
+            ConversationEmitter.emit(CONVERSATION_EMITTER_EVENTS.SHOW, {
+              name: MESSAGE_CONTACT_NAME.SPAM1,
+              type: "new",
+            });
+          }}
+        >
           <View style={styles.spacer}>
-            {/* <Row style={styles.plusIcon}>
-              <Icon name="add-circle-outline" color={'black'} size={20} />
-            </Row> */}
+            <Row style={styles.plusIcon}>
+              <FontAwesome name="plus-circle" color="black" size={20} />
+            </Row>
           </View>
         </TouchableWithoutFeedback>
       </View>

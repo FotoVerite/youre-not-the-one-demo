@@ -1,4 +1,3 @@
-import { duration } from "moment";
 import React, { FC, useEffect, useRef } from "react";
 import { StyleSheet, Text } from "react-native";
 import Animated, {

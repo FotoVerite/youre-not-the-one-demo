@@ -12,13 +12,15 @@ const SlideInTransitionContainer: FC<
   {
     toObserve?: any;
     slideInfFrom?: "left" | "bottom";
+    gutter?: number;
     viewOverrides?: ViewStyle;
   } & PropsWithChildren
-> = ({ toObserve, children, slideInfFrom, viewOverrides }) => {
+> = ({ toObserve, children, gutter, slideInfFrom, viewOverrides }) => {
   const slideIn = useAnimatedObserver(toObserve);
   const { width, height } = useInsetDimensions();
   const { width: windowWith, height: windowHeight } = useWindowDimensions();
   const fromLeft = !slideInfFrom || slideInfFrom === "left";
+  const gutterAmount = gutter || 0;
 
   const storedChildren = useRef(children);
 
@@ -26,7 +28,7 @@ const SlideInTransitionContainer: FC<
     const translate = interpolate(
       slideIn.value,
       [0, 1],
-      [fromLeft ? windowWith : windowHeight, 0]
+      [fromLeft ? windowWith - gutterAmount : windowHeight - gutterAmount, 0]
     );
     if (fromLeft) {
       return { transform: [{ translateX: translate }] };

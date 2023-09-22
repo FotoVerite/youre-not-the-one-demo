@@ -11,9 +11,9 @@ import { useInsetDimensions } from "src/utility/useInsetDimensions";
 import MessageTextInput from "./MessageTextInput";
 import OptionList from "./OptionList";
 import Option from "./OptionList/Option";
-import ListOffsetEmitter, {
-  LIST_EMITTER_EVENTS,
-} from "../ConversationShowList/emitters";
+import ConversationEmitter, {
+  CONVERSATION_EMITTER_EVENTS,
+} from "@Components/phoneApplications/Messages/emitters";
 
 const RootChooser: FC<
   {
@@ -84,6 +84,17 @@ const RootChooser: FC<
     }
   }, [availableRoute]);
 
+  useEffect(() => {
+    ConversationEmitter.on(
+      CONVERSATION_EMITTER_EVENTS.RESET,
+      ({ name, type }) => {
+        openOptionList(false);
+      }
+    );
+    return () => {
+      ConversationEmitter.off(CONVERSATION_EMITTER_EVENTS.RESET, () => {});
+    };
+  }, []);
   return (
     <Animated.View style={[{ width }, styles.container]}>
       {Platform.OS === "ios" && <BlurView style={styles.blur} intensity={5} />}
