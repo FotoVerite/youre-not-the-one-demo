@@ -71,6 +71,7 @@ export const useConversationNotifier = (
         payload: {
           name,
           routeId: route.id,
+          finished: true,
           notification: {
             title: `Message from ${name}`,
             content: message,

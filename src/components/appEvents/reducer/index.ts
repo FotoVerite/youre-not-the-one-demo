@@ -46,7 +46,7 @@ const CreateRouteEvent = (
   draft: AppEventsType,
   payload: EventPropsPayloadType
 ) => {
-  const { routeId, name, ...props } = payload;
+  const { routeId, name, notification, ...props } = payload;
   const routeInfo = draft.Messages[name].routes;
   const position = Object.keys(routeInfo).length + 1;
   const stringRouteID = routeId.toString();
@@ -58,8 +58,8 @@ const CreateRouteEvent = (
   };
 
   LOG(LOG_COLORS.FgGreen, "MESSAGE_APP_ROUTE_CREATE", stringRouteID, props);
-  if (payload.notification) {
-    draft.NOTIFICATIONS.push(payload.notification);
+  if (notification) {
+    draft.NOTIFICATIONS.push(notification);
   }
   return draft;
 };
