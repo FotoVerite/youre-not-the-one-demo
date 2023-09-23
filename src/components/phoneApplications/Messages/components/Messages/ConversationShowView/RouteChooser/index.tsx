@@ -1,3 +1,6 @@
+import ConversationEmitter, {
+  CONVERSATION_EMITTER_EVENTS,
+} from "@Components/phoneApplications/Messages/emitters";
 import { DigestedConversationType } from "@Components/phoneApplications/Messages/hooks/useConversation/digestion/types";
 import { CONVERSATION_REDUCER_ACTIONS } from "@Components/phoneApplications/Messages/hooks/useConversation/reducer/type";
 import { ConversationDispatchType } from "@Components/phoneApplications/Messages/hooks/useConversation/types";
@@ -11,9 +14,6 @@ import { useInsetDimensions } from "src/utility/useInsetDimensions";
 import MessageTextInput from "./MessageTextInput";
 import OptionList from "./OptionList";
 import Option from "./OptionList/Option";
-import ConversationEmitter, {
-  CONVERSATION_EMITTER_EVENTS,
-} from "@Components/phoneApplications/Messages/emitters";
 
 const RootChooser: FC<
   {

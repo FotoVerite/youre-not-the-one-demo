@@ -1,39 +1,47 @@
+import context from "@Components/notifications/context";
 import { ConversationListType } from "@Components/phoneApplications/Messages/hooks/useConversations/types";
 import { FC } from "react";
-import { Animated, StyleSheet } from "react-native";
-import { useAnimatedRef, useSharedValue } from "react-native-reanimated";
+import { StyleSheet } from "react-native";
+import Animated, {
+  SharedValue,
+  interpolate,
+  interpolateColor,
+  useAnimatedRef,
+  useAnimatedStyle,
+} from "react-native-reanimated";
 
 import Header from "./Header";
 import List from "./List";
 
 const ConversationIndexView: FC<{
+  shrink: SharedValue<number>;
+  conversationShown: SharedValue<number>;
   viewable: ConversationListType[];
-}> = ({ viewable }) => {
-  const shrink = useSharedValue(0);
+}> = ({ conversationShown, shrink, viewable }) => {
   const aref = useAnimatedRef<Animated.FlatList<ConversationListType>>();
 
-  // useEffect(() => {
-  //   if (context.newMessage.state) {
-  //     shrink.value = withDelay(250, withTiming(1, { duration: 500 }));
-  //   } else {
-  //     shrink.value = withTiming(0, { duration: 500 });
-  //   }
-  // }, [context.newMessage.state, shrink]);
+  const animatedShrink = useAnimatedStyle(() => {
+    return {
+      backgroundColor: interpolateColor(
+        shrink.value,
+        [0, 1],
+        ["transparent", "#8d8a8a"]
+      ),
+      borderTopLeftRadius: interpolate(shrink.value, [0, 1], [0, 10]),
+      borderTopRightRadius: interpolate(shrink.value, [0, 1], [0, 10]),
+      transform: [{ scale: interpolate(shrink.value, [0, 1], [1, 0.97]) }],
+    };
+  }, [shrink]);
+  const animatedMoveLeft = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { translateX: interpolate(conversationShown.value, [0, 1], [0, -100]) },
+      ],
+    };
+  }, [shrink]);
 
-  // const AnimateShrink = useAnimatedStyle(() => {
-  //   return {
-  //     backgroundColor: interpolateColor(
-  //       shrink.value,
-  //       [0, 1],
-  //       ["transparent", "#8d8a8a"]
-  //     ),
-  //     borderTopLeftRadius: interpolate(shrink.value, [0, 1], [0, 10]),
-  //     borderTopRightRadius: interpolate(shrink.value, [0, 1], [0, 10]),
-  //     transform: [{ scale: interpolate(shrink.value, [0, 1], [1, 0.95]) }],
-  //   };
-  // }, [context.newMessage.state]);
   return (
-    <Animated.View style={[styles.screen]}>
+    <Animated.View style={[styles.screen, animatedShrink, animatedMoveLeft]}>
       <Header />
       <List viewable={viewable} aref={aref} />
     </Animated.View>

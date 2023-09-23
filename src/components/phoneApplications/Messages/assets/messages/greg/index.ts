@@ -84,7 +84,7 @@ export const greg: ConversationFileType = {
             },
             {
               type: MESSAGE_CONTENT.NUMBER,
-              content: MESSAGE_CONTACT_NAME.GRACE_RUSSO,
+              content: MESSAGE_CONTACT_NAME.SPAM1,
             },
           ],
         },

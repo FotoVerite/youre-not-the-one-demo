@@ -2,6 +2,7 @@ import { useAnimatedObserver } from "@Components/phoneApplications/Messages/hook
 import { FC, PropsWithChildren, useEffect, useRef } from "react";
 import { StyleSheet, ViewStyle, useWindowDimensions } from "react-native";
 import Animated, {
+  SharedValue,
   interpolate,
   useAnimatedStyle,
 } from "react-native-reanimated";
@@ -14,9 +15,17 @@ const SlideInTransitionContainer: FC<
     slideInfFrom?: "left" | "bottom";
     gutter?: number;
     viewOverrides?: ViewStyle;
+    resolver?: SharedValue<number>;
   } & PropsWithChildren
-> = ({ toObserve, children, gutter, slideInfFrom, viewOverrides }) => {
-  const slideIn = useAnimatedObserver(toObserve);
+> = ({
+  toObserve,
+  children,
+  gutter,
+  resolver,
+  slideInfFrom,
+  viewOverrides,
+}) => {
+  const slideIn = useAnimatedObserver(toObserve, resolver);
   const { width, height } = useInsetDimensions();
   const { width: windowWith, height: windowHeight } = useWindowDimensions();
   const fromLeft = !slideInfFrom || slideInfFrom === "left";
@@ -28,7 +37,7 @@ const SlideInTransitionContainer: FC<
     const translate = interpolate(
       slideIn.value,
       [0, 1],
-      [fromLeft ? windowWith - gutterAmount : windowHeight - gutterAmount, 0]
+      [fromLeft ? windowWith : windowHeight, 0 + gutterAmount]
     );
     if (fromLeft) {
       return { transform: [{ translateX: translate }] };
@@ -45,7 +54,12 @@ const SlideInTransitionContainer: FC<
 
   return (
     <Animated.View
-      style={[{ width, height }, styles.screen, viewOverrides, animatedStyle]}
+      style={[
+        { width, height: height - gutterAmount },
+        styles.screen,
+        viewOverrides,
+        animatedStyle,
+      ]}
     >
       {toObserve ? children : storedChildren.current}
     </Animated.View>

@@ -15,6 +15,7 @@ const Container: FC<
       <ConversationList
         exchanges={conversation?.exchanges}
         dispatch={dispatch}
+        height={12}
       />
       <RouteChooser conversation={conversation} dispatch={dispatch} />
     </>

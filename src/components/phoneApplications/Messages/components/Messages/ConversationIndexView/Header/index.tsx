@@ -1,12 +1,12 @@
-import React, { FC } from "react";
-import { TouchableWithoutFeedback, View, Text, StyleSheet } from "react-native";
-import { theme } from "src/theme";
-import { Row } from "src/utility/layout";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
 import ConversationEmitter, {
   CONVERSATION_EMITTER_EVENTS,
 } from "@Components/phoneApplications/Messages/emitters";
-import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import React, { FC } from "react";
+import { StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native";
+import { theme } from "src/theme";
+import { Row } from "src/utility/layout";
 
 const Header: FC = () => {
   return (

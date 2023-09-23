@@ -10,10 +10,10 @@ import Animated, {
 } from "react-native-reanimated";
 import { theme } from "src/theme";
 
+import Footer from "./Footer";
 import ListItem from "./ListItem";
 import { ConversationShowListItem } from "./ListItem/types";
 import ListOffsetEmitter, { LIST_EMITTER_EVENTS } from "./emitters";
-import Footer from "./Footer";
 
 function ListHeader() {
   return <View style={{ height: 50 }} />;
@@ -40,8 +40,9 @@ const keyExtractor = (item: DigestedConversationListItem, index: number) =>
 
 const ConversationList: FC<{
   exchanges: DigestedConversationListItem[];
+  height?: number;
   dispatch: (action: ConversationReducerActionsType) => void;
-}> = ({ dispatch, exchanges }) => {
+}> = ({ dispatch, height, exchanges }) => {
   const scrollRef = useAnimatedRef<Animated.FlatList<any>>();
   const scrollHandler = useScrollViewOffset(scrollRef as any);
 
@@ -55,6 +56,10 @@ const ConversationList: FC<{
   }, [exchanges, dispatch, scrollHandler, scrollRef]);
 
   const footerHeight = useSharedValue(0);
+
+  const memoizedHeader = useMemo(() => {
+    return <View style={{ height: height || 50 }} />;
+  }, [height]);
 
   const memoizedFooter = useMemo(() => {
     return (
@@ -94,7 +99,7 @@ const ConversationList: FC<{
       ref={scrollRef}
       style={styles.list}
       data={data}
-      ListHeaderComponent={ListHeader}
+      ListHeaderComponent={memoizedHeader}
       ListFooterComponent={memoizedFooter}
       renderItem={renderItem}
       scrollEventThrottle={16}

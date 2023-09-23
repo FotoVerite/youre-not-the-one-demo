@@ -1,6 +1,6 @@
 import { useAppEventsContext } from "@Components/appEvents/context";
 import { APP_EVENTS_ACTIONS } from "@Components/appEvents/reducer/types";
-import { useRef, useMemo, useEffect } from "react";
+import { useRef, useMemo, useEffect, useCallback, useState } from "react";
 import { delayFor } from "src/utility/async";
 
 import { MESSAGE_CONTACT_INFO, MESSAGE_CONTACT_NAME } from "../../constants";
@@ -27,14 +27,15 @@ export const useConversationNotifier = (
   const eventsContext = useAppEventsContext();
   const { state: events, dispatch } = eventsContext;
   const prevConversations = useRef<NotificationRecord>({});
-
+  const [notificationQueue, setNotificationQueue] = useState<
+    { name: MESSAGE_CONTACT_NAME; route: NotificationRouteType }[]
+  >([]);
   const toNotify = useMemo(() => {
     return conversations
       .filter(
         (conversation) =>
-          (conversation.notificationRoutes &&
-            conversation.notificationRoutes.length > 0) ||
-          activeConversations.includes(conversation.name)
+          conversation.notificationRoutes &&
+          conversation.notificationRoutes.length > 0
       )
       .reduce(
         (acc, conversation) => {
@@ -55,39 +56,54 @@ export const useConversationNotifier = (
         },
         [] as { name: MESSAGE_CONTACT_NAME; route: NotificationRouteType }[]
       );
-  }, [activeConversations, conversations, events]);
+  }, [conversations, events]);
 
-  useEffect(() => {
-    const notify = async (
-      name: MESSAGE_CONTACT_NAME,
-      route: NotificationRouteType
-    ) => {
-      await delayFor(route.delay || 0);
+  const notify = useCallback(
+    async (name: MESSAGE_CONTACT_NAME, route: NotificationRouteType) => {
       const message = convertMessageToString(
         getLastMessageFromExchanges(route.exchanges)
       );
+      const notification = {
+        title: `Message from ${name}`,
+        content: message,
+        image: MESSAGE_CONTACT_INFO[name].avatar,
+        onPress: () =>
+          ConversationEmitter.emit(CONVERSATION_EMITTER_EVENTS.SHOW, {
+            name,
+          }),
+      };
       dispatch({
         type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_CREATE,
         payload: {
           name,
           routeId: route.id,
           finished: true,
-          notification: {
-            title: `Message from ${name}`,
-            content: message,
-            image: MESSAGE_CONTACT_INFO[name].avatar,
-            onPress: () =>
-              ConversationEmitter.emit(CONVERSATION_EMITTER_EVENTS.SHOW, {
-                name,
-              }),
-          },
+          notification: activeConversations.includes(name)
+            ? undefined
+            : notification,
         },
       });
-    };
+    },
+    [activeConversations, dispatch]
+  );
 
-    toNotify.forEach((notification) => {
+  useEffect(() => {
+    const sendToQueue = async () => {
+      const notifications = await Promise.all(
+        toNotify.map(async (notification) => {
+          await delayFor(notification.route.delay || 0);
+          return notification;
+        })
+      );
+      setNotificationQueue(notifications);
+    };
+    sendToQueue();
+  }, [toNotify]);
+
+  useEffect(() => {
+    notificationQueue.forEach((notification) => {
       notify(notification.name, notification.route);
     });
-  }, [dispatch, toNotify]);
+  }, [notificationQueue, notify]);
   return [] as const;
 };

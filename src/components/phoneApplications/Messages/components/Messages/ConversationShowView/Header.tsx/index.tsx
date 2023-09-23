@@ -14,6 +14,8 @@ import {
 } from "react-native";
 import Animated, {
   SharedValue,
+  interpolate,
+  interpolateColor,
   useAnimatedStyle,
 } from "react-native-reanimated";
 import { theme } from "src/theme";
@@ -22,20 +24,21 @@ import { Row } from "src/utility/layout";
 const Header: FC<{
   color: string;
   name: MESSAGE_CONTACT_NAME;
-  visible: SharedValue<number>;
   shrink: SharedValue<number>;
-}> = ({ color, name, shrink, visible }) => {
-  //   const popInAndTranslateAnimation = useAnimatedStyle(() => {
-  //     return {
-  //       opacity: visible.value,
-  //       //marginLeft: interpolate(visible.value, [0, 1], [width, 0]),
-  //       //   borderTopLeftRadius: interpolate(shrink.value, [0, 1], [0, 10]),
-  //       //   borderTopRightRadius: interpolate(shrink.value, [0, 1], [0, 10]),
-  //     };
-  //   }, [visible]);
+}> = ({ color, name, shrink }) => {
+  const animatedShrink = useAnimatedStyle(() => {
+    return {
+      backgroundColor: interpolateColor(
+        shrink.value,
+        [0, 1],
+        ["transparent", "#7878784f"]
+      ),
+      transform: [{ scale: interpolate(shrink.value, [0, 1], [1, 0.97]) }],
+    };
+  }, [shrink]);
 
   return (
-    <Animated.View style={[styles.header]}>
+    <Animated.View style={[styles.header, animatedShrink]}>
       {Platform.OS === "ios" && <BlurView style={styles.blur} intensity={20} />}
       {Platform.OS !== "ios" && (
         <View style={[styles.blur, { backgroundColor: theme.colors.muted }]} />
@@ -91,7 +94,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "100%",
     height: "100%",
-    borderRadius: 10,
+    borderRadius: 20,
   },
   row: {
     alignItems: "center",

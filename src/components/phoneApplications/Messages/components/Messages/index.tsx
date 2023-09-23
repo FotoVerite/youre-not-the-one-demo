@@ -1,10 +1,14 @@
-import { duration } from "moment";
 import { FC, useEffect, useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { useSharedValue, withTiming } from "react-native-reanimated";
+import {
+  runOnJS,
+  useAnimatedReaction,
+  useSharedValue,
+} from "react-native-reanimated";
 
 import ConversationIndexView from "./ConversationIndexView";
 import ConversationShowView from "./ConversationShowView";
+import NewMessageView from "./NewMessageView";
 import { MESSAGE_CONTACT_NAME } from "../../constants";
 import MediaContextProvider from "../../context/Media";
 import ConversationEmitter, {
@@ -13,14 +17,13 @@ import ConversationEmitter, {
 import { useConversationNotifier } from "../../hooks/useConversationNotifier";
 import { useConversations } from "../../hooks/useConversations";
 import { ConversationType } from "../../hooks/useConversations/types";
-import NewMessageView from "./NewMessageView";
 
 const Messages: FC = () => {
   const [viewable, displayed, available] = useConversations();
   const [conversation, setConversation] = useState<ConversationType>();
   const [newMessageConversation, setNewMessageConversation] =
     useState<ConversationType>();
-
+  const [indexCovered, setIndexCovered] = useState(false);
   const activeConversations = useMemo(() => {
     return [conversation?.name, newMessageConversation?.name].filter(
       (n) => n !== null
@@ -63,19 +66,35 @@ const Messages: FC = () => {
     };
   }, []);
 
-  const newMessageShowing = useSharedValue(0);
+  const shrink = useSharedValue(0);
+  const conversationShown = useSharedValue(0);
 
-  useEffect(() => {
-    newMessageShowing.value = withTiming(newMessageConversation ? 1 : 0, {
-      duration: 750,
-    });
-  }, [newMessageConversation, newMessageShowing]);
+  useAnimatedReaction(
+    () => {
+      return shrink.value === 1 || conversationShown.value === 1;
+    },
+    (result, previous) => {
+      if (result !== previous) {
+        runOnJS(setIndexCovered)(result);
+      }
+    },
+    []
+  );
 
   return (
     <View style={[styles.layout]}>
-      <ConversationIndexView viewable={displayed} />
+      <ConversationIndexView
+        viewable={displayed}
+        shrink={shrink}
+        conversationShown={conversationShown}
+      />
       <MediaContextProvider>
-        <ConversationShowView conversation={conversation} />
+        <ConversationShowView
+          conversation={conversation}
+          shrink={shrink}
+          conversationShown={conversationShown}
+        />
+        <NewMessageView conversation={newMessageConversation} shrink={shrink} />
       </MediaContextProvider>
     </View>
   );
