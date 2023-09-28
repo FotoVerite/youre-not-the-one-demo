@@ -14,6 +14,11 @@ import {
   MessageContentType,
 } from "../../useConversations/types";
 
+const SELF_NAMES_CONST = [
+  MESSAGE_CONTACT_NAME.SELF,
+  MESSAGE_CONTACT_NAME.MY_SELF,
+];
+
 export type GlyphContent = {
   font: SkFont;
   glyphs: Glyph[];
@@ -75,6 +80,7 @@ export interface AbstractMetaDigestedConversationItemType
   effect?: MessageEffectType;
   isLastInExchange: boolean;
   group?: boolean;
+  leaveAsDelivered?: boolean;
   name: MESSAGE_CONTACT_NAME;
   addressee: boolean;
   reactionColor?: string;
@@ -157,11 +163,18 @@ export type MessagePayloadType = {
   isLastInExchange: boolean;
 };
 
+export type SentMessagePayloadType = {
+  messageContent: MessageContentType;
+  name: MESSAGE_CONTACT_NAME.SELF | MESSAGE_CONTACT_NAME.MY_SELF;
+  isLastInExchange: boolean;
+};
+
 export type DigestedConversationType = Omit<
   ConversationType,
   "exchanges" | "blocked" | "hasAvailableRoute"
 > & {
   activePath: MessagePayloadType[];
+  seenRoutes: string[];
   availableRoute?: MessageRouteType;
   chosenRoute?: string;
   cleanupAction?: AppEventsReducerActionsType;
@@ -179,6 +192,51 @@ export type DigestedBubbleProps = {
   [index in keyof BubbleItemType]?: BubbleItemType[index];
 };
 
+export type DigestedConversationWithAvailableRoute = Omit<
+  DigestedConversationType,
+  "availableRoute"
+> & { availableRoute: MessageRouteType };
+
+export const hasAvailableRoute = (
+  draft: DigestedConversationType
+): draft is DigestedConversationWithAvailableRoute => {
+  return draft.availableRoute != null;
+};
+
+export const hasStartedRoute = (
+  draft: DigestedConversationType
+): draft is DigestedConversationWithAvailableRoute => {
+  return (
+    hasAvailableRoute(draft) &&
+    draft.activePath != null &&
+    draft.activePath.length > 0
+  );
+};
+
+export const isSentMessage = (
+  exchange: DigestedConversationListItem
+): exchange is BubbleItemType => {
+  if (isDigestedLabel(exchange)) {
+    return false;
+  }
+  return SELF_NAMES_CONST.includes(exchange.name);
+};
+
+export const isSentMessagePayload = (
+  payload: MessagePayloadType
+): payload is SentMessagePayloadType => {
+  return SELF_NAMES_CONST.includes(payload.name);
+};
+
+export const isReceivedMessage = (
+  exchange: DigestedConversationListItem
+): exchange is BubbleItemType => {
+  if (isDigestedLabel(exchange)) {
+    return false;
+  }
+  return !isSentMessage(exchange);
+};
+
 export const isDigestedBubble = (
   exchange: DigestedConversationListItem
 ): exchange is BubbleItemType => {
@@ -190,7 +248,5 @@ export const isDigestedBubble = (
 export const isDigestedLabel = (
   exchange: DigestedConversationListItem
 ): exchange is DigestedLabelType => {
-  return [MESSAGE_CONTENT.TIME, MESSAGE_CONTENT.READ_LABEL].includes(
-    exchange.type
-  );
+  return !isDigestedBubble(exchange);
 };

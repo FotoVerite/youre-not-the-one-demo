@@ -19,6 +19,7 @@ import {
   i_fell_for_a_spam_did_send_images,
 } from "./routes/i_fell_for_spam";
 import { update_on_the_phone } from "./routes/update_on_phone";
+import { your_day_worse_then_mine } from "./routes/your_day_worse_then_mine";
 
 const ZARA = MESSAGE_CONTACT_NAME.ZARA;
 
@@ -29,6 +30,7 @@ export const zara: ConversationFileType = {
   interfaceColor: MESSAGE_CONTACT_INFO[ZARA].colors[0],
   notificationRoutes: [
     how_is_the_phone_coming,
+    your_day_worse_then_mine,
     zara_do_you_want_any_contacts,
     update_on_the_phone,
   ],

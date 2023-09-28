@@ -25,7 +25,7 @@ const ConversationShowView: FC<{
   useEffect(() => {
     if (conversation == null) {
       dispatch({ type: CONVERSATION_REDUCER_ACTIONS.RESET });
-    } else if (!state) {
+    } else if (!state || state.name !== conversation.name) {
       digestConversation(conversation);
     }
   }, [conversation, digestConversation, dispatch, state]);

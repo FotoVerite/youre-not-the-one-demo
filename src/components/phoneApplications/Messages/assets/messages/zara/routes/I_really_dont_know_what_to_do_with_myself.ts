@@ -54,7 +54,7 @@ const exchanges: ExchangeBlockType[] = [
         type: MESSAGE_CONTENT.STRING,
         content: "Okay point",
         reaction: { name: "heart", color: "#f487d3", delay: 3000 },
-        messageDelay: 1500,
+        contentDelay: 1500,
       },
     ],
   },

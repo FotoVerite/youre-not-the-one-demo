@@ -2,20 +2,19 @@ import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/con
 import { NotificationRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
 
 import { ZARA_ROUTE_IDS } from "./routes";
-import { TO_SELF_IDS } from "../../toSelf/routes/routes";
 
-export const how_is_the_phone_coming: NotificationRouteType = {
-  id: ZARA_ROUTE_IDS.HOW_IS_THE_PHONE_COMING,
+export const your_day_worse_then_mine: NotificationRouteType = {
+  id: ZARA_ROUTE_IDS.YOUR_DAY_WORSE_THEN_MINE,
   delay: 1000,
   conditions: {
-    [MESSAGE_CONTACT_NAME.MY_SELF]: {
-      routes: { [TO_SELF_IDS.CHECK_IF_TEXT_IS_WORKING]: { finished: true } },
+    [MESSAGE_CONTACT_NAME.ZARA]: {
+      routes: { [ZARA_ROUTE_IDS.BORKED_PHONE]: { finished: true } },
     },
   },
   exchanges: [
     {
       name: MESSAGE_CONTACT_NAME.ZARA,
-      messages: ["How's the new phone coming along?"],
+      messages: ["Trying to decide if your day is worse then mine..."],
     },
   ],
 };

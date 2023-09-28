@@ -30,7 +30,7 @@ export const appendSeenRoutes = (
     digested.routes,
     digested.notificationRoutes
   );
-
+  digested.seenRoutes = seenRoutes.map((route) => route.routeId);
   return seenRoutes.reduce((digestedExchanges, routes) => {
     return appendRoute(digestedExchanges, routes, digested.group, config);
   }, digested.exchanges);

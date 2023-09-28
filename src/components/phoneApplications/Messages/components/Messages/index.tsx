@@ -33,20 +33,21 @@ const Messages: FC = () => {
   useConversationNotifier(viewable, activeConversations);
 
   useEffect(() => {
-    ConversationEmitter.on(
-      CONVERSATION_EMITTER_EVENTS.SHOW,
-      ({ name, type }) => {
-        const _conversation = available[name];
-
-        if (!type) {
-          setConversation(_conversation);
-        } else {
-          setNewMessageConversation(_conversation);
-        }
+    const cb = (payload: {
+      name: MESSAGE_CONTACT_NAME;
+      type?: "new" | "base" | undefined;
+      additional?: string | undefined;
+    }) => {
+      const _conversation = available[payload.name];
+      if (!payload.type) {
+        setConversation(_conversation);
+      } else {
+        setNewMessageConversation(_conversation);
       }
-    );
+    };
+    ConversationEmitter.on(CONVERSATION_EMITTER_EVENTS.SHOW, cb);
     return () => {
-      ConversationEmitter.off(CONVERSATION_EMITTER_EVENTS.SHOW, () => {});
+      ConversationEmitter.off(CONVERSATION_EMITTER_EVENTS.SHOW, cb);
     };
   }, [available]);
 

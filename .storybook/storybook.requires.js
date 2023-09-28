@@ -62,6 +62,7 @@ const getStories = () => {
     "./src/components/phoneApplications/Messages/components/Messages/ConversationShowView/ConversationShowList/ListItem/SkBubbles/SkStringBubble/stories/index.stories.tsx": require("../src/components/phoneApplications/Messages/components/Messages/ConversationShowView/ConversationShowList/ListItem/SkBubbles/SkStringBubble/stories/index.stories.tsx"),
     "./src/components/phoneApplications/Messages/components/Messages/ConversationShowView/ConversationShowList/ListItem/SkBubbles/SkVcardBubble/index.stories.tsx": require("../src/components/phoneApplications/Messages/components/Messages/ConversationShowView/ConversationShowList/ListItem/SkBubbles/SkVcardBubble/index.stories.tsx"),
     "./src/components/phoneApplications/Messages/components/Messages/ConversationShowView/ConversationShowList/ListItem/stories/index.stories.tsx": require("../src/components/phoneApplications/Messages/components/Messages/ConversationShowView/ConversationShowList/ListItem/stories/index.stories.tsx"),
+    "./src/components/phoneApplications/Messages/components/Messages/ConversationShowView/ConversationShowList/stories/index.stories.tsx": require("../src/components/phoneApplications/Messages/components/Messages/ConversationShowView/ConversationShowList/stories/index.stories.tsx"),
   };
 };
 

@@ -27,6 +27,8 @@ export enum MESSAGE_CONTACT_NAME {
   MILEENA = "Mileena",
   MICHAEL = "Maybe: Michael",
   MOVIE_NIGHT = "Movie Night",
+  //Probably unneeded but I want the seperation between the number and the messages
+  MY_SELF = "My Self",
   SELF = "Self",
   STEVE_LITT = "Steve-0",
   TEST = "Test",
@@ -67,6 +69,11 @@ export const MESSAGE_CONTACT_INFO: {
   //   Mileena: { avatar: meleenaAvatar, colors: ["#ff0095", "#80194d"] },
   //   "Maybe: Michael": { avatar: gregAvatar, colors: ["#f54295", "#8900fa"] },
   //   "Movie Night": { avatar: darkoAvatar, colors: ["#6b6b6d", "#363243"] },
+  [MESSAGE_CONTACT_NAME.MY_SELF]: {
+    avatar: defaultAvatar,
+    colors: ["blue", "#363243"],
+  },
+
   Self: { avatar: defaultAvatar, colors: ["blue", "#363243"] },
   //   [MESSAGE_CONTACT_NAME.SPAM2]: {
   //     avatar: defaultAvatar,

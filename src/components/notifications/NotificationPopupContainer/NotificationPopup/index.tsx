@@ -108,6 +108,7 @@ const NotificationPopup: FC<PropType> = ({
           onPress={() => {
             if (onPress) {
               onPress();
+              runOnUI(fadeOut)();
             }
           }}
         >

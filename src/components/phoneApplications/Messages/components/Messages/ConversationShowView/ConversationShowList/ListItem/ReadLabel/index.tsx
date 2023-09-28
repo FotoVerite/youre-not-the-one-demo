@@ -9,10 +9,11 @@ import Animated, {
 } from "react-native-reanimated";
 import { theme } from "src/theme";
 
-export const ReadLabel: FC<{ content: string; height: number }> = ({
-  height,
-  content,
-}) => {
+export const ReadLabel: FC<{
+  content: string;
+  height: number;
+  contentDelay?: number;
+}> = ({ height, content, contentDelay }) => {
   const animatedHeight = useSharedValue(height);
   const fadeIn = useSharedValue(0);
   const initialHeight = useRef(height);
@@ -28,8 +29,13 @@ export const ReadLabel: FC<{ content: string; height: number }> = ({
   }, [height]);
 
   useEffect(() => {
-    fadeIn.value = withDelay(250, withTiming(1, { duration: 250 }));
-  }, [fadeIn]);
+    if (contentDelay) {
+      fadeIn.value = withDelay(
+        contentDelay || 250,
+        withTiming(1, { duration: 250 })
+      );
+    }
+  }, [contentDelay, fadeIn]);
   return (
     <Animated.View style={[{ opacity: fadeIn }, animatedStyle]}>
       <Text style={[styles.text]}>{content}</Text>

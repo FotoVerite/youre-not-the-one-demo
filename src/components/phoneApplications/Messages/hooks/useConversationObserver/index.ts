@@ -12,7 +12,7 @@ export const useConversationObserver = (
   conversationEvent: CONVERSATION_EMITTER_EVENTS,
   conversations: ConversationRecords,
   digestConversation: (conversation: ConversationType) => void,
-  dispatch: () => void,
+  dispatch: () => void
 ) => {
   useEffect(() => {
     ConversationEmitter.on(conversationEvent, (name) => {
@@ -21,5 +21,5 @@ export const useConversationObserver = (
     return () => {
       ConversationEmitter.off(conversationEvent, () => {});
     };
-  }, [conversations, digestConversation]);
+  }, [conversationEvent, conversations, digestConversation]);
 };

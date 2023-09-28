@@ -38,7 +38,10 @@ const ListItem: FC<ConversationShowListItem> = (props) => {
         paddingBottom={props.paddingBottom}
         reactionAnimated={props.contentDelay != null}
         reactionName={props.reactionName}
-        reactionDelay={props.reactionDelay}
+        reactionDelay={
+          props.reactionDelay ||
+          0 + (props.contentDelay || 0) + (props.typingDelay || 0)
+        }
         reactionColor={props.reactionColor}
       >
         {item}

@@ -42,6 +42,7 @@ export type ConversationType = {
   hasAvailableRoute?: boolean;
   heroImage: ImageSourcePropType;
   interfaceColor: string;
+  leaveAsDelivered?: boolean;
   logline_content: string;
   logline_timestamp: string;
   name: MESSAGE_CONTACT_NAME;

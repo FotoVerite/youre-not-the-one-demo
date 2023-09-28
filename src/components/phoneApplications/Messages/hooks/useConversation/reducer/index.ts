@@ -6,21 +6,41 @@ import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/con
 import { nothing, produce } from "immer";
 
 import {
+  createCleanupPayload,
+  routeFinishedPayload,
+  routeStartedPayload,
+  routeUpdatePayload,
+} from "./eventPayloads";
+import {
+  resetMessageDelays,
+  revertPreviousMessageEphemeralProps,
+  setMessageEphemeralProps,
+} from "./messageMutations";
+import {
   ConversationReducerActionsType,
   CONVERSATION_REDUCER_ACTIONS,
 } from "./type";
 import { MESSAGE_CONTENT } from "../../contentWithMetaTypes";
 import { findAvailableRoutes } from "../../routes/available";
+import { getSeenRoutes } from "../../routes/seen";
 import { convertMessageToString } from "../../useConversations/determineLogLine";
 import { createSkBubbleFromPayload } from "../digestion/SkFunctions/createSkBubble";
 import { createTimeStampLabel } from "../digestion/SkFunctions/createTimeStampLabel";
-import { convertBlockToMessagePayloadType } from "../digestion/digestRoute";
+import {
+  appendRoute,
+  convertBlockToMessagePayloadType,
+} from "../digestion/digestRoute";
 import { appendReadLabel } from "../digestion/readLabel";
 import {
   DigestedConversationType,
   DigestedConversationListItem,
   BaseConfigType,
   DigestedMessageProps,
+  isSentMessage,
+  hasAvailableRoute,
+  isSentMessagePayload,
+  hasStartedRoute,
+  DigestedConversationWithAvailableRoute,
 } from "../digestion/types";
 import { getListHeight } from "../digestion/utility";
 
@@ -50,7 +70,7 @@ const conversationReducer = produce(
       case CONVERSATION_REDUCER_ACTIONS.CONTINUE_ROUTE:
         return continueRoute(config, draft);
       case CONVERSATION_REDUCER_ACTIONS.REFRESH_AVAILABLE_ROUTE:
-        return refreshAvailableRoute(draft, action.payload);
+        return refreshAvailableRoute(config, draft, action.payload);
       case CONVERSATION_REDUCER_ACTIONS.START_ROUTE:
         return startRoute(config, draft, action.payload);
       case CONVERSATION_REDUCER_ACTIONS.UPDATE_MESSAGE:
@@ -71,6 +91,7 @@ const conversationReducer = produce(
 );
 
 const refreshAvailableRoute = (
+  config: BaseConfigType,
   draft: DigestedConversationType,
   events: AppEventsType
 ) => {
@@ -80,9 +101,24 @@ const refreshAvailableRoute = (
     events
   ).shift();
 
+  const seenRoutes = getSeenRoutes(
+    draft.name,
+    events,
+    draft.routes,
+    draft.notificationRoutes
+  );
+
   if (route && route.id !== draft.availableRoute?.id) {
     draft.availableRoute = route;
   }
+  const routesNeedingAppending = seenRoutes.filter(
+    (route) => !draft.seenRoutes.includes(route.routeId)
+  );
+
+  routesNeedingAppending.forEach((route) => {
+    draft.exchanges = appendRoute(draft.exchanges, route, draft.group, config);
+  });
+
   return draft;
 };
 
@@ -91,6 +127,7 @@ const startRoute = (
   draft: DigestedConversationType,
   payload: { chosenOption: string }
 ) => {
+  if (!hasAvailableRoute(draft)) return;
   const route = draft.routes.find((r) => r.id === draft.availableRoute?.id);
   if (route == null) {
     return draft;
@@ -101,11 +138,7 @@ const startRoute = (
   if (nextMessageContent == null) {
     return draft;
   }
-  // Reset
-  draft.exchanges.forEach((e) => {
-    e.contentDelay = undefined;
-    e.typingDelay = undefined;
-  });
+  resetMessageDelays(draft);
   let offset = getListHeight(draft.exchanges);
   addNewTimeBlockToExchanges(config, draft, offset);
   offset += 30;
@@ -113,29 +146,20 @@ const startRoute = (
     { ...config, ...{ group: draft.group || false, offset } },
     nextMessageContent
   );
-  message.contentDelay = 400;
+  setMessageEphemeralProps(draft, message);
   draft.exchanges.push(message);
-  if (message.name === MESSAGE_CONTACT_NAME.SELF) {
-    draft.exchanges = appendReadLabel(draft.exchanges, config.width);
+  if (isSentMessage(message)) {
+    draft.exchanges = appendReadLabel(
+      draft.exchanges,
+      config.width,
+      undefined,
+      draft.leaveAsDelivered
+    );
   }
-  draft.previousExchangeProps = {
-    contentDelay: undefined,
-    typingDelay: undefined,
-    ID: message.ID,
-    isLastInExchange: message.isLastInExchange,
-  };
   draft.activePath = pendingMessages;
   draft.chosenRoute = payload.chosenOption;
   draft.routeAtIndex = 1;
-  draft.eventAction = {
-    type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_CREATE,
-    payload: {
-      name: draft.name,
-      chosen: draft.chosenRoute,
-      routeId: route.id,
-      atIndex: 1,
-    },
-  };
+  draft.eventAction = routeStartedPayload(draft);
   _createCleanupAction(draft);
   return draft;
 };
@@ -166,22 +190,12 @@ const continueRoute = (
   config: BaseConfigType,
   draft: DigestedConversationType
 ) => {
-  if (draft?.activePath == null) {
-    return draft;
-  }
-  if (draft.availableRoute == null) {
-    return draft;
-  }
+  if (!hasAvailableRoute(draft)) return;
   const nextMessage = draft.activePath[0];
   const offset = getListHeight(draft.exchanges);
-  if (nextMessage == null) {
-    return finishRoute(draft, draft.availableRoute.id);
-  }
+  if (nextMessage == null) return finishRoute(draft, draft.availableRoute.id);
 
-  if (
-    nextMessage?.name === MESSAGE_CONTACT_NAME.SELF &&
-    draft.nextMessageInQueue == null
-  ) {
+  if (isSentMessagePayload(nextMessage) && draft.nextMessageInQueue == null) {
     draft.nextMessageInQueue = convertMessageToString(
       nextMessage.messageContent
     );
@@ -190,23 +204,8 @@ const continueRoute = (
       { ...config, ...{ group: draft.group || false, offset } },
       nextMessage
     );
-    const previous = draft.previousExchangeProps;
-
-    if (previous) {
-      const index = draft.exchanges.findIndex((e) => e.ID === previous.ID);
-      draft.exchanges[index] = {
-        ...draft.exchanges[index],
-        ...previous,
-      } as DigestedConversationListItem;
-    }
-    draft.previousExchangeProps = {
-      contentDelay: undefined,
-      typingDelay: undefined,
-      ID: message.ID,
-      isLastInExchange: message.isLastInExchange,
-    };
-    message.contentDelay = message.contentDelay || 400;
-    message.isLastInExchange = true;
+    revertPreviousMessageEphemeralProps(draft);
+    setMessageEphemeralProps(draft, message);
 
     draft.exchanges.push(message);
 
@@ -214,38 +213,33 @@ const continueRoute = (
       message.name === MESSAGE_CONTACT_NAME.SELF &&
       message.type !== MESSAGE_CONTENT.SNAPSHOT
     ) {
-      draft.exchanges = appendReadLabel(draft.exchanges, config.width);
+      draft.exchanges = appendReadLabel(
+        draft.exchanges,
+        config.width,
+        undefined,
+        draft.leaveAsDelivered
+      );
     }
+    console.log(draft.activePath);
     draft.activePath.shift();
     draft.routeAtIndex = (draft.routeAtIndex || 0) + 1;
     draft.nextMessageInQueue = undefined;
-    draft.eventAction = {
-      type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_UPDATE,
-      payload: {
-        routeId: draft.availableRoute.id,
-        name: draft.name,
-        atIndex: draft.routeAtIndex,
-      },
-    };
+    draft.eventAction = routeUpdatePayload(draft);
   }
   _createCleanupAction(draft);
   return draft;
 };
 
 const finishRoute = (draft: DigestedConversationType, routeID: number) => {
-  draft.eventAction = {
-    type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_UPDATE,
-    payload: {
-      routeId: routeID,
-      name: draft.name,
-      finished: true,
-    },
-  };
+  draft.eventAction = routeFinishedPayload(
+    draft as DigestedConversationWithAvailableRoute,
+    routeID
+  );
+  draft.seenRoutes.push(routeID.toString());
   draft.nextMessageInQueue = undefined;
   draft.availableRoute = undefined;
   draft.routeAtIndex = undefined;
   draft.chosenRoute = undefined;
-
   return draft;
 };
 
@@ -253,11 +247,8 @@ const _skipRoute = (
   config: BaseConfigType,
   draft: DigestedConversationType
 ) => {
-  if (draft?.activePath == null || draft?.activePath.length === 0) {
-    return draft;
-  }
-  if (draft.availableRoute == null) {
-    return draft;
+  if (!hasStartedRoute(draft)) {
+    return;
   }
   const offset = getListHeight(draft.exchanges);
   const path = draft.activePath.reduce((ret, payload) => {
@@ -270,29 +261,12 @@ const _skipRoute = (
     return ret;
   }, [] as DigestedConversationListItem[]);
   draft.exchanges = draft.exchanges.concat(path);
-
-  draft.eventAction = {
-    type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_UPDATE,
-    payload: {
-      routeId: draft.availableRoute.id,
-      name: draft.name,
-      finished: true,
-    },
-  };
-  draft.activePath = [];
-  draft.nextMessageInQueue = undefined;
-  draft.availableRoute = undefined;
-  draft.routeAtIndex = undefined;
-  draft.chosenRoute = undefined;
-
+  finishRoute(draft, draft.availableRoute.id);
   return draft;
 };
 
 const addConversation = (conversation: DigestedConversationType) => {
-  conversation.exchanges.forEach((message) => {
-    message.typingDelay = undefined;
-    message.contentDelay = undefined;
-  });
+  resetMessageDelays(conversation);
   conversation.eventAction = {
     type: APP_EVENTS_ACTIONS.MESSAGE_APP_CONVERSATION_SEEN,
     payload: { name: conversation.name },
@@ -318,14 +292,13 @@ const updateMessage = (
 };
 
 const _createCleanupAction = (draft: DigestedConversationType) => {
-  const routeID = draft.availableRoute?.id;
   const toEnd = draft.activePath.length;
-  if (!routeID || draft.nextMessageInQueue || toEnd === 0) {
+  if (!hasAvailableRoute(draft) || draft.nextMessageInQueue || toEnd === 0) {
     draft.cleanupAction = undefined;
     return;
   }
-  let forewordToIndex = draft.activePath.findIndex(
-    (e) => e.name === MESSAGE_CONTACT_NAME.SELF
+  let forewordToIndex = draft.activePath.findIndex((e) =>
+    isSentMessagePayload(e)
   );
 
   if (forewordToIndex === 0) {
@@ -334,15 +307,7 @@ const _createCleanupAction = (draft: DigestedConversationType) => {
   }
   const finished = forewordToIndex === -1;
   forewordToIndex = forewordToIndex === -1 ? toEnd : forewordToIndex;
-  draft.cleanupAction = {
-    type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_UPDATE,
-    payload: {
-      routeId: routeID,
-      name: draft.name,
-      atIndex: (draft.routeAtIndex || 0) + forewordToIndex,
-      finished,
-    },
-  };
+  draft.cleanupAction = createCleanupPayload(draft, forewordToIndex, finished);
 };
 
 export default createConversationReducer;

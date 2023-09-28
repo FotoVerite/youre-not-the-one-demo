@@ -19,6 +19,7 @@ export const ExchangeWrapper: FC<ConversationExchangeWrapperType> = ({
   paddingBottom,
   reactionAnimated,
   reactionColor,
+  reactionDelay,
   reactionName,
 }) => {
   return (
@@ -35,6 +36,7 @@ export const ExchangeWrapper: FC<ConversationExchangeWrapperType> = ({
           colors={colors}
           reactionAnimated={reactionAnimated || false}
           reactionColor={reactionColor}
+          reactionDelay={reactionDelay}
         />
         <View style={{ alignSelf: "flex-start" }}>
           {children}

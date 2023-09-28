@@ -26,6 +26,7 @@ const combineIntoDigestedConversationType = (
     ...props,
     exchanges,
     availableRoute,
+    seenRoutes: [],
     ...{ activePath: [] },
   };
 };
@@ -54,7 +55,8 @@ export const digestConversation = async (
   digested.exchanges = appendReadLabel(
     digested.exchanges,
     config.width,
-    lastRouteTime(digested, events)
+    lastRouteTime(digested, events),
+    digested.leaveAsDelivered
   );
   return digested;
 };

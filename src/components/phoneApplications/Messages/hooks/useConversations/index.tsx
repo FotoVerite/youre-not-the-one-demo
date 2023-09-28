@@ -18,8 +18,9 @@ import {
   findAvailableRoutes,
   messageAppConditionsMet,
 } from "../routes/available";
+import { toSelf } from "../../assets/messages/toSelf";
 
-const _conversations: ConversationFileType[] = [spam1, greg, leo, zara];
+const _conversations: ConversationFileType[] = [toSelf, zara];
 
 const viewableConversationsFilter =
   (events: AppEventsType) => (conversation: ConversationFileType) =>

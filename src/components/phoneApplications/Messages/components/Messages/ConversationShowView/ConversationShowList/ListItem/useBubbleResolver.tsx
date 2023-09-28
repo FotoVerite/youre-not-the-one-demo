@@ -15,7 +15,13 @@ const useBubbleResolver = (props: ConversationShowListItem) => {
     case MESSAGE_CONTENT.TIME:
       return <TimeStamp content={props.content} height={props.height} />;
     case MESSAGE_CONTENT.READ_LABEL:
-      return <ReadLabel content={props.content} height={props.height} />;
+      return (
+        <ReadLabel
+          content={props.content}
+          height={props.height}
+          contentDelay={props.contentDelay}
+        />
+      );
     case MESSAGE_CONTENT.EMOJI: {
       const { scrollHandler, scrollRef, ...propsWithoutScroll } = props;
       return <EmojiBubble {...propsWithoutScroll} />;

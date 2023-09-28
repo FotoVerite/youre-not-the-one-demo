@@ -39,6 +39,7 @@ export type ReactionType = {
 
 interface AbstractContentWithMetaType {
   contentDelay?: number;
+  leaveAsDelivered?: boolean;
   typingDelay?: number;
   reaction?: ReactionType;
   effect?: MessageEffectType;
@@ -94,7 +95,7 @@ export type ContentWithMetaType =
   | VCardContentWithMeta;
 
 export const isContentWithMeta = (
-  content: ContentWithMetaType | string,
+  content: ContentWithMetaType | string
 ): content is ContentWithMetaType => {
   return (content as ContentWithMetaType).type !== undefined;
 };

@@ -10,15 +10,20 @@ const HEIGHT = 30;
 export const createReadLabel = (
   time: string,
   width: number,
-  offset: number
+  offset: number,
+  leaveAsDelivered?: boolean,
+  contentDelay?: number
 ): DigestedConversationReadLabelType => {
   const listItem = {
     ID: Crypto.randomUUID(),
+    contentDelay,
     height: HEIGHT,
     width,
     paddingBottom: 0,
     offset,
-    content: `read ${formatTimeStamp(moment(time))}`,
+    content: leaveAsDelivered
+      ? "delivered"
+      : `read ${formatTimeStamp(moment(time))}`,
     type: MESSAGE_CONTENT.READ_LABEL,
   } as DigestedConversationReadLabelType;
   return listItem;
