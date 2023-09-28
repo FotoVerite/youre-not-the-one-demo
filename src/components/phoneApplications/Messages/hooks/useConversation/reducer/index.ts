@@ -220,7 +220,6 @@ const continueRoute = (
         draft.leaveAsDelivered
       );
     }
-    console.log(draft.activePath);
     draft.activePath.shift();
     draft.routeAtIndex = (draft.routeAtIndex || 0) + 1;
     draft.nextMessageInQueue = undefined;
