@@ -1,7 +1,10 @@
 import ConversationEmitter, {
   CONVERSATION_EMITTER_EVENTS,
 } from "@Components/phoneApplications/Messages/emitters";
-import { DigestedConversationType } from "@Components/phoneApplications/Messages/hooks/useConversation/digestion/types";
+import {
+  DigestedConversationType,
+  choosableRoute,
+} from "@Components/phoneApplications/Messages/hooks/useConversation/digestion/types";
 import { CONVERSATION_REDUCER_ACTIONS } from "@Components/phoneApplications/Messages/hooks/useConversation/reducer/type";
 import { ConversationDispatchType } from "@Components/phoneApplications/Messages/hooks/useConversation/types";
 import { convertMessageToString } from "@Components/phoneApplications/Messages/hooks/useConversations/determineLogLine";
@@ -14,6 +17,7 @@ import { useInsetDimensions } from "src/utility/useInsetDimensions";
 import MessageTextInput from "./MessageTextInput";
 import OptionList from "./OptionList";
 import Option from "./OptionList/Option";
+import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
 
 const RootChooser: FC<
   {
@@ -34,7 +38,7 @@ const RootChooser: FC<
     if (nextMessageInQueue) {
       return convertMessageToString(nextMessageInQueue);
     }
-    if (availableRoute && chosenRoute == null) {
+    if (choosableRoute(availableRoute) && chosenRoute == null) {
       const { options } = availableRoute;
       if (options.length === 1) {
         return options[0];
@@ -50,7 +54,7 @@ const RootChooser: FC<
       dispatch({ type: CONVERSATION_REDUCER_ACTIONS.CONTINUE_ROUTE });
       return;
     }
-    if (availableRoute) {
+    if (choosableRoute(availableRoute)) {
       const { options } = availableRoute;
       if (options.length === 1) {
         dispatch({
@@ -68,7 +72,7 @@ const RootChooser: FC<
   }, [nextMessageInQueue, availableRoute, dispatch, chosenOption]);
 
   const Options = useMemo(() => {
-    if (availableRoute) {
+    if (choosableRoute(availableRoute)) {
       const nodes = availableRoute.options.map((option) => (
         <Option
           key={`${availableRoute.routes.id}-${option}`}
@@ -85,14 +89,17 @@ const RootChooser: FC<
   }, [availableRoute]);
 
   useEffect(() => {
-    ConversationEmitter.on(
-      CONVERSATION_EMITTER_EVENTS.RESET,
-      ({ name, type }) => {
-        openOptionList(false);
-      }
-    );
+    const cb = (payload: {
+      name: MESSAGE_CONTACT_NAME;
+      type?: "new" | "base" | undefined;
+      additional?: string | undefined;
+    }) => {
+      openOptionList(false);
+    };
+
+    ConversationEmitter.on(CONVERSATION_EMITTER_EVENTS.RESET, cb);
     return () => {
-      ConversationEmitter.off(CONVERSATION_EMITTER_EVENTS.RESET, () => {});
+      ConversationEmitter.off(CONVERSATION_EMITTER_EVENTS.RESET, cb);
     };
   }, []);
   return (

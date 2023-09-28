@@ -72,25 +72,27 @@ const ConversationList: FC<{
   }, [dispatch, footerHeight]);
 
   useEffect(() => {
-    ListOffsetEmitter.on(LIST_EMITTER_EVENTS.ADD_TO_OFFSET, (amount) => {
+    const cb = (amount: number) => {
       scrollRef?.current.scrollToOffset({
         offset: scrollHandler.value + amount,
         animated: true,
       });
-    });
+    };
+    ListOffsetEmitter.on(LIST_EMITTER_EVENTS.ADD_TO_OFFSET, cb);
     return () => {
-      ListOffsetEmitter.off(LIST_EMITTER_EVENTS.ADD_TO_OFFSET, () => {});
+      ListOffsetEmitter.off(LIST_EMITTER_EVENTS.ADD_TO_OFFSET, cb);
     };
   }, [scrollHandler, scrollRef]);
 
   useEffect(() => {
-    ListOffsetEmitter.on(LIST_EMITTER_EVENTS.END, (amount) => {
+    const cb = (amount: number) => {
       scrollRef?.current.scrollToEnd({
         animated: true,
       });
-    });
+    };
+    ListOffsetEmitter.on(LIST_EMITTER_EVENTS.END, cb);
     return () => {
-      ListOffsetEmitter.off(LIST_EMITTER_EVENTS.END, () => {});
+      ListOffsetEmitter.off(LIST_EMITTER_EVENTS.END, cb);
     };
   }, [scrollHandler, scrollRef]);
 

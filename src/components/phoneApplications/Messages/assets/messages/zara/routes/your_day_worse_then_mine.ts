@@ -5,7 +5,7 @@ import { ZARA_ROUTE_IDS } from "./routes";
 
 export const your_day_worse_then_mine: NotificationRouteType = {
   id: ZARA_ROUTE_IDS.YOUR_DAY_WORSE_THEN_MINE,
-  delay: 1000,
+  delay: 5000,
   conditions: {
     [MESSAGE_CONTACT_NAME.ZARA]: {
       routes: { [ZARA_ROUTE_IDS.BORKED_PHONE]: { finished: true } },

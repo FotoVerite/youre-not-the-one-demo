@@ -1,6 +1,9 @@
 import { APP_EVENTS_ACTIONS } from "@Components/appEvents/reducer/types";
 
-import { DigestedConversationWithAvailableRoute } from "../digestion/types";
+import {
+  DigestedConversationType,
+  DigestedConversationWithAvailableRoute,
+} from "../digestion/types";
 
 export const createCleanupPayload = (
   draft: DigestedConversationWithAvailableRoute,
@@ -19,18 +22,18 @@ export const createCleanupPayload = (
 };
 
 export const routeStartedPayload = (
-  draft: DigestedConversationWithAvailableRoute
-) => {
-  return {
-    type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_CREATE,
-    payload: {
-      name: draft.name,
-      chosen: draft.chosenRoute,
-      routeId: draft.availableRoute.id,
-      atIndex: 1,
-    },
-  };
-};
+  draft: DigestedConversationType,
+  routeID: number
+) => ({
+  type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_CREATE,
+  payload: {
+    name: draft.name,
+    chosen: draft.chosenRoute,
+    routeId: routeID,
+    atIndex: 1,
+    finished: false,
+  },
+});
 
 export const routeUpdatePayload = (
   draft: DigestedConversationWithAvailableRoute

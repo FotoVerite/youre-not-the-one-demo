@@ -41,12 +41,16 @@ const routeChosenSelected = (
   chosen?: string[],
   viewed?: MessageRouteEventDataType
 ) => {
-  if (!viewed || !viewed.chosen) {
+  if (!viewed) {
     return false;
   }
 
   if (chosen == null) {
     return true;
+  }
+
+  if (!viewed.chosen) {
+    return false;
   }
   return chosen.includes(viewed.chosen);
 };
@@ -55,12 +59,16 @@ const routeNotChosenSelected = (
   not_chosen?: string[],
   viewed?: MessageRouteEventDataType
 ) => {
-  if (!viewed || !viewed.chosen) {
+  if (!viewed) {
     return false;
   }
 
   if (not_chosen == null) {
     return true;
+  }
+
+  if (!viewed.chosen) {
+    return false;
   }
   return !not_chosen.includes(viewed.chosen);
 };

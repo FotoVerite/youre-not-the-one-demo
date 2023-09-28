@@ -8,7 +8,7 @@ import {
   MESSAGE_CONTENT,
   MessageEffectType,
 } from "../../contentWithMetaTypes";
-import { MessageRouteType } from "../../routes/types";
+import { MessageRouteType, NotificationRouteType } from "../../routes/types";
 import {
   ConversationType,
   MessageContentType,
@@ -175,7 +175,7 @@ export type DigestedConversationType = Omit<
 > & {
   activePath: MessagePayloadType[];
   seenRoutes: string[];
-  availableRoute?: MessageRouteType;
+  availableRoute?: MessageRouteType | NotificationRouteType;
   chosenRoute?: string;
   cleanupAction?: AppEventsReducerActionsType;
   eventAction?: AppEventsReducerActionsType;
@@ -192,10 +192,20 @@ export type DigestedBubbleProps = {
   [index in keyof BubbleItemType]?: BubbleItemType[index];
 };
 
-export type DigestedConversationWithAvailableRoute = Omit<
+export type DigestedConversationWithChoosableRoute = Omit<
   DigestedConversationType,
   "availableRoute"
 > & { availableRoute: MessageRouteType };
+
+export type DigestedConversationWithNotificationRoute = Omit<
+  DigestedConversationType,
+  "availableRoute"
+> & { availableRoute: NotificationRouteType };
+
+export type DigestedConversationWithAvailableRoute = Omit<
+  DigestedConversationType,
+  "availableRoute"
+> & { availableRoute: MessageRouteType | NotificationRouteType };
 
 export const hasAvailableRoute = (
   draft: DigestedConversationType
@@ -249,4 +259,19 @@ export const isDigestedLabel = (
   exchange: DigestedConversationListItem
 ): exchange is DigestedLabelType => {
   return !isDigestedBubble(exchange);
+};
+
+export const choosableRoute = (
+  route: MessageRouteType | NotificationRouteType | undefined
+): route is MessageRouteType => {
+  return route != null && route.hasOwnProperty("options");
+};
+
+export const hasChoosableRoute = (
+  draft: DigestedConversationType
+): draft is DigestedConversationWithChoosableRoute => {
+  return (
+    draft.availableRoute != null &&
+    draft.availableRoute.hasOwnProperty("options")
+  );
 };

@@ -65,7 +65,8 @@ const AppEventsContextProvider: FC<AppEventsContextTypeDigest> = (props) => {
         payload: notification,
       })
     );
-    sentNotifications.current.concat(newNotifications);
+    sentNotifications.current =
+      sentNotifications.current.concat(newNotifications);
   }, [events.NOTIFICATIONS, notificationDispatch]);
 
   return (

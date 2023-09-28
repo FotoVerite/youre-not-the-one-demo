@@ -63,6 +63,11 @@ const exchanges: ExchangeBlockType[] = [
 export const i_dont_know_what_to_do_with_myself: MessageRouteType = {
   id: ZARA_ROUTE_IDS.I_REALLY_DONT_KNOW_WHAT_TO_DO_WITH_MYSELF,
   options: Object.values(OPTIONS),
+  conditions: {
+    [MESSAGE_CONTACT_NAME.ZARA]: {
+      routes: { [ZARA_ROUTE_IDS.YOUR_DAY_WORSE_THEN_MINE]: { finished: true } },
+    },
+  },
   routes: {
     [OPTIONS.A]: [
       {

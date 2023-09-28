@@ -53,6 +53,11 @@ const exchanges = [
 export const your_new_video: MessageRouteType = {
   id: ZARA_ROUTE_IDS.YOUR_NEW_VIDEO,
   options: Object.values(OPTIONS),
+  conditions: {
+    [MESSAGE_CONTACT_NAME.ZARA]: {
+      routes: { [ZARA_ROUTE_IDS.YOUR_DAY_WORSE_THEN_MINE]: { finished: true } },
+    },
+  },
   routes: {
     [OPTIONS.A]: [
       {

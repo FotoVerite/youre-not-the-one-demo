@@ -22,7 +22,7 @@ import {
 } from "./type";
 import { MESSAGE_CONTENT } from "../../contentWithMetaTypes";
 import { findAvailableRoutes } from "../../routes/available";
-import { getSeenRoutes } from "../../routes/seen";
+import { RouteObjectType, getSeenRoutes } from "../../routes/seen";
 import { convertMessageToString } from "../../useConversations/determineLogLine";
 import { createSkBubbleFromPayload } from "../digestion/SkFunctions/createSkBubble";
 import { createTimeStampLabel } from "../digestion/SkFunctions/createTimeStampLabel";
@@ -43,6 +43,8 @@ import {
   DigestedConversationWithAvailableRoute,
 } from "../digestion/types";
 import { getListHeight } from "../digestion/utility";
+import { getNotificationPath, getPathViaPayload } from "./routes";
+import { ExchangeBlockType } from "../../useConversations/types";
 
 const createConversationReducer =
   (config: BaseConfigType) =>
@@ -90,6 +92,21 @@ const conversationReducer = produce(
   }
 );
 
+const findUnseenNotification = (
+  draft: DigestedConversationType,
+  seenRoutes: RouteObjectType[]
+) => {
+  const routesNeedingAppending = seenRoutes.filter(
+    (route) => !draft.seenRoutes.includes(route.routeId)
+  );
+  const notificationRouteObject = routesNeedingAppending.shift();
+  if (notificationRouteObject == null || draft.notificationRoutes == null)
+    return;
+  return draft.notificationRoutes.find(
+    (n) => n.id.toString() === notificationRouteObject.routeId
+  );
+};
+
 const refreshAvailableRoute = (
   config: BaseConfigType,
   draft: DigestedConversationType,
@@ -107,32 +124,30 @@ const refreshAvailableRoute = (
     draft.routes,
     draft.notificationRoutes
   );
-
+  const notificationRoute = findUnseenNotification(draft, seenRoutes);
+  if (notificationRoute && draft.availableRoute?.id === notificationRoute.id) {
+    return;
+  }
   if (route && route.id !== draft.availableRoute?.id) {
     draft.availableRoute = route;
   }
-  const routesNeedingAppending = seenRoutes.filter(
-    (route) => !draft.seenRoutes.includes(route.routeId)
+  if (notificationRoute == null) return draft;
+  draft.availableRoute = notificationRoute;
+  return _createMessageAndUpdateDraft(
+    config,
+    draft,
+    notificationRoute.exchanges,
+    draft.availableRoute.id
   );
-
-  routesNeedingAppending.forEach((route) => {
-    draft.exchanges = appendRoute(draft.exchanges, route, draft.group, config);
-  });
-
-  return draft;
 };
 
-const startRoute = (
+const _createMessageAndUpdateDraft = (
   config: BaseConfigType,
   draft: DigestedConversationType,
-  payload: { chosenOption: string }
+  path: ExchangeBlockType[],
+  routeID: number,
+  chosenOption?: string
 ) => {
-  if (!hasAvailableRoute(draft)) return;
-  const route = draft.routes.find((r) => r.id === draft.availableRoute?.id);
-  if (route == null) {
-    return draft;
-  }
-  const path = route.routes[payload.chosenOption];
   const pendingMessages = convertBlockToMessagePayloadType(path);
   const nextMessageContent = pendingMessages.shift();
   if (nextMessageContent == null) {
@@ -157,11 +172,27 @@ const startRoute = (
     );
   }
   draft.activePath = pendingMessages;
-  draft.chosenRoute = payload.chosenOption;
+  draft.chosenRoute = chosenOption;
   draft.routeAtIndex = 1;
-  draft.eventAction = routeStartedPayload(draft);
+  draft.eventAction = routeStartedPayload(draft, routeID);
   _createCleanupAction(draft);
-  return draft;
+};
+
+const startRoute = (
+  config: BaseConfigType,
+  draft: DigestedConversationType,
+  payload: { chosenOption: string }
+) => {
+  if (!hasAvailableRoute(draft)) return;
+  const path = getPathViaPayload(draft, payload);
+  if (!path) return;
+  return _createMessageAndUpdateDraft(
+    config,
+    draft,
+    path,
+    draft.availableRoute.id,
+    payload.chosenOption
+  );
 };
 
 const addNewTimeBlockToExchanges = (
