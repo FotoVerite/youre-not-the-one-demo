@@ -12,15 +12,15 @@ import {
 import { greg } from "../../assets/messages/greg";
 import { leo } from "../../assets/messages/leo";
 import { spam1 } from "../../assets/messages/spam1";
+import { toSelf } from "../../assets/messages/toSelf";
 import { zara } from "../../assets/messages/zara";
 import { MESSAGE_CONTACT_NAME } from "../../constants";
 import {
   findAvailableRoutes,
   messageAppConditionsMet,
 } from "../routes/available";
-import { toSelf } from "../../assets/messages/toSelf";
 
-const _conversations: ConversationFileType[] = [toSelf, zara];
+const _conversations: ConversationFileType[] = [toSelf, zara, spam1];
 
 const viewableConversationsFilter =
   (events: AppEventsType) => (conversation: ConversationFileType) =>

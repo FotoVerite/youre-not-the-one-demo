@@ -6,21 +6,26 @@ import { ConversationFileType } from "@Components/phoneApplications/Messages/hoo
 import moment from "moment";
 
 import { spam1_exchange_one } from "./routes/spam1_exchange_one";
-import { spam1_exchange_two } from "./routes/spam_exchange_two";
+import {
+  SPAM1_SECOND_EXCHANGE_OPTIONS,
+  spam1_exchange_two,
+} from "./routes/spam_exchange_two";
 import { spam1_introduction } from "./routes/spam_introduction";
+import { ZARA_ROUTE_IDS } from "../zara/routes/routes";
+import { SPAM1_IDS } from "./routes/routes";
 
 const NAME = MESSAGE_CONTACT_NAME.SPAM1;
 const SELF = MESSAGE_CONTACT_NAME.SELF;
 export const spam1: ConversationFileType = {
   name: NAME,
   tags: [NAME],
-  // conditions: {
-  //   [MESSAGE_CONTACT_NAME.ZARA]: {
-  //     routes: {
-  //       [ZARA_ROUTE_IDS.YOUR_NEW_VIDEO]: {},
-  //     },
-  //   },
-  // },
+  conditions: {
+    [MESSAGE_CONTACT_NAME.ZARA]: {
+      routes: {
+        [ZARA_ROUTE_IDS.YOUR_NEW_VIDEO]: {},
+      },
+    },
+  },
   // effects: [
   //   {
   //     type: EFFECT_TYPE.LOGLINE_REPLACEMENT,
@@ -39,34 +44,18 @@ export const spam1: ConversationFileType = {
   heroImage: MESSAGE_CONTACT_INFO[NAME].avatar,
   interfaceColor: MESSAGE_CONTACT_INFO[NAME].colors[0],
   notificationRoutes: [spam1_introduction],
-  exchanges: [
-    {
-      time: moment().subtract(3, "years"),
-      exchanges: [
-        {
-          name: NAME,
-          messages: ["Hi my name is Kaori and I'm new to the area."],
+  blockable: {
+    conditions: {
+      [MESSAGE_CONTACT_NAME.SPAM1]: {
+        routes: {
+          [SPAM1_IDS.EXCHANGE_TWO]: {
+            chosen: [SPAM1_SECOND_EXCHANGE_OPTIONS.B],
+            finished: true,
+          },
         },
-        {
-          name: SELF,
-          messages: [
-            "Sometimes I doubt I'll make it to forty",
-            "Like I haven't earned the right to continue",
-            "Nothing I do seems to effect anyone",
-            "Every relationship fails",
-            "Every relationship fails",
-          ],
-        },
-        {
-          name: NAME,
-          messages: ["Why do you act like you need permission to thrive?"],
-        },
-        {
-          name: SELF,
-          messages: ["Because I feel like I need permission"],
-        },
-      ],
+      },
     },
-  ],
-  routes: [spam1_exchange_one],
+  },
+  exchanges: [],
+  routes: [spam1_exchange_one, spam1_exchange_two],
 };

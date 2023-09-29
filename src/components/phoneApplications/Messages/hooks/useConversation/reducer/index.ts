@@ -16,20 +16,21 @@ import {
   revertPreviousMessageEphemeralProps,
   setMessageEphemeralProps,
 } from "./messageMutations";
+import { findUnseenNotification } from "./refresh";
+import { getPathViaPayload } from "./routes";
 import {
   ConversationReducerActionsType,
   CONVERSATION_REDUCER_ACTIONS,
 } from "./type";
 import { MESSAGE_CONTENT } from "../../contentWithMetaTypes";
 import { findAvailableRoutes } from "../../routes/available";
-import { RouteObjectType, getSeenRoutes } from "../../routes/seen";
+import { getSeenRoutes } from "../../routes/seen";
 import { convertMessageToString } from "../../useConversations/determineLogLine";
+import { ExchangeBlockType } from "../../useConversations/types";
 import { createSkBubbleFromPayload } from "../digestion/SkFunctions/createSkBubble";
 import { createTimeStampLabel } from "../digestion/SkFunctions/createTimeStampLabel";
-import {
-  appendRoute,
-  convertBlockToMessagePayloadType,
-} from "../digestion/digestRoute";
+import { blockableConditionsMet } from "../digestion/blockable";
+import { convertBlockToMessagePayloadType } from "../digestion/digestRoute";
 import { appendReadLabel } from "../digestion/readLabel";
 import {
   DigestedConversationType,
@@ -43,8 +44,6 @@ import {
   DigestedConversationWithAvailableRoute,
 } from "../digestion/types";
 import { getListHeight } from "../digestion/utility";
-import { getNotificationPath, getPathViaPayload } from "./routes";
-import { ExchangeBlockType } from "../../useConversations/types";
 
 const createConversationReducer =
   (config: BaseConfigType) =>
@@ -71,8 +70,8 @@ const conversationReducer = produce(
         return block(draft);
       case CONVERSATION_REDUCER_ACTIONS.CONTINUE_ROUTE:
         return continueRoute(config, draft);
-      case CONVERSATION_REDUCER_ACTIONS.REFRESH_AVAILABLE_ROUTE:
-        return refreshAvailableRoute(config, draft, action.payload);
+      case CONVERSATION_REDUCER_ACTIONS.REFRESH:
+        return refreshConversation(config, draft, action.payload);
       case CONVERSATION_REDUCER_ACTIONS.START_ROUTE:
         return startRoute(config, draft, action.payload);
       case CONVERSATION_REDUCER_ACTIONS.UPDATE_MESSAGE:
@@ -92,26 +91,12 @@ const conversationReducer = produce(
   }
 );
 
-const findUnseenNotification = (
-  draft: DigestedConversationType,
-  seenRoutes: RouteObjectType[]
-) => {
-  const routesNeedingAppending = seenRoutes.filter(
-    (route) => !draft.seenRoutes.includes(route.routeId)
-  );
-  const notificationRouteObject = routesNeedingAppending.shift();
-  if (notificationRouteObject == null || draft.notificationRoutes == null)
-    return;
-  return draft.notificationRoutes.find(
-    (n) => n.id.toString() === notificationRouteObject.routeId
-  );
-};
-
-const refreshAvailableRoute = (
+const refreshConversation = (
   config: BaseConfigType,
   draft: DigestedConversationType,
   events: AppEventsType
 ) => {
+  draft.blockable = blockableConditionsMet(draft, events);
   const route = findAvailableRoutes(
     draft.name,
     draft.routes || [],

@@ -12,7 +12,7 @@ export enum CONVERSATION_REDUCER_ACTIONS {
   BLOCK,
   CONTINUE_ROUTE,
   DIGEST_CONVERSATION,
-  REFRESH_AVAILABLE_ROUTE,
+  REFRESH,
   START_ROUTE,
   SKIP_ROUTE,
   UPDATE_MESSAGE,
@@ -41,7 +41,7 @@ export type DigestConversationActionType = {
 };
 
 type RefreshAvailableRouteActionType = {
-  type: CONVERSATION_REDUCER_ACTIONS.REFRESH_AVAILABLE_ROUTE;
+  type: CONVERSATION_REDUCER_ACTIONS.REFRESH;
   payload: AppEventsType;
 };
 

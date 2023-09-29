@@ -22,32 +22,44 @@ import {
 import eventsReducer from "../reducer";
 import {
   AppEventsReducerActionsType,
+  AppEventsType,
   MessageAppEventsContainerType,
 } from "../reducer/types";
+import { getData } from "src/utility/storage";
+import { useStorageContext } from "src/contexts/storage";
 
 //defaults for empty app
 const AppEventsContext = React.createContext<
   AppEventsContextTypeDigested | undefined
 >(undefined);
 
+const setInitialState = (state: AppEventsType | false) => {
+  if (state) {
+    return state;
+  }
+  const defaultState = {
+    [PHONE_APPLICATION_NAMES.MESSAGES]: {} as MessageAppEventsContainerType,
+    NOTIFICATIONS: [],
+  };
+  const messageState = defaultState.Messages;
+  for (const name of Object.values(MESSAGE_CONTACT_NAME)) {
+    if (messageState[name] === undefined) {
+      messageState[name] = { views: [], routes: {}, blocked: false };
+    }
+  }
+  return defaultState;
+};
+
 const AppEventsContextProvider: FC<AppEventsContextTypeDigest> = (props) => {
   const sentNotifications = useRef<NotificationDataType[]>([]);
   const { dispatch: notificationDispatch } = useNotificationContext();
-  const setDefaultMessageEventState = (
-    state: MessageAppEventsContainerType
-  ) => {
-    for (const name of Object.values(MESSAGE_CONTACT_NAME)) {
-      if (state[name] === undefined) {
-        state[name] = { views: [], routes: {}, blocked: false };
-      }
-    }
-    return state;
-  };
+  const storage = useStorageContext();
 
-  const [events, dispatch] = useReducer(eventsReducer, {
-    [PHONE_APPLICATION_NAMES.MESSAGES]: setDefaultMessageEventState({}),
-    NOTIFICATIONS: [],
-  });
+  const [events, dispatch] = useReducer(
+    eventsReducer,
+    setInitialState(storage.events)
+  );
+
   const memoizedDispatch = useCallback(
     (action: AppEventsReducerActionsType) => {
       dispatch(action);

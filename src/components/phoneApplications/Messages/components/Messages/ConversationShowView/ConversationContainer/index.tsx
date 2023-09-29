@@ -13,6 +13,7 @@ const ConversationContainer: FC<
   return (
     <>
       <ConversationList
+        blockable={conversation.blockable === true}
         exchanges={conversation?.exchanges}
         dispatch={dispatch}
       />

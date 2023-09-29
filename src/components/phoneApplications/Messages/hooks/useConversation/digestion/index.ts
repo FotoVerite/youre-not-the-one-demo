@@ -11,6 +11,7 @@ import {
 import { digestUnfinishedRoute } from "./unfinishedRoute";
 import { findAvailableRoutes } from "../../routes/available";
 import { ConversationType } from "../../useConversations/types";
+import { blockableConditionsMet } from "./blockable";
 
 const combineIntoDigestedConversationType = (
   exchanges: DigestedConversationListItem[],
@@ -48,7 +49,7 @@ export const digestConversation = async (
     conversationProps,
     events
   );
-
+  digested.blockable = blockableConditionsMet(digested, events);
   digested.exchanges = appendSeenRoutes(digested, events, config);
   digestUnfinishedRoute(digested, events, config);
   digested.exchanges = await resolveSnapshots(digested.exchanges);

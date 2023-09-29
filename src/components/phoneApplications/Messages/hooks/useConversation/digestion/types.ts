@@ -8,7 +8,11 @@ import {
   MESSAGE_CONTENT,
   MessageEffectType,
 } from "../../contentWithMetaTypes";
-import { MessageRouteType, NotificationRouteType } from "../../routes/types";
+import {
+  MessageRouteType,
+  NotificationRouteType,
+  RouteConditionsType,
+} from "../../routes/types";
 import {
   ConversationType,
   MessageContentType,
@@ -207,6 +211,11 @@ export type DigestedConversationWithAvailableRoute = Omit<
   "availableRoute"
 > & { availableRoute: MessageRouteType | NotificationRouteType };
 
+export type DigestedConversationWithConditionalBlockability = Omit<
+  DigestedConversationType,
+  "blockable"
+> & { blockable: { conditions: RouteConditionsType } };
+
 export const hasAvailableRoute = (
   draft: DigestedConversationType
 ): draft is DigestedConversationWithAvailableRoute => {
@@ -273,5 +282,13 @@ export const hasChoosableRoute = (
   return (
     draft.availableRoute != null &&
     draft.availableRoute.hasOwnProperty("options")
+  );
+};
+
+export const hasBlockableConditions = (
+  draft: DigestedConversationType
+): draft is DigestedConversationWithConditionalBlockability => {
+  return (
+    draft.blockable != null && draft.blockable.hasOwnProperty("conditions")
   );
 };

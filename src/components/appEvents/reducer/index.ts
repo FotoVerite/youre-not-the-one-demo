@@ -48,8 +48,11 @@ const CreateRouteEvent = (
 ) => {
   const { routeId, name, notification, ...props } = payload;
   const routeInfo = draft.Messages[name].routes;
-  const position = Object.keys(routeInfo).length + 1;
   const stringRouteID = routeId.toString();
+
+  const position = routeInfo[stringRouteID]
+    ? routeInfo[stringRouteID].position
+    : Object.keys(routeInfo).length + 1;
   routeInfo[stringRouteID] = {
     createdAt: new Date(),
     updatedAt: new Date(),

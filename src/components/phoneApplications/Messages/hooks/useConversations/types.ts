@@ -32,7 +32,7 @@ export type ConversationExchangeType = {
 
 export type ConversationType = {
   availableEventRoutes?: number[];
-  blockable?: boolean;
+  blockable?: boolean | { conditions: RouteConditionsType };
   blocked?: boolean;
   conditions?: RouteConditionsType;
   effects?: MessageEffectType[];
