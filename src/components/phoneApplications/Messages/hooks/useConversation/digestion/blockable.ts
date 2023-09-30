@@ -1,7 +1,7 @@
 import { AppEventsType } from "@Components/appEvents/reducer/types";
 
 import { DigestedConversationType, hasBlockableConditions } from "./types";
-import { messageAppConditionsMet } from "../../routes/available";
+import { messageAppConditionsMet } from "../../routes/conditionals";
 
 export const blockableConditionsMet = (
   draft: DigestedConversationType,

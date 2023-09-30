@@ -23,7 +23,7 @@ const NotificationsContextProvider: FC<NotificationsContextTypeDigest> = ({
     (args: NotificationsReducerActionsType) => {
       _dispatch(args);
     },
-    [_dispatch],
+    [_dispatch]
   );
   return (
     <NotificationsContext.Provider

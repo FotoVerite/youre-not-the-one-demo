@@ -24,7 +24,7 @@ export const leo_first_monologue: MessageRouteType = {
   options: Object.values(OPTIONS),
   effects: [
     {
-      type: EFFECT_TYPE.FULL_REPLACEMENT,
+      type: EFFECT_TYPE.CONDITIONAL_EXCHANGE,
       data: {
         [OPTIONS.A]: leo_monologue_replacement_one,
       },
@@ -36,7 +36,7 @@ export const leo_first_monologue: MessageRouteType = {
       },
     },
     {
-      type: EFFECT_TYPE.FULL_REPLACEMENT,
+      type: EFFECT_TYPE.CONDITIONAL_EXCHANGE,
       data: {
         [OPTIONS.A]: leo_monologue_replacement_two,
       },
@@ -48,7 +48,7 @@ export const leo_first_monologue: MessageRouteType = {
       },
     },
     {
-      type: EFFECT_TYPE.FULL_REPLACEMENT,
+      type: EFFECT_TYPE.CONDITIONAL_EXCHANGE,
       data: {
         [OPTIONS.A]: leo_monologue_replacement_three,
       },
@@ -60,7 +60,7 @@ export const leo_first_monologue: MessageRouteType = {
       },
     },
     {
-      type: EFFECT_TYPE.FULL_REPLACEMENT,
+      type: EFFECT_TYPE.CONDITIONAL_EXCHANGE,
       data: {
         [OPTIONS.A]: leo_monologue_replacement_four,
       },

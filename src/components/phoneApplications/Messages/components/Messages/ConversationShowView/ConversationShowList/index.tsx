@@ -15,13 +15,6 @@ import ListItem from "./ListItem";
 import { ConversationShowListItem } from "./ListItem/types";
 import ListOffsetEmitter, { LIST_EMITTER_EVENTS } from "./emitters";
 
-function ListHeader() {
-  return <View style={{ height: 50 }} />;
-}
-
-function ListFooter() {
-  return <View style={{ height: 50 }} />;
-}
 const renderItem: ListRenderItem<ConversationShowListItem> = ({ item }) => (
   <ListItem {...item} />
 );
@@ -39,10 +32,11 @@ const keyExtractor = (item: DigestedConversationListItem, index: number) =>
   index + `-conversation-${item.ID}`;
 
 const ConversationList: FC<{
+  blockable: boolean;
   exchanges: DigestedConversationListItem[];
   height?: number;
   dispatch: (action: ConversationReducerActionsType) => void;
-}> = ({ dispatch, height, exchanges }) => {
+}> = ({ blockable, dispatch, height, exchanges }) => {
   const scrollRef = useAnimatedRef<Animated.FlatList<any>>();
   const scrollHandler = useScrollViewOffset(scrollRef as any);
 
@@ -64,12 +58,12 @@ const ConversationList: FC<{
   const memoizedFooter = useMemo(() => {
     return (
       <Footer
-        blockable={false}
+        blockable={blockable}
         dispatch={dispatch}
         footerHeight={footerHeight}
       />
     );
-  }, [dispatch, footerHeight]);
+  }, [blockable, dispatch, footerHeight]);
 
   useEffect(() => {
     const cb = (amount: number) => {

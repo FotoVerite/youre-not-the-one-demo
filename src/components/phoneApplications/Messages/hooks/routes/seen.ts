@@ -4,13 +4,12 @@ import {
   MessageRouteEventType,
 } from "@Components/appEvents/reducer/types";
 
-import { messageAppConditionsMet } from "./available";
+import { mergeEffectsForMessageRouteType } from "./conditionals";
 import { MessageRouteType, NotificationRouteType } from "./types";
 import { MESSAGE_CONTACT_NAME } from "../../constants";
-import { EFFECT_TYPE } from "../contentWithMetaTypes";
 import { ExchangeBlockType } from "../useConversations/types";
 
-export type SeenRouteType = {
+export type SeenRoutesType = {
   [index: string]: { [key: string]: ExchangeBlockType[] };
 };
 
@@ -19,32 +18,23 @@ export type RouteObjectType = {
   exchanges: ExchangeBlockType[];
 } & MessageRouteEventDataType;
 
-const constructAvailableRouteObject = (
+const constructSeenRouteObject = (
   events: AppEventsType,
   availableRoutes: MessageRouteType[]
 ) => {
-  const routes: SeenRouteType = {};
-  availableRoutes.forEach((route) => {
-    routes[route.id] = route.routes;
-    const FullReplacement = route.effects?.filter(
-      (effect) =>
-        effect.type === EFFECT_TYPE.FULL_REPLACEMENT &&
-        messageAppConditionsMet(events.Messages, effect.conditions)
-    )[0];
-    if (FullReplacement) {
-      routes[route.id] = FullReplacement.data;
-    }
-  });
-  return routes;
+  return availableRoutes.reduce((routes, route) => {
+    routes[route.id] = mergeEffectsForMessageRouteType(route, events).routes;
+    return routes;
+  }, {} as SeenRoutesType);
 };
 
 const constructSeenRoutes = (
   routeEvents: MessageRouteEventType,
-  availableRoutes: SeenRouteType
+  seenRoutes: SeenRoutesType
 ) => {
   const ret: RouteObjectType[] = [];
   for (const [key, value] of Object.entries(routeEvents)) {
-    if (availableRoutes[key] == null || !value.finished) {
+    if (seenRoutes[key] == null || !value.finished) {
       continue;
     }
     ret.push(
@@ -52,7 +42,7 @@ const constructSeenRoutes = (
         {},
         { routeId: key },
         { ...value },
-        { exchanges: availableRoutes[key][value.chosen!] }
+        { exchanges: seenRoutes[key][value.chosen!] }
       )
     );
   }
@@ -95,7 +85,7 @@ export const getSeenOptionRoutes = (
 
   return constructSeenRoutes(
     routeEvents,
-    constructAvailableRouteObject(events, availableRoutes)
+    constructSeenRouteObject(events, availableRoutes)
   );
 };
 

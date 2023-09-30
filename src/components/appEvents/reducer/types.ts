@@ -1,7 +1,4 @@
-import {
-  NotificationDataType,
-  NotificationType,
-} from "@Components/notifications/reducer/types";
+import { NotificationDataType } from "@Components/notifications/reducer/types";
 import { PHONE_APPLICATION_NAMES } from "src/constants/phoneApplicationNames";
 
 type MESSAGE_CONTACT_NAME = string;
@@ -18,10 +15,10 @@ export enum APP_EVENTS_ACTIONS {
 export type MessageRouteEventDataType = {
   atIndex?: number;
   chosen?: string;
-  createdAt: Date;
+  createdAt: string;
   finished?: boolean;
   position: number;
-  updatedAt: Date;
+  updatedAt: string;
 };
 
 export type MessageRouteEventType = {

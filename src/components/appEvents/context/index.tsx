@@ -68,6 +68,12 @@ const AppEventsContextProvider: FC<AppEventsContextTypeDigest> = (props) => {
   );
 
   useEffect(() => {
+    sentNotifications.current = storage.events
+      ? storage.events.NOTIFICATIONS
+      : [];
+  }, [storage.events]);
+
+  useEffect(() => {
     const newNotifications = events.NOTIFICATIONS.filter(
       (notification) => !sentNotifications.current.includes(notification)
     );

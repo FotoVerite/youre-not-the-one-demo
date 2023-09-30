@@ -22,9 +22,7 @@ export const lastRouteTime = (
     digested.routes || []
   );
   if (unfinishedID) {
-    return events.Messages[digested.name].routes[
-      unfinishedID
-    ].createdAt.toISOString();
+    return events.Messages[digested.name].routes[unfinishedID].createdAt;
   }
   const seenRoutes = getSeenRoutes(
     digested.name,
@@ -32,7 +30,7 @@ export const lastRouteTime = (
     digested.routes,
     digested.notificationRoutes
   );
-  return seenRoutes[0] ? seenRoutes[0].createdAt.toISOString() : undefined;
+  return seenRoutes[0] ? seenRoutes[0].createdAt : undefined;
 };
 
 type FilterType = {

@@ -26,7 +26,7 @@ export const check_if_txt_is_working: MessageRouteType = {
   options: Object.values(OPTIONS),
   effects: [
     {
-      type: EFFECT_TYPE.FULL_REPLACEMENT,
+      type: EFFECT_TYPE.CONDITIONAL_EXCHANGE,
       data: {
         [OPTIONS.A]: leo_monologue_replacement_one,
       },
@@ -38,7 +38,7 @@ export const check_if_txt_is_working: MessageRouteType = {
       },
     },
     {
-      type: EFFECT_TYPE.FULL_REPLACEMENT,
+      type: EFFECT_TYPE.CONDITIONAL_EXCHANGE,
       data: {
         [OPTIONS.A]: leo_monologue_replacement_two,
       },
@@ -50,7 +50,7 @@ export const check_if_txt_is_working: MessageRouteType = {
       },
     },
     {
-      type: EFFECT_TYPE.FULL_REPLACEMENT,
+      type: EFFECT_TYPE.CONDITIONAL_EXCHANGE,
       data: {
         [OPTIONS.A]: leo_monologue_replacement_three,
       },
@@ -62,7 +62,7 @@ export const check_if_txt_is_working: MessageRouteType = {
       },
     },
     {
-      type: EFFECT_TYPE.FULL_REPLACEMENT,
+      type: EFFECT_TYPE.CONDITIONAL_EXCHANGE,
       data: {
         [OPTIONS.A]: leo_monologue_replacement_four,
       },

@@ -1,5 +1,6 @@
 import { AppEventsType } from "@Components/appEvents/reducer/types";
 
+import { blockableConditionsMet } from "./blockable";
 import { appendSeenRoutes, digestExchanges } from "./digestRoute";
 import { appendReadLabel, lastRouteTime } from "./readLabel";
 import { resolveSnapshots } from "./snapshotResolver";
@@ -9,20 +10,21 @@ import {
   BaseConfigType,
 } from "./types";
 import { digestUnfinishedRoute } from "./unfinishedRoute";
+import { EFFECT_TYPE } from "../../contentWithMetaTypes";
 import { findAvailableRoutes } from "../../routes/available";
 import { ConversationType } from "../../useConversations/types";
-import { blockableConditionsMet } from "./blockable";
 
 const combineIntoDigestedConversationType = (
   exchanges: DigestedConversationListItem[],
   props: Omit<ConversationType, "exchanges">,
   events: AppEventsType
 ): DigestedConversationType => {
-  const availableRoute = findAvailableRoutes(
+  let availableRoute = findAvailableRoutes(
     props.name,
     props.routes || [],
     events
   )[0];
+
   return {
     ...props,
     exchanges,

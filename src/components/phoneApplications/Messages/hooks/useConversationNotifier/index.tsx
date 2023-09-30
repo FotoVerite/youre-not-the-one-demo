@@ -14,11 +14,10 @@ import {
   getLastMessageFromExchanges,
 } from "../useConversations/determineLogLine";
 import { ConversationFileType } from "../useConversations/types";
+import { createSHA1ID } from "src/utility/crypto";
+import { useStorageContext } from "src/contexts/storage";
 
-type NotificationRecord = Record<
-  string,
-  { name: MESSAGE_CONTACT_NAME; route: NotificationRouteType }
->;
+type NotificationRecord = Record<string, boolean>;
 
 export const useConversationNotifier = (
   conversations: ConversationFileType[],
@@ -30,7 +29,20 @@ export const useConversationNotifier = (
   const [notificationQueue, setNotificationQueue] = useState<
     { name: MESSAGE_CONTACT_NAME; route: NotificationRouteType }[]
   >([]);
+  const storage = useStorageContext();
+
+  useEffect(() => {
+    prevConversations.current = storage.events
+      ? storage.events.NOTIFICATIONS.reduce((acc, n) => {
+          acc[n.ID] = true;
+          return acc;
+        }, {} as NotificationRecord)
+      : {};
+    prevConversations.current["resolved"] = true;
+  }, [storage.events]);
+
   const toNotify = useMemo(() => {
+    if (prevConversations.current["resolved"] == null) return [];
     return conversations
       .filter(
         (conversation) =>
@@ -49,7 +61,7 @@ export const useConversationNotifier = (
             const ID = `${name}-${route.id}`;
             if (prevConversations.current[ID] == null) {
               acc.push({ route, name });
-              prevConversations.current[ID] = { route, name };
+              prevConversations.current[ID] = true;
             }
           });
           return acc;
@@ -64,6 +76,7 @@ export const useConversationNotifier = (
         getLastMessageFromExchanges(route.exchanges)
       );
       const notification = {
+        ID: `${name}-${route.id}`,
         title: `Message from ${name}`,
         content: message,
         image: MESSAGE_CONTACT_INFO[name].avatar,

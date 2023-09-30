@@ -1,5 +1,8 @@
 import { useAppEventsContext } from "@Components/appEvents/context";
-import { AppEventsReducerActionsType } from "@Components/appEvents/reducer/types";
+import {
+  APP_EVENTS_ACTIONS,
+  AppEventsReducerActionsType,
+} from "@Components/appEvents/reducer/types";
 import React, {
   useCallback,
   useEffect,
@@ -17,6 +20,9 @@ import {
   ConversationReducerActionsType,
 } from "./reducer/type";
 import { ConversationType } from "../useConversations/types";
+import ConversationEmitter, {
+  CONVERSATION_EMITTER_EVENTS,
+} from "../../emitters";
 
 export const useConversation = (
   width: number,
@@ -64,12 +70,20 @@ export const useConversation = (
   useEffect(() => {
     if (state?.eventAction != null) {
       eventsDispatch(state.eventAction);
+      if (
+        state.eventAction.type ===
+        APP_EVENTS_ACTIONS.MESSAGE_APP_BLOCK_CONVERSATION
+      ) {
+        ConversationEmitter.emit(CONVERSATION_EMITTER_EVENTS.RESET, {
+          name: state.name,
+        });
+      }
     }
-  }, [state?.eventAction, eventsDispatch]);
+  }, [state?.eventAction, state?.name, eventsDispatch]);
 
   useEffect(() => {
     dispatch({
-      type: CONVERSATION_REDUCER_ACTIONS.REFRESH_AVAILABLE_ROUTE,
+      type: CONVERSATION_REDUCER_ACTIONS.REFRESH,
       payload: events,
     });
   }, [events]);

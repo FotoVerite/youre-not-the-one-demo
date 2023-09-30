@@ -11,13 +11,6 @@ import {
   RouteConditionsType,
 } from "../routes/types";
 
-export enum EFFECT_TYPE {
-  FULL_REPLACEMENT,
-  GLITCH,
-  LOGLINE_REPLACEMENT,
-  SNAPSHOT,
-}
-
 export type MessageContentType = string | ContentWithMetaType;
 
 export type ExchangeBlockType = {

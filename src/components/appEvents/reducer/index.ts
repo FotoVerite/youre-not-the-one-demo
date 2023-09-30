@@ -54,8 +54,8 @@ const CreateRouteEvent = (
     ? routeInfo[stringRouteID].position
     : Object.keys(routeInfo).length + 1;
   routeInfo[stringRouteID] = {
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
     position,
     ...props,
   };
@@ -84,7 +84,7 @@ const UpdateRouteEvent = (
   draft.Messages[name].routes[stringRouteID] = {
     ...routeInfo[routeId.toString()],
     ...props,
-    ...{ updatedAt: new Date() },
+    ...{ updatedAt: new Date().toISOString() },
   };
 
   return draft;

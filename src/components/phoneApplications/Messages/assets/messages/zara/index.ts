@@ -14,10 +14,7 @@ import { how_is_the_phone_coming } from "./routes/how_is_the_new_phone";
 import { your_new_video } from "./routes/hows_the_new_video";
 import { i_am_being_harassed } from "./routes/i_am_being_harassed";
 import { i_dont_feel_secure } from "./routes/i_dont_feel_secure";
-import {
-  i_fell_for_a_spam_did_not_send_images,
-  i_fell_for_a_spam_did_send_images,
-} from "./routes/i_fell_for_spam";
+import { i_fell_for_spam } from "./routes/i_fell_for_spam";
 import { update_on_the_phone } from "./routes/update_on_phone";
 import { your_day_worse_then_mine } from "./routes/your_day_worse_then_mine";
 
@@ -37,8 +34,7 @@ export const zara: ConversationFileType = {
   routes: [
     borked_phone,
     your_new_video,
-    i_fell_for_a_spam_did_not_send_images,
-    i_fell_for_a_spam_did_send_images,
+    i_fell_for_spam,
     zara_contact_conversation,
     i_dont_know_what_to_do_with_myself,
     i_dont_feel_secure,

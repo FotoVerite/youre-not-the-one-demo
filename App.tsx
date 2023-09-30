@@ -9,6 +9,7 @@ import { Platform } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import FontsContextProvider from "src/contexts/fonts";
+import StorageContextProvider from "src/contexts/storage";
 
 const App = () => {
   useEffect(() => {
@@ -21,17 +22,19 @@ const App = () => {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <FontsContextProvider>
-        <SafeAreaProvider>
-          <SnapShotContextProvider>
-            <NotificationsContextProvider>
-              <AppEventsContextProvider>
-                <Messages />
-              </AppEventsContextProvider>
-            </NotificationsContextProvider>
-          </SnapShotContextProvider>
-        </SafeAreaProvider>
-      </FontsContextProvider>
+      <StorageContextProvider>
+        <FontsContextProvider>
+          <SafeAreaProvider>
+            <SnapShotContextProvider>
+              <NotificationsContextProvider>
+                <AppEventsContextProvider>
+                  <Messages />
+                </AppEventsContextProvider>
+              </NotificationsContextProvider>
+            </SnapShotContextProvider>
+          </SafeAreaProvider>
+        </FontsContextProvider>
+      </StorageContextProvider>
     </GestureHandlerRootView>
   );
 };

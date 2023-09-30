@@ -22,7 +22,7 @@ import {
   ConversationReducerActionsType,
   CONVERSATION_REDUCER_ACTIONS,
 } from "./type";
-import { MESSAGE_CONTENT } from "../../contentWithMetaTypes";
+import { EFFECT_TYPE, MESSAGE_CONTENT } from "../../contentWithMetaTypes";
 import { findAvailableRoutes } from "../../routes/available";
 import { getSeenRoutes } from "../../routes/seen";
 import { convertMessageToString } from "../../useConversations/determineLogLine";
@@ -97,7 +97,7 @@ const refreshConversation = (
   events: AppEventsType
 ) => {
   draft.blockable = blockableConditionsMet(draft, events);
-  const route = findAvailableRoutes(
+  let route = findAvailableRoutes(
     draft.name,
     draft.routes || [],
     events

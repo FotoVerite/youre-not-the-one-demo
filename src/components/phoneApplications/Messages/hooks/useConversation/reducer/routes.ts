@@ -1,13 +1,15 @@
 import {
   DigestedConversationType,
-  hasAvailableRoute,
+  hasChoosableRoute,
 } from "../digestion/types";
 
 export const getPathViaPayload = (
   draft: DigestedConversationType,
   payload: { chosenOption: string }
 ) => {
-  if (!hasAvailableRoute(draft)) return;
+  if (!hasChoosableRoute(draft)) return;
+  console.log(draft.availableRoute.routes[payload.chosenOption]);
+
   return draft.availableRoute.routes[payload.chosenOption];
 };
 

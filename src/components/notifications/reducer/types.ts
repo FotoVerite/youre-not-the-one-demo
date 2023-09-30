@@ -7,6 +7,7 @@ export enum NOTIFICATIONS_REDUCER_ACTIONS {
   UPDATE,
 }
 export type NotificationDataType = {
+  ID: string;
   active?: boolean;
   backgroundColor?: string;
   title: string;
