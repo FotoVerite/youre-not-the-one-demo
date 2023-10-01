@@ -4,6 +4,7 @@ import { StyleSheet, ViewStyle, useWindowDimensions } from "react-native";
 import Animated, {
   SharedValue,
   interpolate,
+  useAnimatedReaction,
   useAnimatedStyle,
 } from "react-native-reanimated";
 import { theme } from "src/theme";
@@ -25,13 +26,18 @@ const SlideInTransitionContainer: FC<
   slideInfFrom,
   viewOverrides,
 }) => {
-  const slideIn = useAnimatedObserver(toObserve, resolver);
+  const storedChildren = useRef(children);
+
+  const slideIn = useAnimatedObserver(
+    toObserve,
+    resolver,
+    undefined,
+    storedChildren
+  );
   const { width, height } = useInsetDimensions();
   const { width: windowWith, height: windowHeight } = useWindowDimensions();
   const fromLeft = !slideInfFrom || slideInfFrom === "left";
   const gutterAmount = gutter || 0;
-
-  const storedChildren = useRef(children);
 
   const animatedStyle = useAnimatedStyle(() => {
     const translate = interpolate(

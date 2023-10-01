@@ -11,7 +11,8 @@ import {
 export const useAnimatedObserver = (
   watched: any,
   resolver?: SharedValue<number>,
-  delay?: number
+  delay?: number,
+  storedChildren?: React.MutableRefObject<React.ReactNode>
 ) => {
   const sharedValue = useSharedValue(0);
 
@@ -27,7 +28,7 @@ export const useAnimatedObserver = (
         easing: Easing.inOut(Easing.quad),
       });
     }
-  }, [watched, sharedValue, delay]);
+  }, [watched, sharedValue, delay, storedChildren]);
 
   useAnimatedReaction(
     () => {
