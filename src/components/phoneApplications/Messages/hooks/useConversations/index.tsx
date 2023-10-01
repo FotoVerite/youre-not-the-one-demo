@@ -10,7 +10,8 @@ import {
   ConversationRecords,
 } from "./types";
 import { greg } from "../../assets/messages/greg";
-import { leo } from "../../assets/messages/leo";
+import { lenny } from "../../assets/messages/lenny";
+import { michael } from "../../assets/messages/michael";
 import { spam1 } from "../../assets/messages/spam1";
 import { toSelf } from "../../assets/messages/toSelf";
 import { zara } from "../../assets/messages/zara";
@@ -18,7 +19,13 @@ import { MESSAGE_CONTACT_NAME } from "../../constants";
 import { findAvailableRoutes } from "../routes/available";
 import { messageAppConditionsMet } from "../routes/conditionals";
 
-const _conversations: ConversationFileType[] = [toSelf, zara, spam1];
+const _conversations: ConversationFileType[] = [
+  toSelf,
+  zara,
+  spam1,
+  michael,
+  lenny,
+];
 
 const viewableConversationsFilter =
   (events: AppEventsType) => (conversation: ConversationFileType) =>

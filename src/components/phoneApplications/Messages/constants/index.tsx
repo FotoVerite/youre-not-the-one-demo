@@ -1,8 +1,8 @@
 import { ImageSourcePropType } from "react-native";
 
-import defaultAvatar from "../assets/avatars/unknown.jpeg";
 import zaraAvatar from "../assets/avatars/Zara.jpg";
-
+import michaelAvatar from "../assets/avatars/michael.jpg";
+import defaultAvatar from "../assets/avatars/unknown.jpeg";
 type InfoType = {
   avatar: ImageSourcePropType;
   colors: string[];
@@ -62,12 +62,12 @@ export const MESSAGE_CONTACT_INFO: {
     avatar: defaultAvatar,
     colors: ["#f5d742", "#363243"],
   },
-  //   [MESSAGE_CONTACT_NAME.LENNY]: {
-  //     avatar: defaultAvatar,
-  //     colors: ["#6b6b6d", "#363243"],
-  //   },
+  [MESSAGE_CONTACT_NAME.LENNY]: {
+    avatar: defaultAvatar,
+    colors: ["#6b6b6d", "#363243"],
+  },
   //   Mileena: { avatar: meleenaAvatar, colors: ["#ff0095", "#80194d"] },
-  //   "Maybe: Michael": { avatar: gregAvatar, colors: ["#f54295", "#8900fa"] },
+  "Maybe: Michael": { avatar: michaelAvatar, colors: ["#f54295", "#8900fa"] },
   //   "Movie Night": { avatar: darkoAvatar, colors: ["#6b6b6d", "#363243"] },
   [MESSAGE_CONTACT_NAME.MY_SELF]: {
     avatar: defaultAvatar,

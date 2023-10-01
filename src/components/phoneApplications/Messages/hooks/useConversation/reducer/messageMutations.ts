@@ -3,6 +3,7 @@ import {
   BubbleItemType,
   isSentMessage,
   DigestedConversationListItem,
+  isReceivedMessage,
 } from "../digestion/types";
 
 const DEFAULT_CONTENT_DELAY = 400;
@@ -42,5 +43,7 @@ export const setMessageEphemeralProps = (
   };
   if (isSentMessage(message)) {
     message.isLastInExchange = true;
+    draft.receivingMessage = true;
   }
+  if (isReceivedMessage(message)) draft.receivingMessage = true;
 };

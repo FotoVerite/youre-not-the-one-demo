@@ -148,32 +148,13 @@ export const messageAppConditionsMet = (
   return ret;
 };
 
-export const mergeEffects = (
-  route: MessageRouteType | NotificationRouteType,
+export const mergeEffects = <
+  AvailableRouteType extends NotificationRouteType | MessageRouteType,
+>(
+  route: AvailableRouteType,
   events: AppEventsType
-) => {
+): AvailableRouteType => {
   if (!choosableRoute(route)) return route;
-  const exchange = route.effects?.filter(
-    (effect) =>
-      effect.type === EFFECT_TYPE.CONDITIONAL_EXCHANGE &&
-      messageAppConditionsMet(events.Messages, effect.conditions)
-  )[0];
-  if (exchange)
-    return {
-      ...route,
-      ...{
-        routes: exchange.data as {
-          [key: string]: ExchangeBlockType[];
-        },
-      },
-    };
-  return route;
-};
-
-export const mergeEffectsForMessageRouteType = (
-  route: MessageRouteType,
-  events: AppEventsType
-) => {
   const exchange = route.effects?.filter(
     (effect) =>
       effect.type === EFFECT_TYPE.CONDITIONAL_EXCHANGE &&

@@ -4,7 +4,7 @@ import {
   MessageRouteEventType,
 } from "@Components/appEvents/reducer/types";
 
-import { mergeEffectsForMessageRouteType } from "./conditionals";
+import { mergeEffects } from "./conditionals";
 import { MessageRouteType, NotificationRouteType } from "./types";
 import { MESSAGE_CONTACT_NAME } from "../../constants";
 import { ExchangeBlockType } from "../useConversations/types";
@@ -23,7 +23,7 @@ const constructSeenRouteObject = (
   availableRoutes: MessageRouteType[]
 ) => {
   return availableRoutes.reduce((routes, route) => {
-    routes[route.id] = mergeEffectsForMessageRouteType(route, events).routes;
+    routes[route.id] = mergeEffects(route, events).routes;
     return routes;
   }, {} as SeenRoutesType);
 };

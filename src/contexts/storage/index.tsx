@@ -10,7 +10,10 @@ const StorageContext = React.createContext<
   StorageContextDigestedType | undefined
 >(undefined);
 
-const StorageContextProvider: FC<StorageContextDigestType> = (props) => {
+const StorageContextProvider: FC<StorageContextDigestType> = ({
+  children,
+  resolver,
+}) => {
   const [events, setEvents] = useState<AppEventsType | false | undefined>();
   useEffect(() => {
     getData("events").then((data) =>
@@ -18,10 +21,14 @@ const StorageContextProvider: FC<StorageContextDigestType> = (props) => {
     );
   }, []);
 
+  useEffect(() => {
+    if (events != null) resolver("storage", true);
+  }, [events, resolver]);
+
   if (events != null) {
     return (
       <StorageContext.Provider value={{ events }}>
-        {props.children}
+        {children}
       </StorageContext.Provider>
     );
   }

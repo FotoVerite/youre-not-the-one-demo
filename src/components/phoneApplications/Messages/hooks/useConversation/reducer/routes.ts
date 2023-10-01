@@ -8,8 +8,6 @@ export const getPathViaPayload = (
   payload: { chosenOption: string }
 ) => {
   if (!hasChoosableRoute(draft)) return;
-  console.log(draft.availableRoute.routes[payload.chosenOption]);
-
   return draft.availableRoute.routes[payload.chosenOption];
 };
 

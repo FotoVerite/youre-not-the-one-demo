@@ -25,6 +25,7 @@
     "expo-crypto": "~12.4.1",
     "expo-file-system": "~15.4.3",
     "expo-screen-orientation": "^6.0.5",
+    "expo-splash-screen": "~0.20.5",
     "expo-status-bar": "~1.6.0",
     "immer": "^10.0.1",
     "jest": "^29.2.1",

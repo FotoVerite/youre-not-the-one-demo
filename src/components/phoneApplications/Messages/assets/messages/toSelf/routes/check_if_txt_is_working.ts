@@ -4,8 +4,8 @@ import {
   MESSAGE_CONTENT,
 } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
 import { MessageRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
-
 import { MILEENA_ROUTE_IDS } from "@Components/phoneApplications/Messages/mileena/routes/routes";
+
 import {
   leo_monologue_replacement_one,
   leo_monologue_replacement_two,
@@ -32,47 +32,7 @@ export const check_if_txt_is_working: MessageRouteType = {
       },
       conditions: {
         [MESSAGE_CONTACT_NAME.ZARA]: {
-          views: { gt: 0, lt: 5 },
-          routes: { [ZARA_ROUTE_IDS.BORKED_PHONE]: {} },
-        },
-      },
-    },
-    {
-      type: EFFECT_TYPE.CONDITIONAL_EXCHANGE,
-      data: {
-        [OPTIONS.A]: leo_monologue_replacement_two,
-      },
-      conditions: {
-        [MESSAGE_CONTACT_NAME.ZARA]: {
-          views: { gte: 5, lt: 8 },
-          routes: { [ZARA_ROUTE_IDS.BORKED_PHONE]: {} },
-        },
-      },
-    },
-    {
-      type: EFFECT_TYPE.CONDITIONAL_EXCHANGE,
-      data: {
-        [OPTIONS.A]: leo_monologue_replacement_three,
-      },
-      conditions: {
-        [MESSAGE_CONTACT_NAME.ZARA]: {
-          views: { gte: 8, lt: 10 },
-          routes: { [ZARA_ROUTE_IDS.BORKED_PHONE]: {} },
-        },
-      },
-    },
-    {
-      type: EFFECT_TYPE.CONDITIONAL_EXCHANGE,
-      data: {
-        [OPTIONS.A]: leo_monologue_replacement_four,
-      },
-      conditions: {
-        [MESSAGE_CONTACT_NAME.ZARA]: {
-          views: { gte: 10 },
-          routes: {
-            [ZARA_ROUTE_IDS.BORKED_PHONE]: {},
-            [MILEENA_ROUTE_IDS.MY_QUADS]: {},
-          },
+          routes: { [ZARA_ROUTE_IDS.I_AM_BEING_HARASSED]: {} },
         },
       },
     },

@@ -184,6 +184,7 @@ export type DigestedConversationType = Omit<
   cleanupAction?: AppEventsReducerActionsType;
   eventAction?: AppEventsReducerActionsType;
   nextMessageInQueue?: MessageContentType;
+  receivingMessage?: boolean;
   previousExchangeProps?: Omit<DigestedBubbleProps, "ID"> & { ID: string };
   exchanges: DigestedConversationListItem[];
   routeAtIndex?: number;

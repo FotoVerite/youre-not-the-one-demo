@@ -1,15 +1,8 @@
-import AppEventsContextProvider from "@Components/appEvents/context";
-import NotificationsContextProvider from "@Components/notifications/context";
-import Messages from "@Components/phoneApplications/Messages/components/Messages";
-import SnapShotContextProvider from "@Components/snapShot/context";
+import Main from "@Components/Main";
 import Constants from "expo-constants";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { useEffect } from "react";
 import { Platform } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import FontsContextProvider from "src/contexts/fonts";
-import StorageContextProvider from "src/contexts/storage";
 
 const App = () => {
   useEffect(() => {
@@ -20,23 +13,7 @@ const App = () => {
     }
   }, []);
 
-  return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <StorageContextProvider>
-        <FontsContextProvider>
-          <SafeAreaProvider>
-            <SnapShotContextProvider>
-              <NotificationsContextProvider>
-                <AppEventsContextProvider>
-                  <Messages />
-                </AppEventsContextProvider>
-              </NotificationsContextProvider>
-            </SnapShotContextProvider>
-          </SafeAreaProvider>
-        </FontsContextProvider>
-      </StorageContextProvider>
-    </GestureHandlerRootView>
-  );
+  return <Main />;
 };
 
 let AppEntryPoint = App;

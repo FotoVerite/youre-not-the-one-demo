@@ -4,5 +4,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   slug: "youre-not-the-one-demo",
   name: "youre-not-the-one-demo",
+  splash: { image: "assets/splash.jpeg", backgroundColor: "black" },
   extra: { storybookEnabled: process.env.STORYBOOK_ENABLED },
 });

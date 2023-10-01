@@ -19,10 +19,10 @@ import {
   CONVERSATION_REDUCER_ACTIONS,
   ConversationReducerActionsType,
 } from "./reducer/type";
-import { ConversationType } from "../useConversations/types";
 import ConversationEmitter, {
   CONVERSATION_EMITTER_EVENTS,
 } from "../../emitters";
+import { ConversationType } from "../useConversations/types";
 
 export const useConversation = (
   width: number,

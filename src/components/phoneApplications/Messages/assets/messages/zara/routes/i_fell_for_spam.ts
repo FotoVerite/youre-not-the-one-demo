@@ -17,51 +17,59 @@ const NOT_OPTIONS = ZARA_I_FELL_FOR_SPAM_OPTIONS;
 const ZARA = MESSAGE_CONTACT_NAME.ZARA;
 const SELF = MESSAGE_CONTACT_NAME.SELF;
 
+const base_did_not_send = [
+  { name: SELF, messages: [NOT_OPTIONS.A] },
+  { name: ZARA, messages: ["I always wondered who those people were."] },
+];
+
+const did_not_send_and_did_not_block = [
+  {
+    name: SELF,
+    messages: [
+      "I guess one response back isn’t falling for them. I just feel fucking dumb, like accidentally picking up a scam likely call.",
+    ],
+  },
+];
+
+const did_not_send_and_did_block = [
+  {
+    name: SELF,
+    messages: [
+      "I guess one response back isn’t falling for them. I just feel fucking dumb, like accidentally picking up a scam likely call.",
+      "I did block and report, like it does anything.",
+    ],
+  },
+];
+
+const rest_of_did_not_send = [
+  {
+    name: ZARA,
+    messages: [
+      "Why you gotta hate on Scam, he's a lovely guy. Just called me 30 minutes ago asking for me to signup for Spectrum for the 30th time. Last time he tried to introduce me to His Brother 'The Nigerian Price' Mark Likely",
+    ],
+  },
+  {
+    name: SELF,
+    messages: [
+      "Yeah... you should really not write your own jokes for your channel",
+    ],
+  },
+  {
+    name: ZARA,
+    messages: [{ type: MESSAGE_CONTENT.EMOJI, content: "😤" }],
+  },
+];
+
 const did_not_send_images = {
-  [NOT_OPTIONS.A]: [
-    { name: SELF, messages: [NOT_OPTIONS.A] },
-    { name: ZARA, messages: ["I always wondered who those people were."] },
-    {
-      name: SELF,
-      messages: [
-        "I guess one response back isn’t falling for them. I just feel fucking dumb, like accidentally picking up a scam likely call.",
-      ],
-    },
-    {
-      name: ZARA,
-      messages: [
-        "Oh but I love them, Scam’s great parties, if a bit awkward and prone to repeating themselves. I remember last time they were just droning on and on about this Nigerian Prince they met.",
-      ],
-    },
-    {
-      name: SELF,
-      messages: ["I mean if you want to clear a room they’re your guy."],
-    },
-  ],
+  [NOT_OPTIONS.A]: base_did_not_send
+    .concat(did_not_send_and_did_not_block)
+    .concat(rest_of_did_not_send),
 };
 
 const did_not_send_images_and_blocked = {
-  [NOT_OPTIONS.A]: [
-    { name: SELF, messages: [NOT_OPTIONS.A] },
-    { name: ZARA, messages: ["I always wondered who those people were."] },
-    {
-      name: SELF,
-      messages: [
-        "I guess one response back isn’t falling for them. I just feel fucking dumb, like accidentally picking up a scam likely call.",
-        "I did block and report, like it does anything.",
-      ],
-    },
-    {
-      name: ZARA,
-      messages: [
-        "Oh but I love them, Scam’s great parties, if a bit awkward and prone to repeating themselves. I remember last time they were just droning on and on about this Nigerian Prince they met.",
-      ],
-    },
-    {
-      name: SELF,
-      messages: ["I mean if you want to clear a room they’re your guy."],
-    },
-  ],
+  [NOT_OPTIONS.A]: base_did_not_send
+    .concat(did_not_send_and_did_block)
+    .concat(rest_of_did_not_send),
 };
 
 const did_send_images = {

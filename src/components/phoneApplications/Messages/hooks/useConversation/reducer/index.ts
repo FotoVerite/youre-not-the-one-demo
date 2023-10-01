@@ -207,6 +207,7 @@ const continueRoute = (
   draft: DigestedConversationType
 ) => {
   if (!hasAvailableRoute(draft)) return;
+  draft.receivingMessage = false;
   const nextMessage = draft.activePath[0];
   const offset = getListHeight(draft.exchanges);
   if (nextMessage == null) return finishRoute(draft, draft.availableRoute.id);
@@ -265,14 +266,15 @@ const _skipRoute = (
   if (!hasStartedRoute(draft)) {
     return;
   }
-  const offset = getListHeight(draft.exchanges);
+  if (draft.receivingMessage) return;
+  let offset = getListHeight(draft.exchanges);
   const path = draft.activePath.reduce((ret, payload) => {
-    ret.push(
-      createSkBubbleFromPayload(
-        { ...config, offset, ...{ group: draft.group || false } },
-        payload
-      )
+    const message = createSkBubbleFromPayload(
+      { ...config, offset, ...{ group: draft.group || false } },
+      payload
     );
+    offset += message.height + message.paddingBottom;
+    ret.push(message);
     return ret;
   }, [] as DigestedConversationListItem[]);
   draft.exchanges = draft.exchanges.concat(path);
