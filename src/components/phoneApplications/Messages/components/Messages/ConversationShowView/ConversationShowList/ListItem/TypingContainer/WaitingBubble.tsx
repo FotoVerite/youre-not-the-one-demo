@@ -31,7 +31,7 @@ export const WaitingBubble: FC<
     props.colors,
     props.offset,
     true,
-    props.scrollHandler
+    props.scrollHandler,
   );
 
   const dotHeight = (height - 2.5) / 2;

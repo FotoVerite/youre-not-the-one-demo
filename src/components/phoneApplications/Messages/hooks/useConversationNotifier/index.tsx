@@ -20,7 +20,7 @@ type NotificationRecord = Record<string, boolean>;
 
 export const useConversationNotifier = (
   conversations: ConversationFileType[],
-  activeConversations: MESSAGE_CONTACT_NAME[]
+  activeConversations: MESSAGE_CONTACT_NAME[],
 ) => {
   const eventsContext = useAppEventsContext();
   const { state: events, dispatch } = eventsContext;
@@ -46,7 +46,7 @@ export const useConversationNotifier = (
       .filter(
         (conversation) =>
           conversation.notificationRoutes &&
-          conversation.notificationRoutes.length > 0
+          conversation.notificationRoutes.length > 0,
       )
       .filter((conversation) => {
         return (
@@ -55,7 +55,7 @@ export const useConversationNotifier = (
             (acc, routeValues) => {
               return acc && routeValues.finished === true;
             },
-            true
+            true,
           )
         );
       })
@@ -65,7 +65,7 @@ export const useConversationNotifier = (
           const routes = findAvailableRoutes(
             conversation.name,
             conversation.notificationRoutes || [],
-            events
+            events,
           );
           routes.forEach((route) => {
             const ID = `${name}-${route.id}`;
@@ -76,14 +76,14 @@ export const useConversationNotifier = (
           });
           return acc;
         },
-        [] as { name: MESSAGE_CONTACT_NAME; route: NotificationRouteType }[]
+        [] as { name: MESSAGE_CONTACT_NAME; route: NotificationRouteType }[],
       );
   }, [conversations, events]);
 
   const notify = useCallback(
     async (name: MESSAGE_CONTACT_NAME, route: NotificationRouteType) => {
       const message = convertMessageToString(
-        getLastMessageFromExchanges(route.exchanges)
+        getLastMessageFromExchanges(route.exchanges),
       );
       const notification = {
         ID: `${name}-${route.id}`,
@@ -107,7 +107,7 @@ export const useConversationNotifier = (
         },
       });
     },
-    [activeConversations, dispatch]
+    [activeConversations, dispatch],
   );
 
   useEffect(() => {
@@ -119,7 +119,7 @@ export const useConversationNotifier = (
             name: notification.name,
             route: notification.route,
           });
-        })
+        }),
       );
     };
     sendToQueue();

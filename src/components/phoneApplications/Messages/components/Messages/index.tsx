@@ -26,7 +26,7 @@ const Messages: FC = () => {
   const [indexCovered, setIndexCovered] = useState(false);
   const activeConversations = useMemo(() => {
     return [conversation?.name, newMessageConversation?.name].filter(
-      (n) => n !== null
+      (n) => n !== null,
     ) as MESSAGE_CONTACT_NAME[];
   }, [conversation, newMessageConversation]);
 
@@ -60,7 +60,7 @@ const Messages: FC = () => {
         } else {
           setNewMessageConversation(undefined);
         }
-      }
+      },
     );
     return () => {
       ConversationEmitter.off(CONVERSATION_EMITTER_EVENTS.RESET, () => {});
@@ -79,7 +79,7 @@ const Messages: FC = () => {
         runOnJS(setIndexCovered)(result);
       }
     },
-    []
+    [],
   );
 
   return (

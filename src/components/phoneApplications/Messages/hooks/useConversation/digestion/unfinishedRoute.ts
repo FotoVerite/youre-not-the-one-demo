@@ -17,12 +17,12 @@ import { convertMessageToString } from "../../useConversations/determineLogLine"
 export const digestUnfinishedRoute = (
   digested: DigestedConversationType,
   events: AppEventsType,
-  config: BaseConfigType
+  config: BaseConfigType,
 ) => {
   const unfinishedID = getUnfinishedRouteID(
     digested.name,
     events,
-    digested.routes || []
+    digested.routes || [],
   );
   if (unfinishedID) {
     const skConfig = {
@@ -41,7 +41,7 @@ export const digestPathFromUnfinishedID = (
   ID: string,
   digested: DigestedConversationType,
   events: AppEventsType,
-  config: SkItemConfigurationType
+  config: SkItemConfigurationType,
 ) => {
   const event = events.Messages[digested.name].routes[ID];
   const route = digested.routes?.find((r) => r.id.toString() === ID);
@@ -54,7 +54,7 @@ export const digestPathFromUnfinishedID = (
       event.chosen,
       event.updatedAt,
       seen,
-      path
+      path,
     );
   }
   return digested;
@@ -66,16 +66,16 @@ const appendUnfinishedPath = (
   chosen: string,
   timestamp: string | Date,
   seen: MessagePayloadType[],
-  pending: MessagePayloadType[]
+  pending: MessagePayloadType[],
 ) => {
   digested.exchanges = digested.exchanges.concat(
-    convertFromPayloadsToSkItems(config, seen, timestamp)
+    convertFromPayloadsToSkItems(config, seen, timestamp),
   );
 
   digested.routeAtIndex = seen.length;
   digested.chosenRoute = chosen;
   digested.activePath = pending;
   digested.nextMessageInQueue = convertMessageToString(
-    pending[0].messageContent
+    pending[0].messageContent,
   );
 };

@@ -1,11 +1,4 @@
-import React, {
-  FC,
-  PropsWithChildren,
-  memo,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import React, { FC, PropsWithChildren, memo, useEffect, useState } from "react";
 import {
   LayoutChangeEvent,
   StyleSheet,
@@ -14,7 +7,6 @@ import {
 } from "react-native";
 import Animated, {
   interpolate,
-  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withDelay,

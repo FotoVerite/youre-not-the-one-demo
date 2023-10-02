@@ -19,7 +19,7 @@ import {
 export const appendSeenRoutes = (
   digested: DigestedConversationType,
   event: AppEventsType,
-  config: BaseConfigType
+  config: BaseConfigType,
 ) => {
   if (digested.routes == null) {
     return digested.exchanges;
@@ -28,7 +28,7 @@ export const appendSeenRoutes = (
     digested.name,
     event,
     digested.routes,
-    digested.notificationRoutes
+    digested.notificationRoutes,
   );
   digested.seenRoutes = seenRoutes.map((route) => route.routeId);
   return seenRoutes.reduce((digestedExchanges, routes) => {
@@ -40,7 +40,7 @@ export const appendRoute = (
   exchanges: DigestedConversationListItem[],
   route: RouteObjectType,
   group: boolean = false,
-  config: BaseConfigType
+  config: BaseConfigType,
 ) => {
   const offset = getListHeight(exchanges);
   const conversationBlock: ConversationExchangeType = {
@@ -48,7 +48,7 @@ export const appendRoute = (
     exchanges: route.exchanges,
   };
   return exchanges.concat(
-    digestExchanges(config, [conversationBlock], group, offset)
+    digestExchanges(config, [conversationBlock], group, offset),
   );
 };
 
@@ -63,19 +63,19 @@ export const convertBlockToMessagePayloadType = (block: ExchangeBlockType[]) =>
           name,
           isLastInExchange: size === index,
         } as MessagePayloadType;
-      })
+      }),
     );
   }, [] as MessagePayloadType[]);
 
 export const convertFromPayloadsToSkItems = (
   configuration: SkItemConfigurationType,
   payloads: MessagePayloadType[],
-  time: string | Date
+  time: string | Date,
 ) => {
   const skTime = createTimeStampLabel(
     time,
     configuration.width,
-    configuration.offset
+    configuration.offset,
   );
   configuration.offset += skTime.height;
   return payloads.reduce(
@@ -85,7 +85,7 @@ export const convertFromPayloadsToSkItems = (
       ret.push(item);
       return ret;
     },
-    [skTime] as DigestedConversationListItem[]
+    [skTime] as DigestedConversationListItem[],
   );
 };
 
@@ -93,7 +93,7 @@ export const digestExchanges = (
   configuration: BaseConfigType,
   conversationExchanges: ConversationExchangeType[],
   group: boolean = false,
-  offset: number = 50
+  offset: number = 50,
 ) => {
   const itemConfiguration: SkItemConfigurationType = {
     font: configuration.font,
@@ -105,7 +105,7 @@ export const digestExchanges = (
   return conversationExchanges.reduce((ret, block) => {
     const payloads = convertBlockToMessagePayloadType(block.exchanges);
     return ret.concat(
-      convertFromPayloadsToSkItems(itemConfiguration, payloads, block.time)
+      convertFromPayloadsToSkItems(itemConfiguration, payloads, block.time),
     );
   }, [] as DigestedConversationListItem[]);
 };

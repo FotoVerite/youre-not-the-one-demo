@@ -24,7 +24,7 @@ const DisplayedText: FC<{
   state: DISPLAYED_TEXT_STATES;
   cb: () => void;
 }> = ({ cb, state, text }) => {
-  const { height, width } = useInsetDimensions();
+  const width = useInsetDimensions().width;
   const fontContext = useFontsContext();
 
   const sent = useSharedValue(0);

@@ -4,7 +4,6 @@ import { StyleSheet, ViewStyle, useWindowDimensions } from "react-native";
 import Animated, {
   SharedValue,
   interpolate,
-  useAnimatedReaction,
   useAnimatedStyle,
 } from "react-native-reanimated";
 import { theme } from "src/theme";
@@ -32,7 +31,7 @@ const SlideInTransitionContainer: FC<
     toObserve,
     resolver,
     undefined,
-    storedChildren
+    storedChildren,
   );
   const { width, height } = useInsetDimensions();
   const { width: windowWith, height: windowHeight } = useWindowDimensions();
@@ -43,7 +42,7 @@ const SlideInTransitionContainer: FC<
     const translate = interpolate(
       slideIn.value,
       [0, 1],
-      [fromLeft ? windowWith : windowHeight, 0 + gutterAmount]
+      [fromLeft ? windowWith : windowHeight, 0 + gutterAmount],
     );
     if (fromLeft) {
       return { transform: [{ translateX: translate }] };

@@ -3,13 +3,7 @@ import {
   APP_EVENTS_ACTIONS,
   AppEventsReducerActionsType,
 } from "@Components/appEvents/reducer/types";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useReducer,
-  useRef,
-} from "react";
+import { useRef, useMemo, useReducer, useCallback, useEffect } from "react";
 import { useFontsContext } from "src/contexts/fonts";
 import { LOG, LOG_COLORS } from "src/utility/logger";
 
@@ -26,7 +20,7 @@ import { ConversationType } from "../useConversations/types";
 
 export const useConversation = (
   width: number,
-  conversation?: ConversationType
+  conversation?: ConversationType,
 ) => {
   const { state: events, dispatch: eventsDispatch } = useAppEventsContext();
   const fontsContext = useFontsContext();
@@ -42,14 +36,14 @@ export const useConversation = (
 
   const [state, dispatch] = useReducer(
     createConversationReducer(config),
-    undefined
+    undefined,
   );
 
   const reducerResolver = useCallback(
     (action: ConversationReducerActionsType) => {
       dispatch(action);
     },
-    [dispatch]
+    [dispatch],
   );
 
   const _digestConversation = useCallback(
@@ -64,7 +58,7 @@ export const useConversation = (
         payload: digested,
       });
     },
-    [config, events]
+    [config, events],
   );
 
   useEffect(() => {

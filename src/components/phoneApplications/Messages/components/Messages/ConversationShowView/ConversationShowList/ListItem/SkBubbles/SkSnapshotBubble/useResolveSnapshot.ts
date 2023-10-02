@@ -12,25 +12,26 @@ export const useSnapshotResolver = (
   content: ImageDigestionPropsType,
   dispatch: (action: ConversationReducerActionsType) => void,
   ID: string,
-  width: number
+  width: number,
 ) => {
   const context = useSnapshotContext();
+  const { filename, image } = context;
   const skImage = useRef<SkImage | undefined>(content.image);
 
   useEffect(() => {
-    if (!skImage.current && !context.image) {
+    if (!skImage.current && !image) {
       context.setTakeSnapShot({
         filename: content.filename,
         type: SNAPSHOT_TYPES.WITH_INDICATOR,
       });
     }
-  }, [context.image]);
+  }, [image]);
 
   useEffect(() => {
-    if (!skImage.current && context.image?.uri) {
-      skImage.current = context.image.uri;
+    if (!skImage.current && image?.uri) {
+      skImage.current = image.uri;
     }
-  }, [context.image]);
+  }, [image]);
 
   // Indicator is Finished and we have an image
   useEffect(() => {
@@ -52,5 +53,5 @@ export const useSnapshotResolver = (
         },
       });
     }
-  }, [context.image]);
+  }, [image]);
 };

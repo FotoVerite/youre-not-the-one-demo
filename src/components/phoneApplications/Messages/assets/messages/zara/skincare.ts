@@ -1,6 +1,7 @@
 import { MESSAGE_CONTACT_NAME } from "components/apps/Messages/context/usersMapping";
-import { ConversationExchangeType } from "../../../context/types";
 import { MESSAGE_CONTENT } from "components/apps/Messages/reducers/conversationReducer/digestion/types";
+
+import { ConversationExchangeType } from "../../../context/types";
 
 export const skincare: ConversationExchangeType = {
   time: "2021-06-21T14:00:00Z",

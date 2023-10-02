@@ -22,7 +22,7 @@ import { MediaContextDigestedType, MediaContextDigestType } from "./types";
 
 //defaults for empty app
 const MediaContext = React.createContext<MediaContextDigestedType | undefined>(
-  undefined
+  undefined,
 );
 
 const MediaContextProvider: FC<MediaContextDigestType> = (props) => {
@@ -30,11 +30,11 @@ const MediaContextProvider: FC<MediaContextDigestType> = (props) => {
 
   const setMedia = useCallback(
     (_media: ReactElement | undefined) => {
-      if (_media !== media || media == null) {
-        _setMedia(_media);
-      }
+      _setMedia((state) =>
+        state == null || state !== _media ? _media : state,
+      );
     },
-    [_setMedia]
+    [_setMedia],
   );
   return (
     <MediaContext.Provider value={{ setMedia }}>

@@ -6,12 +6,10 @@ import {
 import { ElementType } from "react";
 import { View } from "react-native";
 
-import List from "./index.stories";
 import { ExchangeWrapper } from "../ExchangeWrapper";
 import { ConversationExchangeWrapperType } from "../ExchangeWrapper/types";
 import { SkImageBubble } from "../SkBubbles/SkImageBubble";
 import { Default as SkImageStory } from "../SkBubbles/SkImageBubble/index.stories";
-import { SkBubbleType } from "../SkBubbles/types";
 
 export default {
   component: ExchangeWrapper,

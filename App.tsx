@@ -8,7 +8,7 @@ const App = () => {
   useEffect(() => {
     if (Platform.OS !== "web") {
       ScreenOrientation.lockAsync(
-        ScreenOrientation.OrientationLock.PORTRAIT_UP
+        ScreenOrientation.OrientationLock.PORTRAIT_UP,
       );
     }
   }, []);

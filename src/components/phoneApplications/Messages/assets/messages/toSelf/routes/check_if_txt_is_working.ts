@@ -4,14 +4,8 @@ import {
   MESSAGE_CONTENT,
 } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
 import { MessageRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
-import { MILEENA_ROUTE_IDS } from "@Components/phoneApplications/Messages/mileena/routes/routes";
 
-import {
-  leo_monologue_replacement_one,
-  leo_monologue_replacement_two,
-  leo_monologue_replacement_three,
-  leo_monologue_replacement_four,
-} from "./monologue_replacement";
+import { leo_monologue_replacement_one } from "./monologue_replacement";
 import { TO_SELF_IDS } from "./routes";
 import { ZARA_ROUTE_IDS } from "../../zara/routes/routes";
 

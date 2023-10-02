@@ -1,4 +1,3 @@
-import { DigestedConversationEmojiItemType } from "@Components/phoneApplications/Messages/hooks/useConversation/digestion/types";
 import React, { FC, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 

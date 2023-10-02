@@ -29,6 +29,7 @@ export type MessageAppEventsType = {
   views: Date[];
   routes: MessageRouteEventType;
   blocked: boolean;
+  blockedAt?: string;
 };
 
 export type MessageAppEventsContainerType = {

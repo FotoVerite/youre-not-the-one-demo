@@ -1,9 +1,4 @@
-import {
-  MESSAGE_CONTACT_INFO,
-  MESSAGE_CONTACT_NAME,
-} from "@Components/phoneApplications/Messages/constants";
-import { MESSAGE_CONTENT } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
-import { vec } from "@shopify/react-native-skia";
+import { MESSAGE_CONTACT_INFO } from "@Components/phoneApplications/Messages/constants";
 import { ElementType } from "react";
 import { View } from "react-native";
 import FontsContextProvider from "src/contexts/fonts";

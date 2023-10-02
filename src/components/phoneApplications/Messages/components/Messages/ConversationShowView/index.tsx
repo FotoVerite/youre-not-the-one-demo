@@ -2,7 +2,7 @@ import SlideInTransitionContainer from "@Components/SlideInTransitionContainer";
 import { useConversation } from "@Components/phoneApplications/Messages/hooks/useConversation";
 import { CONVERSATION_REDUCER_ACTIONS } from "@Components/phoneApplications/Messages/hooks/useConversation/reducer/type";
 import { ConversationType } from "@Components/phoneApplications/Messages/hooks/useConversations/types";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useEffect } from "react";
 import Animated, {
   SharedValue,
   interpolate,
@@ -35,7 +35,7 @@ const ConversationShowView: FC<{
       backgroundColor: interpolateColor(
         shrink.value,
         [0, 1],
-        ["transparent", "#8d8a8a"]
+        ["transparent", "#8d8a8a"],
       ),
       borderTopLeftRadius: interpolate(shrink.value, [0, 1], [0, 10]),
       borderTopRightRadius: interpolate(shrink.value, [0, 1], [0, 10]),

@@ -13,7 +13,7 @@ export const SkVcardBubble: FC<SkBubbleTypeWithGradient> = (props) => {
   const initialsCircle = useInitials(
     props.width,
     props.height,
-    props.content as MESSAGE_CONTACT_NAME
+    props.content as MESSAGE_CONTACT_NAME,
   );
 
   return (

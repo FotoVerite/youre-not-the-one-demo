@@ -1,7 +1,6 @@
 import { DigestedConversationListItem } from "@Components/phoneApplications/Messages/hooks/useConversation/digestion/types";
 import { ConversationReducerActionsType } from "@Components/phoneApplications/Messages/hooks/useConversation/reducer/type";
-import { ConversationListType } from "@Components/phoneApplications/Messages/hooks/useConversations/types";
-import React, { FC, RefObject, useCallback, useEffect, useMemo } from "react";
+import React, { FC, useEffect, useMemo } from "react";
 import { ListRenderItem, StyleSheet, View } from "react-native";
 import Animated, {
   useAnimatedRef,
@@ -21,7 +20,7 @@ const renderItem: ListRenderItem<ConversationShowListItem> = ({ item }) => (
 
 const getItemLayout = (
   data: ArrayLike<ConversationShowListItem> | null | undefined,
-  index: number
+  index: number,
 ) => ({
   length: data ? data[index].height + data[index].paddingBottom : 0,
   offset: data ? data[index].offset : 0,

@@ -1,3 +1,4 @@
+import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
 import ConversationEmitter, {
   CONVERSATION_EMITTER_EVENTS,
 } from "@Components/phoneApplications/Messages/emitters";
@@ -17,7 +18,6 @@ import { useInsetDimensions } from "src/utility/useInsetDimensions";
 import MessageTextInput from "./MessageTextInput";
 import OptionList from "./OptionList";
 import Option from "./OptionList/Option";
-import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
 
 const RootChooser: FC<
   {

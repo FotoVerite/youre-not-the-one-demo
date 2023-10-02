@@ -9,7 +9,7 @@ type SnapshotResolverType = {
   arr: DigestedConversationListItem[];
 };
 export const resolveSnapshots = async (
-  digestedExchanges: DigestedConversationListItem[]
+  digestedExchanges: DigestedConversationListItem[],
 ) => {
   const resolver = new Promise<SnapshotResolverType>((resolve, reject) => {
     resolve({
@@ -19,7 +19,7 @@ export const resolveSnapshots = async (
   });
   const resolved = await digestedExchanges.reduce(
     resolveSnapshotAndUpdateOffset,
-    resolver
+    resolver,
   );
   return resolved.arr;
 };
@@ -29,7 +29,7 @@ const resolveSnapshotAndUpdateOffset = async (
     offset: number;
     arr: DigestedConversationListItem[];
   }>,
-  item: DigestedConversationListItem
+  item: DigestedConversationListItem,
 ) => {
   const acc = await memo;
   if (
@@ -46,7 +46,7 @@ const resolveSnapshotAndUpdateOffset = async (
       return acc;
     }
     const image = Skia.Image.MakeImageFromEncoded(
-      Skia.Data.fromBase64(base64String)
+      Skia.Data.fromBase64(base64String),
     );
     if (!image) {
       acc.arr.push(item);

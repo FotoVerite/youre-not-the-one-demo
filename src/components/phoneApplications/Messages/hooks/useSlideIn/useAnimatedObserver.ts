@@ -12,7 +12,7 @@ export const useAnimatedObserver = (
   watched: any,
   resolver?: SharedValue<number>,
   delay?: number,
-  storedChildren?: React.MutableRefObject<React.ReactNode>
+  storedChildren?: React.MutableRefObject<React.ReactNode>,
 ) => {
   const sharedValue = useSharedValue(0);
 
@@ -20,7 +20,7 @@ export const useAnimatedObserver = (
     if (watched != null) {
       sharedValue.value = withDelay(
         delay || 0,
-        withTiming(1, { duration: 500, easing: Easing.inOut(Easing.quad) })
+        withTiming(1, { duration: 500, easing: Easing.inOut(Easing.quad) }),
       );
     } else {
       sharedValue.value = withTiming(0, {
@@ -39,7 +39,7 @@ export const useAnimatedObserver = (
         resolver.value = result;
       }
     },
-    []
+    [],
   );
 
   return sharedValue;

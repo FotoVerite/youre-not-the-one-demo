@@ -4,7 +4,6 @@ import {
   useDerivedValue,
   useSharedValue,
   withSpring,
-  withTiming,
 } from "react-native-reanimated";
 
 const BubblePath = (
@@ -74,7 +73,7 @@ export const useBubbleClip = (
 
   useEffect(() => {
     isLastInExchange.value = withSpring(initialState, { duration: 750 });
-  }, [initialState]);
+  }, [initialState, isLastInExchange]);
 
   const animatedPath = useDerivedValue(() => {
     const interpolateValue = clip.interpolate(

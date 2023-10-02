@@ -17,7 +17,7 @@ const StorageContextProvider: FC<StorageContextDigestType> = ({
   const [events, setEvents] = useState<AppEventsType | false | undefined>();
   useEffect(() => {
     getData("events").then((data) =>
-      setEvents(data ? JSON.parse(data) : false)
+      setEvents(data ? JSON.parse(data) : false),
     );
   }, []);
 

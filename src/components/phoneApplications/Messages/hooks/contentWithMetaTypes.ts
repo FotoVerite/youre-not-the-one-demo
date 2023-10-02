@@ -96,7 +96,7 @@ export type ContentWithMetaType =
   | VCardContentWithMeta;
 
 export const isContentWithMeta = (
-  content: ContentWithMetaType | string
+  content: ContentWithMetaType | string,
 ): content is ContentWithMetaType => {
   return (content as ContentWithMetaType).type !== undefined;
 };

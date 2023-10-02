@@ -1,9 +1,8 @@
-import { Asset } from "expo-asset";
+import { Asset, useAssets } from "expo-asset";
 import Constants from "expo-constants";
 import { FC, useState, useEffect, PropsWithChildren } from "react";
-import { StyleSheet, View } from "react-native";
+import { ImageSourcePropType, StyleSheet, View } from "react-native";
 import Animated, { SharedValue } from "react-native-reanimated";
-import { useAssets } from "expo-asset";
 
 export const AppLoader: FC<
   PropsWithChildren & {
@@ -11,9 +10,9 @@ export const AppLoader: FC<
     image: { uri: string };
     opacity: SharedValue<number>;
   }
-> = ({ animationFinished, children, image, opacity }) => {
+> = ({ children, opacity }) => {
   const [isSplashReady, setSplashReady] = useState(false);
-  const [assets, error] = useAssets([require("assets/splash.jpeg")]);
+  const [assets] = useAssets([require("assets/splash.jpeg")]);
 
   useEffect(() => {
     async function prepare(asset: Asset) {
@@ -23,9 +22,10 @@ export const AppLoader: FC<
     if (assets && assets[0]) prepare(assets[0]);
   }, [assets]);
 
-  if (!isSplashReady) {
+  if (!isSplashReady || !assets) {
     return null;
   }
+  const image = assets[0];
 
   return (
     <View style={{ flex: 1 }}>
@@ -48,7 +48,7 @@ export const AppLoader: FC<
               resizeMode: Constants.expoConfig?.splash?.resizeMode || "contain",
             },
           ]}
-          source={assets[0]}
+          source={image as ImageSourcePropType}
           fadeDuration={0}
         />
       </Animated.View>

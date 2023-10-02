@@ -9,8 +9,8 @@ import {
   MessageEffectType,
 } from "../../contentWithMetaTypes";
 import {
-  MessageRouteType,
-  NotificationRouteType,
+  DigestedMessageRouteType,
+  DigestedNotificationRouteType,
   RouteConditionsType,
 } from "../../routes/types";
 import {
@@ -179,7 +179,7 @@ export type DigestedConversationType = Omit<
 > & {
   activePath: MessagePayloadType[];
   seenRoutes: string[];
-  availableRoute?: MessageRouteType | NotificationRouteType;
+  availableRoute?: DigestedMessageRouteType | DigestedNotificationRouteType;
   chosenRoute?: string;
   cleanupAction?: AppEventsReducerActionsType;
   eventAction?: AppEventsReducerActionsType;
@@ -200,17 +200,19 @@ export type DigestedBubbleProps = {
 export type DigestedConversationWithChoosableRoute = Omit<
   DigestedConversationType,
   "availableRoute"
-> & { availableRoute: MessageRouteType };
+> & { availableRoute: DigestedMessageRouteType };
 
 export type DigestedConversationWithNotificationRoute = Omit<
   DigestedConversationType,
   "availableRoute"
-> & { availableRoute: NotificationRouteType };
+> & { availableRoute: DigestedNotificationRouteType };
 
 export type DigestedConversationWithAvailableRoute = Omit<
   DigestedConversationType,
   "availableRoute"
-> & { availableRoute: MessageRouteType | NotificationRouteType };
+> & {
+  availableRoute: DigestedMessageRouteType | DigestedNotificationRouteType;
+};
 
 export type DigestedConversationWithConditionalBlockability = Omit<
   DigestedConversationType,
@@ -218,13 +220,13 @@ export type DigestedConversationWithConditionalBlockability = Omit<
 > & { blockable: { conditions: RouteConditionsType } };
 
 export const hasAvailableRoute = (
-  draft: DigestedConversationType
+  draft: DigestedConversationType,
 ): draft is DigestedConversationWithAvailableRoute => {
   return draft.availableRoute != null;
 };
 
 export const hasStartedRoute = (
-  draft: DigestedConversationType
+  draft: DigestedConversationType,
 ): draft is DigestedConversationWithAvailableRoute => {
   return (
     hasAvailableRoute(draft) &&
@@ -234,7 +236,7 @@ export const hasStartedRoute = (
 };
 
 export const isSentMessage = (
-  exchange: DigestedConversationListItem
+  exchange: DigestedConversationListItem,
 ): exchange is BubbleItemType => {
   if (isDigestedLabel(exchange)) {
     return false;
@@ -243,13 +245,13 @@ export const isSentMessage = (
 };
 
 export const isSentMessagePayload = (
-  payload: MessagePayloadType
+  payload: MessagePayloadType,
 ): payload is SentMessagePayloadType => {
   return SELF_NAMES_CONST.includes(payload.name);
 };
 
 export const isReceivedMessage = (
-  exchange: DigestedConversationListItem
+  exchange: DigestedConversationListItem,
 ): exchange is BubbleItemType => {
   if (isDigestedLabel(exchange)) {
     return false;
@@ -258,27 +260,27 @@ export const isReceivedMessage = (
 };
 
 export const isDigestedBubble = (
-  exchange: DigestedConversationListItem
+  exchange: DigestedConversationListItem,
 ): exchange is BubbleItemType => {
   return ![MESSAGE_CONTENT.TIME, MESSAGE_CONTENT.READ_LABEL].includes(
-    exchange.type
+    exchange.type,
   );
 };
 
 export const isDigestedLabel = (
-  exchange: DigestedConversationListItem
+  exchange: DigestedConversationListItem,
 ): exchange is DigestedLabelType => {
   return !isDigestedBubble(exchange);
 };
 
 export const choosableRoute = (
-  route: MessageRouteType | NotificationRouteType | undefined
-): route is MessageRouteType => {
+  route: DigestedMessageRouteType | DigestedNotificationRouteType | undefined,
+): route is DigestedMessageRouteType => {
   return route != null && route.hasOwnProperty("options");
 };
 
 export const hasChoosableRoute = (
-  draft: DigestedConversationType
+  draft: DigestedConversationType,
 ): draft is DigestedConversationWithChoosableRoute => {
   return (
     draft.availableRoute != null &&
@@ -287,7 +289,7 @@ export const hasChoosableRoute = (
 };
 
 export const hasBlockableConditions = (
-  draft: DigestedConversationType
+  draft: DigestedConversationType,
 ): draft is DigestedConversationWithConditionalBlockability => {
   return (
     draft.blockable != null && draft.blockable.hasOwnProperty("conditions")

@@ -32,7 +32,7 @@ export const ReadLabel: FC<{
     if (contentDelay) {
       fadeIn.value = withDelay(
         contentDelay || 250,
-        withTiming(1, { duration: 250 })
+        withTiming(1, { duration: 250 }),
       );
     }
   }, [contentDelay, fadeIn]);

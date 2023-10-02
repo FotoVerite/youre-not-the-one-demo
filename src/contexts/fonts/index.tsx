@@ -6,7 +6,7 @@ import { FontsContextDigestedType, FontsContextDigestType } from "./types";
 
 //defaults for empty app
 const FontsContext = React.createContext<FontsContextDigestedType | undefined>(
-  undefined
+  undefined,
 );
 
 const FontsContextProvider: FC<FontsContextDigestType> = (props) => {

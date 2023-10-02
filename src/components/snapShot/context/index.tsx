@@ -86,15 +86,12 @@ const SnapShotContextProvider: FC<SnapShotContextDigestType> = (props) => {
     (args: TakeSnapshotType) => {
       _setTakeSnapShot(args);
     },
-    [_setTakeSnapShot]
+    [_setTakeSnapShot],
   );
 
-  const setImage = useCallback(
-    (args: SnapShotImageType) => {
-      _setImage(args);
-    },
-    [_setTakeSnapShot]
-  );
+  const setImage = useCallback((args: SnapShotImageType) => {
+    _setImage(args);
+  }, []);
 
   return (
     <SnapShotContext.Provider

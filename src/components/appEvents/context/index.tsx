@@ -13,6 +13,7 @@ import React, {
   useRef,
 } from "react";
 import { PHONE_APPLICATION_NAMES } from "src/constants/phoneApplicationNames";
+import { useStorageContext } from "src/contexts/storage";
 import { LOG, LOG_COLORS } from "src/utility/logger";
 
 import {
@@ -25,8 +26,6 @@ import {
   AppEventsType,
   MessageAppEventsContainerType,
 } from "../reducer/types";
-import { getData } from "src/utility/storage";
-import { useStorageContext } from "src/contexts/storage";
 
 //defaults for empty app
 const AppEventsContext = React.createContext<
@@ -57,14 +56,14 @@ const AppEventsContextProvider: FC<AppEventsContextTypeDigest> = (props) => {
 
   const [events, dispatch] = useReducer(
     eventsReducer,
-    setInitialState(storage.events)
+    setInitialState(storage.events),
   );
 
   const memoizedDispatch = useCallback(
     (action: AppEventsReducerActionsType) => {
       dispatch(action);
     },
-    []
+    [],
   );
 
   useEffect(() => {
@@ -75,13 +74,13 @@ const AppEventsContextProvider: FC<AppEventsContextTypeDigest> = (props) => {
 
   useEffect(() => {
     const newNotifications = events.NOTIFICATIONS.filter(
-      (notification) => !sentNotifications.current.includes(notification)
+      (notification) => !sentNotifications.current.includes(notification),
     );
     newNotifications.forEach((notification) =>
       notificationDispatch({
         type: NOTIFICATIONS_REDUCER_ACTIONS.ADD,
         payload: notification,
-      })
+      }),
     );
     sentNotifications.current =
       sentNotifications.current.concat(newNotifications);

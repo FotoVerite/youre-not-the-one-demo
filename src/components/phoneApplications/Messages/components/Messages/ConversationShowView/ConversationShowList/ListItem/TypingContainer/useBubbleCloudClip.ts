@@ -1,11 +1,5 @@
 import { SkPath, Skia } from "@shopify/react-native-skia";
-import { useEffect, useMemo } from "react";
-import {
-  useDerivedValue,
-  useSharedValue,
-  withSpring,
-  withTiming,
-} from "react-native-reanimated";
+import { useMemo } from "react";
 
 const BubblePath = (
   width: number,

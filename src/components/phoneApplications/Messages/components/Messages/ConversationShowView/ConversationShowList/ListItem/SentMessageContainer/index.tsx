@@ -33,7 +33,7 @@ const SentMessageContainer: FC<
         contentDelay,
         withTiming(1, { duration: 250 }, (finished) => {
           runOnJS(continueRoute)(contentDelay);
-        })
+        }),
       );
     }
   }, [contentDelay, dispatch, height, opacity, resolved]);

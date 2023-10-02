@@ -18,7 +18,7 @@ export const resetMessageDelays = (draft: DigestedConversationType) => {
 };
 
 export const revertPreviousMessageEphemeralProps = (
-  draft: DigestedConversationType
+  draft: DigestedConversationType,
 ) => {
   const previous = draft.previousExchangeProps;
   if (!previous) return;
@@ -31,7 +31,7 @@ export const revertPreviousMessageEphemeralProps = (
 
 export const setMessageEphemeralProps = (
   draft: DigestedConversationType,
-  message: BubbleItemType
+  message: BubbleItemType,
 ) => {
   message.contentDelay = message.contentDelay || DEFAULT_CONTENT_DELAY;
 

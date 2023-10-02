@@ -3,11 +3,11 @@ import { View, TouchableWithoutFeedback, StyleSheet } from "react-native";
 import { theme } from "src/theme";
 import { Row } from "src/utility/layout";
 
-import ChevronButton, { MESSAGE_SEND_BUTTON_STATE } from "../ChevronButton";
-import DisplayedText, { DISPLAYED_TEXT_STATES } from "../DisplayedText";
 import ListOffsetEmitter, {
   LIST_EMITTER_EVENTS,
 } from "../../ConversationShowList/emitters";
+import ChevronButton, { MESSAGE_SEND_BUTTON_STATE } from "../ChevronButton";
+import DisplayedText, { DISPLAYED_TEXT_STATES } from "../DisplayedText";
 
 const MessageTextInput: FC<{
   openOptionList: React.Dispatch<React.SetStateAction<boolean>>;
@@ -19,7 +19,7 @@ const MessageTextInput: FC<{
   const [buttonState, setButtonState] = useState(
     text != null
       ? MESSAGE_SEND_BUTTON_STATE.SENDABLE
-      : MESSAGE_SEND_BUTTON_STATE.INACTIVE
+      : MESSAGE_SEND_BUTTON_STATE.INACTIVE,
   );
 
   useEffect(() => {
@@ -50,7 +50,7 @@ const MessageTextInput: FC<{
               setButtonState(
                 isOpen
                   ? MESSAGE_SEND_BUTTON_STATE.HAS_CONTENT
-                  : MESSAGE_SEND_BUTTON_STATE.OPEN
+                  : MESSAGE_SEND_BUTTON_STATE.OPEN,
               );
               return !isOpen;
             });

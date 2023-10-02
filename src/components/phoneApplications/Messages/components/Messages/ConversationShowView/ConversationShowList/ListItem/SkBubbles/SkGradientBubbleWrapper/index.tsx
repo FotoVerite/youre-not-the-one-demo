@@ -29,14 +29,14 @@ export const SkGradientBubbleWrapper: FC<
     colors,
     offset,
     addressee,
-    scrollHandler
+    scrollHandler,
   );
   const clipFunction = useBubbleClip(
     width,
     height,
     16,
     addressee,
-    isLastInExchange ? 0 : 1
+    isLastInExchange ? 0 : 1,
   );
   useEffect(() => {
     setAsResolved(true);

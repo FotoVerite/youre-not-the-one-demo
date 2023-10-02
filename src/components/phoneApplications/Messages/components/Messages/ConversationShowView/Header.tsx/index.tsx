@@ -31,7 +31,7 @@ const Header: FC<{
       backgroundColor: interpolateColor(
         shrink.value,
         [0, 1],
-        ["transparent", "#7878784f"]
+        ["transparent", "#7878784f"],
       ),
       transform: [{ scale: interpolate(shrink.value, [0, 1], [1, 0.97]) }],
     };

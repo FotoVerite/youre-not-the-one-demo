@@ -28,7 +28,7 @@ export const SkImageBubble: FC<SkBubbleType> = ({
     height,
     16,
     addressee,
-    isLastInExchange ? 0 : 1
+    isLastInExchange ? 0 : 1,
   );
 
   useEffect(() => {
@@ -48,7 +48,7 @@ export const SkImageBubble: FC<SkBubbleType> = ({
           <MediaImageElement
             source={content as ImageSourcePropType}
             aspectRatio={width / height}
-          />
+          />,
         );
       }}
     >

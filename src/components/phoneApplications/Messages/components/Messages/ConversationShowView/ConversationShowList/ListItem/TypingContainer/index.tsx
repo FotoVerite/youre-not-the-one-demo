@@ -1,6 +1,3 @@
-import ConversationEmitter, {
-  CONVERSATION_EMITTER_EVENTS,
-} from "@Components/phoneApplications/Messages/emitters";
 import {
   CONVERSATION_REDUCER_ACTIONS,
   ConversationReducerActionsType,
@@ -58,7 +55,7 @@ export const TypingContainer: FC<
           if (finished) {
             runOnJS(continueRoute)(props.contentDelay || 0);
           }
-        })
+        }),
       );
     };
 

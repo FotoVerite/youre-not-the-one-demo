@@ -1,5 +1,4 @@
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
-import { MESSAGE_CONTENT } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
 import {
   isDigestedBubble,
   isDigestedLabel,
@@ -19,7 +18,7 @@ const ListItem: FC<ConversationShowListItem> = (props) => {
     (isResolved: boolean) => {
       _setAsResolved(isResolved);
     },
-    [_setAsResolved]
+    [_setAsResolved],
   );
   const item = useBubbleResolver({ ...props, setAsResolved });
   let bubble: React.JSX.Element;

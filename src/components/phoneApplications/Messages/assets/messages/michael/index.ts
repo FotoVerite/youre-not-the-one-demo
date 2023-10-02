@@ -6,7 +6,6 @@ import { ConversationFileType } from "@Components/phoneApplications/Messages/hoo
 
 import { michael_about_tonight_reply } from "./routes/michae_about_tonight_reply";
 import { michael_first_text } from "./routes/michael_first_text";
-import { SPAM1_IDS } from "../spam1/routes/routes";
 import { ZARA_ROUTE_IDS } from "../zara/routes/routes";
 const MICHAEL = MESSAGE_CONTACT_NAME.MICHAEL;
 export const michael: ConversationFileType = {

@@ -37,10 +37,18 @@ export type MessageRouteType = {
   routes: { [key: string]: ExchangeBlockType[] };
 };
 
+export type DigestedMessageRouteType = MessageRouteType & {
+  name: MESSAGE_CONTACT_NAME;
+};
+
 export type NotificationRouteType = {
   id: number;
   backgroundColor?: string;
   delay?: number;
   conditions?: RouteConditionsType;
   exchanges: ExchangeBlockType[];
+};
+
+export type DigestedNotificationRouteType = NotificationRouteType & {
+  name: MESSAGE_CONTACT_NAME;
 };

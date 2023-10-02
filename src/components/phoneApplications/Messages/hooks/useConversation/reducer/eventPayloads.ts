@@ -8,7 +8,7 @@ import {
 export const createCleanupPayload = (
   draft: DigestedConversationWithAvailableRoute,
   forewordToIndex: number,
-  finished: boolean
+  finished: boolean,
 ) => {
   return {
     type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_UPDATE,
@@ -23,7 +23,7 @@ export const createCleanupPayload = (
 
 export const routeStartedPayload = (
   draft: DigestedConversationType,
-  routeID: number
+  routeID: number,
 ) => ({
   type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_CREATE,
   payload: {
@@ -36,7 +36,7 @@ export const routeStartedPayload = (
 });
 
 export const routeUpdatePayload = (
-  draft: DigestedConversationWithAvailableRoute
+  draft: DigestedConversationWithAvailableRoute,
 ) => ({
   type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_UPDATE,
   payload: {
@@ -48,7 +48,7 @@ export const routeUpdatePayload = (
 
 export const routeFinishedPayload = (
   draft: DigestedConversationWithAvailableRoute,
-  routeID: number
+  routeID: number,
 ) => ({
   type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_UPDATE,
   payload: {

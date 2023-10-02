@@ -14,12 +14,12 @@ import { getSeenRoutes, getUnfinishedRouteID } from "../../routes/seen";
 
 export const lastRouteTime = (
   digested: DigestedConversationType,
-  events: AppEventsType
+  events: AppEventsType,
 ) => {
   const unfinishedID = getUnfinishedRouteID(
     digested.name,
     events,
-    digested.routes || []
+    digested.routes || [],
   );
   if (unfinishedID) {
     return events.Messages[digested.name].routes[unfinishedID].createdAt;
@@ -28,7 +28,7 @@ export const lastRouteTime = (
     digested.name,
     events,
     digested.routes,
-    digested.notificationRoutes
+    digested.notificationRoutes,
   );
   return seenRoutes[0] ? seenRoutes[0].createdAt : undefined;
 };
@@ -39,7 +39,7 @@ type FilterType = {
 };
 const filterByType = (
   exchanges: DigestedConversationListItem[],
-  type: MESSAGE_CONTENT
+  type: MESSAGE_CONTENT,
 ): FilterType | undefined => {
   return exchanges
     .map((item, index) => {
@@ -56,11 +56,11 @@ export const appendReadLabel = (
   exchanges: DigestedConversationListItem[],
   width: number,
   readTime?: string,
-  leaveAsDelivered?: boolean
+  leaveAsDelivered?: boolean,
 ) => {
   const hasSentMessage =
     exchanges.filter(
-      (e) => isDigestedBubble(e) && e.name === MESSAGE_CONTACT_NAME.SELF
+      (e) => isDigestedBubble(e) && e.name === MESSAGE_CONTACT_NAME.SELF,
     ).length > 0;
   if (!hasSentMessage) {
     return exchanges;
@@ -87,7 +87,7 @@ export const appendReadLabel = (
     width,
     lastExchange.offset + lastExchange.height + lastExchange.paddingBottom,
     leaveAsDelivered || lastExchange.leaveAsDelivered,
-    lastExchange.contentDelay
+    lastExchange.contentDelay,
   );
 
   exchanges.splice(spliceIndex, 0, readLabel);
@@ -103,7 +103,7 @@ export const appendReadLabel = (
 
 const markPreviousReadForRemoval = (
   previousIndex: number,
-  exchanges: DigestedConversationListItem[]
+  exchanges: DigestedConversationListItem[],
 ) => {
   if (previousIndex === -1) {
     return exchanges;

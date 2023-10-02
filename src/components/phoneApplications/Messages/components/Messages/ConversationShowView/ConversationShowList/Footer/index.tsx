@@ -4,7 +4,7 @@ import {
   CONVERSATION_REDUCER_ACTIONS,
 } from "@Components/phoneApplications/Messages/hooks/useConversation/reducer/type";
 import React, { FC } from "react";
-import { Text, View } from "react-native";
+import { Text } from "react-native";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import Animated, {
   SharedValue,

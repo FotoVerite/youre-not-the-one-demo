@@ -5,7 +5,7 @@ import { messageAppConditionsMet } from "../../routes/conditionals";
 
 export const blockableConditionsMet = (
   draft: DigestedConversationType,
-  events: AppEventsType
+  events: AppEventsType,
 ) => {
   if (!hasBlockableConditions(draft)) return draft.blockable;
   return messageAppConditionsMet(events.Messages, draft.blockable.conditions)

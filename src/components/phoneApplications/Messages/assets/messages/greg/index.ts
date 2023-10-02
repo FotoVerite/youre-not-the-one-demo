@@ -3,13 +3,9 @@ import {
   MESSAGE_CONTACT_INFO,
 } from "@Components/phoneApplications/Messages/constants";
 import { MESSAGE_CONTENT } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
-import {
-  ConversationFileType,
-  ConversationType,
-} from "@Components/phoneApplications/Messages/hooks/useConversations/types";
+import { ConversationFileType } from "@Components/phoneApplications/Messages/hooks/useConversations/types";
 
 const GREG = MESSAGE_CONTACT_NAME.GREG;
-const SELF = MESSAGE_CONTACT_NAME.SELF;
 export const greg: ConversationFileType = {
   name: GREG,
   tags: [],

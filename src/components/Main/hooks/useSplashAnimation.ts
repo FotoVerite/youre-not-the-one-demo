@@ -4,7 +4,7 @@ import { runOnJS, useSharedValue, withTiming } from "react-native-reanimated";
 
 export type AppResolverCallbackType = (
   resolved: "storage" | "fonts",
-  value: boolean
+  value: boolean,
 ) => void;
 export type AppResolverType = Record<"storage" | "fonts", boolean>;
 const useSplashAnimation = () => {
@@ -22,7 +22,7 @@ const useSplashAnimation = () => {
         return { ...state, ...{ [key]: value } };
       });
     },
-    [_setAppResolver]
+    [_setAppResolver],
   );
 
   useEffect(() => {
@@ -32,7 +32,7 @@ const useSplashAnimation = () => {
         await SplashScreen.hideAsync();
 
         opacity.value = withTiming(0, { duration: 500 }, () =>
-          runOnJS(setAnimationFinished)(true)
+          runOnJS(setAnimationFinished)(true),
         );
       }
     };

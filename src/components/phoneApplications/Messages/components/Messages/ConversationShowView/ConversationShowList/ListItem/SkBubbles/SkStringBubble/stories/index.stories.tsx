@@ -3,7 +3,6 @@ import {
   MESSAGE_CONTACT_NAME,
 } from "@Components/phoneApplications/Messages/constants";
 import { MESSAGE_CONTENT } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
-import { DigestedConversationStringItemType } from "@Components/phoneApplications/Messages/hooks/useConversation/digestion/types";
 import { vec } from "@shopify/react-native-skia";
 import { ElementType } from "react";
 import { View } from "react-native";

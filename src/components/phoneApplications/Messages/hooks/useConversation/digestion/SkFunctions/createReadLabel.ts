@@ -12,7 +12,7 @@ export const createReadLabel = (
   width: number,
   offset: number,
   leaveAsDelivered?: boolean,
-  contentDelay?: number
+  contentDelay?: number,
 ): DigestedConversationReadLabelType => {
   const listItem = {
     ID: Crypto.randomUUID(),
