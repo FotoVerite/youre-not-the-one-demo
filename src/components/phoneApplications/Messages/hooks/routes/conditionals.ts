@@ -10,9 +10,10 @@ import {
   RouteConditionsType,
 } from "./types";
 import { MESSAGE_CONTACT_NAME } from "../../constants";
-import { EFFECT_TYPE } from "../contentWithMetaTypes";
+import { EFFECT_TYPE, isContentWithMeta } from "../contentWithMetaTypes";
 import { choosableRoute } from "../useConversation/digestion/types";
 import { ExchangeBlockType } from "../useConversations/types";
+import { produce } from "immer";
 
 const contactHasBeenViewedCheck = (
   name: MESSAGE_CONTACT_NAME,
@@ -170,4 +171,39 @@ export const mergeEffects = <
       },
     };
   return route;
+};
+
+export const messagesConditionalCheck = <
+  AvailableRouteType extends NotificationRouteType | MessageRouteType,
+>(
+  route: AvailableRouteType,
+  events: AppEventsType
+): AvailableRouteType => {
+  return produce(route, (draft) => {
+    if (choosableRoute(draft)) {
+      for (const option in draft.routes) {
+        draft.routes[option] = draft.routes[option].map((exchange) =>
+          removeMessagesThatConditionsHaveNotBeenMet(exchange, events)
+        );
+      }
+    } else {
+      draft.exchanges = draft.exchanges.map((exchange) =>
+        removeMessagesThatConditionsHaveNotBeenMet(exchange, events)
+      );
+    }
+    return draft;
+  });
+};
+
+export const removeMessagesThatConditionsHaveNotBeenMet = (
+  exchange: ExchangeBlockType,
+  events: AppEventsType
+) => {
+  const name = exchange.name;
+  const filteredMessages = exchange.messages.filter(
+    (message) =>
+      !isContentWithMeta(message) ||
+      messageAppConditionsMet(events.Messages, message.conditions)
+  );
+  return { name, messages: filteredMessages };
 };

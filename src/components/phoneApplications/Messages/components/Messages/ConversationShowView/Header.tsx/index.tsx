@@ -39,7 +39,7 @@ const Header: FC<{
 
   return (
     <Animated.View style={[styles.header, animatedShrink]}>
-      {Platform.OS === "ios" && <BlurView style={styles.blur} intensity={20} />}
+      {Platform.OS === "ios" && <BlurView style={styles.blur} intensity={50} />}
       {Platform.OS !== "ios" && (
         <View style={[styles.blur, { backgroundColor: theme.colors.muted }]} />
       )}

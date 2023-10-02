@@ -39,6 +39,7 @@ export type ReactionType = {
 
 interface AbstractContentWithMetaType {
   contentDelay?: number;
+  conditions?: RouteConditionsType;
   leaveAsDelivered?: boolean;
   typingDelay?: number;
   reaction?: ReactionType;

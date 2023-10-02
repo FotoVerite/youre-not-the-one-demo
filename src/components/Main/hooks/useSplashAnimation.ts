@@ -31,7 +31,7 @@ const useSplashAnimation = () => {
       if (isFinished) {
         await SplashScreen.hideAsync();
 
-        opacity.value = withTiming(0, { duration: 750 }, () =>
+        opacity.value = withTiming(0, { duration: 500 }, () =>
           runOnJS(setAnimationFinished)(true)
         );
       }

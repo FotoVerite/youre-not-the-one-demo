@@ -3,19 +3,22 @@ import {
   MESSAGE_CONTACT_NAME,
 } from "@Components/phoneApplications/Messages/constants";
 import { ConversationFileType } from "@Components/phoneApplications/Messages/hooks/useConversations/types";
-import moment from "moment";
 
+import {
+  did_not_send_images,
+  sent_images,
+} from "./routes/notifications/additional_notifications";
+import { spam1_introduction } from "./routes/notifications/spam_introduction";
+import { SPAM1_IDS } from "./routes/routes";
 import { spam1_exchange_one } from "./routes/spam1_exchange_one";
 import {
   SPAM1_SECOND_EXCHANGE_OPTIONS,
   spam1_exchange_two,
 } from "./routes/spam_exchange_two";
-import { spam1_introduction } from "./routes/spam_introduction";
 import { ZARA_ROUTE_IDS } from "../zara/routes/routes";
-import { SPAM1_IDS } from "./routes/routes";
+import { what_is_with_this_serial_killer_bullshit } from "./routes/what_is_with_this_serial_stalker_bullshit";
 
 const NAME = MESSAGE_CONTACT_NAME.SPAM1;
-const SELF = MESSAGE_CONTACT_NAME.SELF;
 export const spam1: ConversationFileType = {
   name: NAME,
   tags: [NAME],
@@ -43,7 +46,7 @@ export const spam1: ConversationFileType = {
   // ],
   heroImage: MESSAGE_CONTACT_INFO[NAME].avatar,
   interfaceColor: MESSAGE_CONTACT_INFO[NAME].colors[0],
-  notificationRoutes: [spam1_introduction],
+  notificationRoutes: [spam1_introduction, sent_images, did_not_send_images],
   blockable: {
     conditions: {
       [MESSAGE_CONTACT_NAME.SPAM1]: {
@@ -57,5 +60,9 @@ export const spam1: ConversationFileType = {
     },
   },
   exchanges: [],
-  routes: [spam1_exchange_one, spam1_exchange_two],
+  routes: [
+    spam1_exchange_one,
+    spam1_exchange_two,
+    what_is_with_this_serial_killer_bullshit,
+  ],
 };

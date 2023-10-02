@@ -1,6 +1,10 @@
 import { AppEventsType } from "@Components/appEvents/reducer/types";
 
-import { mergeEffects, messageAppConditionsMet } from "./conditionals";
+import {
+  mergeEffects,
+  messageAppConditionsMet,
+  messagesConditionalCheck,
+} from "./conditionals";
 import { MessageRouteType, NotificationRouteType } from "./types";
 import { MESSAGE_CONTACT_NAME } from "../../constants";
 
@@ -20,13 +24,14 @@ export const findAvailableRoutes = <
         const finishedRoutes = Object.keys(
           state.Messages[name]?.routes || {}
         ).filter((key) => state.Messages[name].routes[key].finished);
-
         return (
           !finishedRoutes.includes(route.id.toString()) &&
           (route.conditions == null ||
             messageAppConditionsMet(state.Messages, route.conditions))
         );
       })
-      .map((route) => mergeEffects(route, state)) as AvailableRouteType[];
+      .map((route) =>
+        mergeEffects(messagesConditionalCheck(route, state), state)
+      ) as AvailableRouteType[];
   }
 };

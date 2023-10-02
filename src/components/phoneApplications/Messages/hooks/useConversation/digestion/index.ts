@@ -10,7 +10,6 @@ import {
   BaseConfigType,
 } from "./types";
 import { digestUnfinishedRoute } from "./unfinishedRoute";
-import { EFFECT_TYPE } from "../../contentWithMetaTypes";
 import { findAvailableRoutes } from "../../routes/available";
 import { ConversationType } from "../../useConversations/types";
 
@@ -19,7 +18,7 @@ const combineIntoDigestedConversationType = (
   props: Omit<ConversationType, "exchanges">,
   events: AppEventsType
 ): DigestedConversationType => {
-  let availableRoute = findAvailableRoutes(
+  const availableRoute = findAvailableRoutes(
     props.name,
     props.routes || [],
     events

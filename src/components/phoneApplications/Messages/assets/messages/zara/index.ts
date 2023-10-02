@@ -17,6 +17,7 @@ import { i_dont_feel_secure } from "./routes/i_dont_feel_secure";
 import { i_fell_for_spam } from "./routes/i_fell_for_spam";
 import { update_on_the_phone } from "./routes/update_on_phone";
 import { your_day_worse_then_mine } from "./routes/your_day_worse_then_mine";
+import { my_bro_is_being_annoying } from "./routes/my_bro_is_being_annoying";
 
 const ZARA = MESSAGE_CONTACT_NAME.ZARA;
 
@@ -34,6 +35,7 @@ export const zara: ConversationFileType = {
   routes: [
     borked_phone,
     your_new_video,
+    my_bro_is_being_annoying,
     i_fell_for_spam,
     zara_contact_conversation,
     i_dont_know_what_to_do_with_myself,

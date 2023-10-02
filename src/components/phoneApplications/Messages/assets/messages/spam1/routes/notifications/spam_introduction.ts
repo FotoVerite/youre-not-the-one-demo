@@ -1,7 +1,7 @@
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
 import { NotificationRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
 
-import { SPAM1_IDS } from "./routes";
+import { SPAM1_IDS } from "../routes";
 
 export const spam1_introduction: NotificationRouteType = {
   id: SPAM1_IDS.SPAM_INTRODUCTION,

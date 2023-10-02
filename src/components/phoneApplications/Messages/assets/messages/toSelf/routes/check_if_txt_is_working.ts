@@ -41,7 +41,21 @@ export const check_if_txt_is_working: MessageRouteType = {
     [OPTIONS.A]: [
       {
         name: SELF,
-        messages: [OPTIONS.A, "And now lets try texting from my computer"],
+        messages: [
+          OPTIONS.A,
+          "And now lets try texting from my computer",
+          {
+            type: MESSAGE_CONTENT.STRING,
+            content: "This is conditional",
+            conditions: {
+              [MESSAGE_CONTACT_NAME.ZARA]: {
+                routes: {
+                  [ZARA_ROUTE_IDS.I_AM_BEING_HARASSED]: { finished: true },
+                },
+              },
+            },
+          },
+        ],
       },
     ],
   },

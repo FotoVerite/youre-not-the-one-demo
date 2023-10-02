@@ -7,6 +7,7 @@ import { ConversationFileType } from "@Components/phoneApplications/Messages/hoo
 import { michael_about_tonight_reply } from "./routes/michae_about_tonight_reply";
 import { michael_first_text } from "./routes/michael_first_text";
 import { SPAM1_IDS } from "../spam1/routes/routes";
+import { ZARA_ROUTE_IDS } from "../zara/routes/routes";
 const MICHAEL = MESSAGE_CONTACT_NAME.MICHAEL;
 export const michael: ConversationFileType = {
   name: MESSAGE_CONTACT_NAME.MICHAEL,
@@ -14,9 +15,10 @@ export const michael: ConversationFileType = {
   heroImage: MESSAGE_CONTACT_INFO[MICHAEL].avatar,
   interfaceColor: MESSAGE_CONTACT_INFO[MICHAEL].colors[0],
   conditions: {
-    [MESSAGE_CONTACT_NAME.SPAM1]: {
+    [MESSAGE_CONTACT_NAME.ZARA]: {
       routes: {
-        [SPAM1_IDS.EXCHANGE_ONE]: {},
+        [ZARA_ROUTE_IDS.I_FELL_FOR_SPAM]: { finished: true },
+        [ZARA_ROUTE_IDS.MY_BRO_IS_BEING_SO_ANNOYING]: { finished: true },
       },
     },
   },

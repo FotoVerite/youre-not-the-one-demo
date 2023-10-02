@@ -194,7 +194,11 @@ export const lenny_midnight_society: MessageRouteType = {
     [OPTIONS.B]: [
       {
         name: SELF,
-        messages: [OPTIONS.B, "Okay let me set the scene"],
+        messages: [OPTIONS.B],
+      },
+      {
+        name: LENNY,
+        messages: ["Okay let me set the scene"],
       },
     ].concat(exchanges),
     [OPTIONS.C]: [

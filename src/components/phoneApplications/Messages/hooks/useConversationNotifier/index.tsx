@@ -1,6 +1,7 @@
 import { useAppEventsContext } from "@Components/appEvents/context";
 import { APP_EVENTS_ACTIONS } from "@Components/appEvents/reducer/types";
 import { useRef, useMemo, useEffect, useCallback, useState } from "react";
+import { useStorageContext } from "src/contexts/storage";
 import { delayFor } from "src/utility/async";
 
 import { MESSAGE_CONTACT_INFO, MESSAGE_CONTACT_NAME } from "../../constants";
@@ -14,8 +15,6 @@ import {
   getLastMessageFromExchanges,
 } from "../useConversations/determineLogLine";
 import { ConversationFileType } from "../useConversations/types";
-import { createSHA1ID } from "src/utility/crypto";
-import { useStorageContext } from "src/contexts/storage";
 
 type NotificationRecord = Record<string, boolean>;
 
@@ -27,8 +26,8 @@ export const useConversationNotifier = (
   const { state: events, dispatch } = eventsContext;
   const prevConversations = useRef<NotificationRecord>({});
   const [notificationQueue, setNotificationQueue] = useState<
-    { name: MESSAGE_CONTACT_NAME; route: NotificationRouteType }[]
-  >([]);
+    { name: MESSAGE_CONTACT_NAME; route: NotificationRouteType } | undefined
+  >();
   const storage = useStorageContext();
 
   useEffect(() => {
@@ -49,6 +48,17 @@ export const useConversationNotifier = (
           conversation.notificationRoutes &&
           conversation.notificationRoutes.length > 0
       )
+      .filter((conversation) => {
+        return (
+          !events.Messages[conversation.name] ||
+          Object.values(events.Messages[conversation.name].routes).reduce(
+            (acc, routeValues) => {
+              return acc && routeValues.finished === true;
+            },
+            true
+          )
+        );
+      })
       .reduce(
         (acc, conversation) => {
           const name = conversation.name;
@@ -102,21 +112,24 @@ export const useConversationNotifier = (
 
   useEffect(() => {
     const sendToQueue = async () => {
-      const notifications = await Promise.all(
+      await Promise.all(
         toNotify.map(async (notification) => {
           await delayFor(notification.route.delay || 0);
-          return notification;
+          return setNotificationQueue({
+            name: notification.name,
+            route: notification.route,
+          });
         })
       );
-      setNotificationQueue(notifications);
     };
     sendToQueue();
   }, [toNotify]);
 
   useEffect(() => {
-    notificationQueue.forEach((notification) => {
-      notify(notification.name, notification.route);
-    });
+    if (notificationQueue) {
+      notify(notificationQueue.name, notificationQueue.route);
+      setNotificationQueue(undefined);
+    }
   }, [notificationQueue, notify]);
   return [] as const;
 };
