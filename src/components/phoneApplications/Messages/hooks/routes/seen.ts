@@ -4,8 +4,12 @@ import {
   MessageRouteEventType,
 } from "@Components/appEvents/reducer/types";
 
-import { mergeEffects, messagesConditionalCheck } from "./conditionals";
-import { MessageRouteType, NotificationRouteType } from "./types";
+import { messagesConditionalCheck } from "./conditionals";
+import {
+  DigestedMessageRouteType,
+  DigestedNotificationRouteType,
+  MessageRouteType,
+} from "./types";
 import { MESSAGE_CONTACT_NAME } from "../../constants";
 import { ExchangeBlockType } from "../useConversations/types";
 
@@ -20,13 +24,10 @@ export type RouteObjectType = {
 
 const constructSeenRouteObject = (
   events: AppEventsType,
-  availableRoutes: MessageRouteType[]
+  availableRoutes: DigestedMessageRouteType[]
 ) => {
   return availableRoutes.reduce((routes, route) => {
-    routes[route.id] = mergeEffects(
-      messagesConditionalCheck(route, events),
-      events
-    ).routes;
+    routes[route.id] = messagesConditionalCheck(events, route).routes;
     return routes;
   }, {} as SeenRoutesType);
 };
@@ -55,7 +56,7 @@ const constructSeenRoutes = (
 
 const constructSeenNotificationRoutes = (
   routeEvents: MessageRouteEventType,
-  availableRoutes: NotificationRouteType[]
+  availableRoutes: DigestedNotificationRouteType[]
 ) => {
   const ret: RouteObjectType[] = [];
   for (const [key, value] of Object.entries(routeEvents)) {
@@ -79,7 +80,7 @@ const constructSeenNotificationRoutes = (
 export const getSeenOptionRoutes = (
   name: MESSAGE_CONTACT_NAME,
   events: AppEventsType,
-  availableRoutes?: MessageRouteType[]
+  availableRoutes?: DigestedMessageRouteType[]
 ) => {
   if (!availableRoutes) {
     return [];
@@ -95,7 +96,7 @@ export const getSeenOptionRoutes = (
 export const getSeenEventRoutes = (
   name: MESSAGE_CONTACT_NAME,
   events: AppEventsType,
-  availableRoutes?: NotificationRouteType[]
+  availableRoutes?: DigestedNotificationRouteType[]
 ) => {
   if (!availableRoutes) {
     return [];
@@ -108,11 +109,11 @@ export const getSeenEventRoutes = (
 export const getSeenRoutes = (
   name: MESSAGE_CONTACT_NAME,
   events: AppEventsType,
-  availableRoutes?: MessageRouteType[],
-  availableEventBasedRoutes?: NotificationRouteType[]
+  availableRoutes?: DigestedMessageRouteType[],
+  availableNotificationRoutes?: DigestedNotificationRouteType[]
 ) => {
   const routes = getSeenOptionRoutes(name, events, availableRoutes)
-    .concat(getSeenEventRoutes(name, events, availableEventBasedRoutes))
+    .concat(getSeenEventRoutes(name, events, availableNotificationRoutes))
     .sort((a, b) => a.position - b.position);
   return routes;
 };
@@ -134,8 +135,8 @@ export const getUnfinishedRouteID = (
 export const getLastSeenRoute = (
   name: MESSAGE_CONTACT_NAME,
   events: AppEventsType,
-  availableRoutes?: MessageRouteType[],
-  availableNotificationRoutes?: NotificationRouteType[]
+  availableRoutes?: DigestedMessageRouteType[],
+  availableNotificationRoutes?: DigestedNotificationRouteType[]
 ): RouteObjectType | undefined => {
   return getSeenRoutes(
     name,

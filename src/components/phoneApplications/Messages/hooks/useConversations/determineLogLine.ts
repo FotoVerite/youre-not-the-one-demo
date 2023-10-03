@@ -8,7 +8,7 @@ import {
 } from "./types";
 import { MESSAGE_CONTACT_NAME } from "../../constants";
 import { MESSAGE_CONTENT, isContentWithMeta } from "../contentWithMetaTypes";
-import { mergeEffects } from "../routes/conditionals";
+import { messagesConditionalCheck } from "../routes/conditionals";
 import { getLastSeenRoute, getUnfinishedRouteID } from "../routes/seen";
 
 export const convertPathToExchanges = (path: ExchangeBlockType[]) => {
@@ -32,7 +32,8 @@ const getSeenExchangesFromUnfinishedRoute = (
   const route = conversation.routes?.find((r) => r.id.toString() === id);
   if (event && route && event.chosen && event.atIndex) {
     const path = convertPathToExchanges(
-      mergeEffects(route, events).routes[event.chosen]
+      messagesConditionalCheck(events, { ...route, name: conversation.name })
+        .routes[event.chosen]
     );
     const seen = path.splice(0, event.atIndex);
     return [event.updatedAt, seen] as const;

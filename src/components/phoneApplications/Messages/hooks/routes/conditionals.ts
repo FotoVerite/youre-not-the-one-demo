@@ -3,8 +3,12 @@ import {
   MessageAppEventsContainerType,
   MessageRouteEventDataType,
 } from "@Components/appEvents/reducer/types";
+import { Draft, produce } from "immer";
+import moment, { Moment } from "moment";
 
 import {
+  DigestedMessageRouteType,
+  DigestedNotificationRouteType,
   MessageRouteType,
   NotificationRouteType,
   RouteConditionsType,
@@ -13,7 +17,6 @@ import { MESSAGE_CONTACT_NAME } from "../../constants";
 import { EFFECT_TYPE, isContentWithMeta } from "../contentWithMetaTypes";
 import { choosableRoute } from "../useConversation/digestion/types";
 import { ExchangeBlockType } from "../useConversations/types";
-import { produce } from "immer";
 
 const contactHasBeenViewedCheck = (
   name: MESSAGE_CONTACT_NAME,
@@ -94,14 +97,17 @@ const routeFinished = (
 const routeHasBeenBlockedCheck = (
   name: MESSAGE_CONTACT_NAME,
   messageEvents: MessageAppEventsContainerType,
-  conditions: RouteConditionsType
+  conditions: RouteConditionsType,
+  conditionTime?: Moment
 ) => {
   const blockCondition = conditions[name]?.blocked;
   if (!blockCondition) {
     return true;
   }
   const blockedBoolean = messageEvents[name]?.blocked || false;
-  return blockedBoolean === blockCondition;
+  const blockedAt = moment(messageEvents[name]?.blockedAt);
+  conditionTime = conditionTime || moment();
+  return blockedBoolean === blockCondition && conditionTime >= blockedAt;
 };
 
 const routeHasBeenChosenCheck = (
@@ -149,55 +155,22 @@ export const messageAppConditionsMet = (
   return ret;
 };
 
-export const mergeEffects = <
-  AvailableRouteType extends NotificationRouteType | MessageRouteType,
->(
-  route: AvailableRouteType,
-  events: AppEventsType
-): AvailableRouteType => {
-  if (!choosableRoute(route)) return route;
-  const exchange = route.effects?.filter(
+export const mergeConditionalExchanges = (
+  events: AppEventsType,
+  draft: Draft<DigestedMessageRouteType | DigestedNotificationRouteType>
+) => {
+  if (!choosableRoute(draft)) return;
+  const effect = draft.effects?.filter(
     (effect) =>
       effect.type === EFFECT_TYPE.CONDITIONAL_EXCHANGE &&
       messageAppConditionsMet(events.Messages, effect.conditions)
   )[0];
-  if (exchange)
-    return {
-      ...route,
-      ...{
-        routes: exchange.data as {
-          [key: string]: ExchangeBlockType[];
-        },
-      },
-    };
-  return route;
-};
-
-export const messagesConditionalCheck = <
-  AvailableRouteType extends NotificationRouteType | MessageRouteType,
->(
-  route: AvailableRouteType,
-  events: AppEventsType
-): AvailableRouteType => {
-  return produce(route, (draft) => {
-    if (choosableRoute(draft)) {
-      for (const option in draft.routes) {
-        draft.routes[option] = draft.routes[option].map((exchange) =>
-          removeMessagesThatConditionsHaveNotBeenMet(exchange, events)
-        );
-      }
-    } else {
-      draft.exchanges = draft.exchanges.map((exchange) =>
-        removeMessagesThatConditionsHaveNotBeenMet(exchange, events)
-      );
-    }
-    return draft;
-  });
+  if (effect) draft.routes = { ...draft.routes, ...effect.data };
 };
 
 export const removeMessagesThatConditionsHaveNotBeenMet = (
-  exchange: ExchangeBlockType,
-  events: AppEventsType
+  events: AppEventsType,
+  exchange: ExchangeBlockType
 ) => {
   const name = exchange.name;
   const filteredMessages = exchange.messages.filter(
@@ -206,4 +179,29 @@ export const removeMessagesThatConditionsHaveNotBeenMet = (
       messageAppConditionsMet(events.Messages, message.conditions)
   );
   return { name, messages: filteredMessages };
+};
+
+export const messagesConditionalCheck = <
+  AvailableRouteType extends
+    | DigestedMessageRouteType
+    | DigestedNotificationRouteType,
+>(
+  events: AppEventsType,
+  route: AvailableRouteType
+): AvailableRouteType => {
+  return produce(route, (draft) => {
+    mergeConditionalExchanges(events, draft);
+    if (choosableRoute(draft)) {
+      for (const option in draft.routes) {
+        draft.routes[option] = draft.routes[option].map((exchange) =>
+          removeMessagesThatConditionsHaveNotBeenMet(events, exchange)
+        );
+      }
+    } else {
+      draft.exchanges = draft.exchanges.map((exchange) =>
+        removeMessagesThatConditionsHaveNotBeenMet(events, exchange)
+      );
+    }
+    return draft;
+  });
 };
