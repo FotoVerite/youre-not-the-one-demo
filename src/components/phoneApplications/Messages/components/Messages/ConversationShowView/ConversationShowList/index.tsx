@@ -3,6 +3,7 @@ import { ConversationReducerActionsType } from "@Components/phoneApplications/Me
 import React, { FC, useEffect, useMemo } from "react";
 import { ListRenderItem, StyleSheet, View } from "react-native";
 import Animated, {
+  SharedValue,
   useAnimatedRef,
   useScrollViewOffset,
   useSharedValue,
@@ -20,7 +21,7 @@ const renderItem: ListRenderItem<ConversationShowListItem> = ({ item }) => (
 
 const getItemLayout = (
   data: ArrayLike<ConversationShowListItem> | null | undefined,
-  index: number,
+  index: number
 ) => ({
   length: data ? data[index].height + data[index].paddingBottom : 0,
   offset: data ? data[index].offset : 0,
@@ -35,7 +36,8 @@ const ConversationList: FC<{
   exchanges: DigestedConversationListItem[];
   height?: number;
   dispatch: (action: ConversationReducerActionsType) => void;
-}> = ({ blockable, dispatch, height, exchanges }) => {
+  translateX: SharedValue<number>;
+}> = ({ blockable, dispatch, height, exchanges, translateX }) => {
   const scrollRef = useAnimatedRef<Animated.FlatList<any>>();
   const scrollHandler = useScrollViewOffset(scrollRef as any);
 
@@ -43,10 +45,10 @@ const ConversationList: FC<{
     return exchanges.map((item) => {
       return {
         ...item,
-        ...{ scrollRef, scrollHandler, dispatch },
+        ...{ scrollRef, scrollHandler, dispatch, translateX },
       } as ConversationShowListItem;
     });
-  }, [exchanges, dispatch, scrollHandler, scrollRef]);
+  }, [exchanges, scrollRef, scrollHandler, dispatch, translateX]);
 
   const footerHeight = useSharedValue(0);
 

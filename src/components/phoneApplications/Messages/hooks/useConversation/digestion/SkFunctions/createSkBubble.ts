@@ -42,7 +42,7 @@ export const createSkBubbleFromPayload = (
   itemConfiguration: SkItemConfigurationType,
   payload: MessagePayloadType,
 ) => {
-  const { name, isLastInExchange } = payload;
+  const { name, isLastInExchange, timestamp } = payload;
   let message = payload.messageContent;
   if (!isContentWithMeta(message)) {
     message = {
@@ -50,5 +50,11 @@ export const createSkBubbleFromPayload = (
       content: message,
     };
   }
-  return SkMessage(itemConfiguration, message, name, isLastInExchange);
+  return SkMessage(
+    itemConfiguration,
+    message,
+    name,
+    isLastInExchange,
+    timestamp,
+  );
 };

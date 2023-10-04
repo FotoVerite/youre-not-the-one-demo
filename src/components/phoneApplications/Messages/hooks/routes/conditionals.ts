@@ -6,17 +6,15 @@ import {
 import { Draft, produce } from "immer";
 import moment, { Moment } from "moment";
 
+import { isChoosableRoute, isDigestedChoosableRoute } from "./guards";
 import {
-  DigestedMessageRouteType,
-  DigestedNotificationRouteType,
-  MessageRouteType,
-  NotificationRouteType,
   RouteConditionsType,
+  DigestedChoosableRouteType,
+  DigestedNotificationRouteType,
 } from "./types";
 import { MESSAGE_CONTACT_NAME } from "../../constants";
 import { EFFECT_TYPE, isContentWithMeta } from "../contentWithMetaTypes";
-import { choosableRoute } from "../useConversation/digestion/types";
-import { ExchangeBlockType } from "../useConversations/types";
+import { MessagePayloadType } from "../useConversation/digestion/types";
 
 const contactHasBeenViewedCheck = (
   name: MESSAGE_CONTACT_NAME,
@@ -157,9 +155,9 @@ export const messageAppConditionsMet = (
 
 export const mergeConditionalExchanges = (
   events: AppEventsType,
-  draft: Draft<DigestedMessageRouteType | DigestedNotificationRouteType>
+  draft: Draft<DigestedChoosableRouteType | DigestedNotificationRouteType>
 ) => {
-  if (!choosableRoute(draft)) return;
+  if (!isChoosableRoute(draft)) return;
   const effect = draft.effects?.filter(
     (effect) =>
       effect.type === EFFECT_TYPE.CONDITIONAL_EXCHANGE &&
@@ -170,20 +168,20 @@ export const mergeConditionalExchanges = (
 
 export const removeMessagesThatConditionsHaveNotBeenMet = (
   events: AppEventsType,
-  exchange: ExchangeBlockType
-) => {
-  const name = exchange.name;
-  const filteredMessages = exchange.messages.filter(
+  exchanges: MessagePayloadType[]
+) =>
+  exchanges.filter(
     (message) =>
-      !isContentWithMeta(message) ||
-      messageAppConditionsMet(events.Messages, message.conditions)
+      !isContentWithMeta(message.messageContent) ||
+      messageAppConditionsMet(
+        events.Messages,
+        message.messageContent.conditions
+      )
   );
-  return { name, messages: filteredMessages };
-};
 
 export const messagesConditionalCheck = <
   AvailableRouteType extends
-    | DigestedMessageRouteType
+    | DigestedChoosableRouteType
     | DigestedNotificationRouteType,
 >(
   events: AppEventsType,
@@ -191,15 +189,17 @@ export const messagesConditionalCheck = <
 ): AvailableRouteType => {
   return produce(route, (draft) => {
     mergeConditionalExchanges(events, draft);
-    if (choosableRoute(draft)) {
+    if (isDigestedChoosableRoute(draft)) {
       for (const option in draft.routes) {
-        draft.routes[option] = draft.routes[option].map((exchange) =>
-          removeMessagesThatConditionsHaveNotBeenMet(events, exchange)
+        draft.routes[option] = removeMessagesThatConditionsHaveNotBeenMet(
+          events,
+          draft.routes[option]
         );
       }
     } else {
-      draft.exchanges = draft.exchanges.map((exchange) =>
-        removeMessagesThatConditionsHaveNotBeenMet(events, exchange)
+      draft.exchanges = removeMessagesThatConditionsHaveNotBeenMet(
+        events,
+        draft.exchanges
       );
     }
     return draft;

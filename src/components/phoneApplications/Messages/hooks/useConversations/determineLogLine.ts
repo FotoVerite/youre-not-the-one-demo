@@ -6,44 +6,11 @@ import {
   ExchangeBlockType,
   MessageContentType,
 } from "./types";
-import { MESSAGE_CONTACT_NAME } from "../../constants";
 import { MESSAGE_CONTENT, isContentWithMeta } from "../contentWithMetaTypes";
-import { messagesConditionalCheck } from "../routes/conditionals";
-import { getLastSeenRoute, getUnfinishedRouteID } from "../routes/seen";
 
-export const convertPathToExchanges = (path: ExchangeBlockType[]) => {
-  return path.reduce(
-    (acc, block) => {
-      for (const [, message] of block.messages.entries()) {
-        acc.push({ name: block.name, content: message });
-      }
-      return acc;
-    },
-    [] as { name: MESSAGE_CONTACT_NAME; content: MessageContentType }[]
-  );
-};
-
-const getSeenExchangesFromUnfinishedRoute = (
-  id: string,
-  conversation: ConversationFileType,
-  events: AppEventsType
-) => {
-  const event = events.Messages[conversation.name].routes[id];
-  const route = conversation.routes?.find((r) => r.id.toString() === id);
-  if (event && route && event.chosen && event.atIndex) {
-    const path = convertPathToExchanges(
-      messagesConditionalCheck(events, { ...route, name: conversation.name })
-        .routes[event.chosen]
-    );
-    const seen = path.splice(0, event.atIndex);
-    return [event.updatedAt, seen] as const;
-  } else {
-    return [undefined, undefined] as const;
-  }
-};
-
-export const formatConversationTime = (date: Moment): string => {
+export const formatConversationTime = (timestamp: string): string => {
   const now = moment();
+  const date = moment(timestamp);
   if (now.diff(date, "day") === 0) {
     return date.format("h:mm a");
   } else if (now.diff(date, "week") === 0) {
@@ -89,38 +56,22 @@ export const convertMessageToString = (message: MessageContentType) => {
 export const determineLoglineAndTimeOfLastMessage = (
   conversation: ConversationFileType,
   events: AppEventsType
-): { time: string; content: string } => {
-  const { name, routes, notificationRoutes } = conversation;
-  const routeEvent = getLastSeenRoute(name, events, routes, notificationRoutes);
-  const unfinishedID = getUnfinishedRouteID(name, events, routes);
-  if (unfinishedID != null) {
-    const [updatedAt, seen] = getSeenExchangesFromUnfinishedRoute(
-      unfinishedID,
-      conversation,
-      events
-    );
-    if (seen && seen.length > 0) {
-      const lastExchange = seen.pop()!;
-      return {
-        time: formatConversationTime(moment(updatedAt)),
-        content: convertMessageToString(lastExchange.content),
-      };
-    }
-  }
-  if (routeEvent == null) {
-    const lastExchange = conversation.exchanges.slice(-1)[0];
-    const date = moment(lastExchange?.time || "");
+) => {
+  const routes = Object.entries(events.Messages[conversation.name].routes).filter(([id, event]) => event.logline);
 
-    const message = getLastMessageFromExchanges(lastExchange.exchanges);
+  if (routes.length === 0) {
+    const lastExchange = conversation.exchanges.slice(-1)[0];
     return {
-      time: formatConversationTime(date),
-      content: convertMessageToString(message),
-    };
-  } else {
-    const message = getLastMessageFromExchanges(routeEvent.exchanges);
-    return {
-      time: formatConversationTime(moment(routeEvent.updatedAt)),
-      content: convertMessageToString(message),
+      time: conversation.exchanges.slice(-1)[0].time,
+      logline: convertMessageToString(
+        getLastMessageFromExchanges(lastExchange.exchanges)
+      ),
     };
   }
+  const [id, event] = routes
+    .sort(([, a], [, b]) =>
+      new Date(a.updatedAt) > new Date(b.updatedAt) ? -1 : 1,
+  )[0];
+ 
+  return { time: event.updatedAt, logline: event.logline };
 };

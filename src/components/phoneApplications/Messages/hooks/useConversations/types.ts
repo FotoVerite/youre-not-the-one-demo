@@ -6,7 +6,7 @@ import {
   MessageEffectType,
 } from "../contentWithMetaTypes";
 import {
-  MessageRouteType,
+  ChoosableRouteType,
   NotificationRouteType,
   RouteConditionsType,
 } from "../routes/types";
@@ -39,7 +39,7 @@ export type ConversationType = {
   logline_content: string;
   logline_timestamp: string;
   name: MESSAGE_CONTACT_NAME;
-  routes: MessageRouteType[];
+  routes: ChoosableRouteType[];
   tags: string[];
 };
 export type ConversationRecords = Record<

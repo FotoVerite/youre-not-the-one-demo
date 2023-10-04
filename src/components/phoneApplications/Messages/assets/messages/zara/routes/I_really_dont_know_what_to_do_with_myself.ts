@@ -3,7 +3,7 @@
 
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
 import { MESSAGE_CONTENT } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
-import { MessageRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
+import { ChoosableRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
 import { ExchangeBlockType } from "@Components/phoneApplications/Messages/hooks/useConversations/types";
 
 import { ZARA_ROUTE_IDS } from "./routes";
@@ -60,7 +60,7 @@ const exchanges: ExchangeBlockType[] = [
   },
 ];
 
-export const i_dont_know_what_to_do_with_myself: MessageRouteType = {
+export const i_dont_know_what_to_do_with_myself: ChoosableRouteType = {
   id: ZARA_ROUTE_IDS.I_REALLY_DONT_KNOW_WHAT_TO_DO_WITH_MYSELF,
   options: Object.values(OPTIONS),
   conditions: {

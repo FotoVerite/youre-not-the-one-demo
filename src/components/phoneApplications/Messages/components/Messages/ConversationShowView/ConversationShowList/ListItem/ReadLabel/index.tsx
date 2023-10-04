@@ -7,7 +7,6 @@ import Animated, {
   withDelay,
   withTiming,
 } from "react-native-reanimated";
-import { theme } from "src/theme";
 
 export const ReadLabel: FC<{
   content: string;
@@ -32,7 +31,7 @@ export const ReadLabel: FC<{
     if (contentDelay) {
       fadeIn.value = withDelay(
         contentDelay || 250,
-        withTiming(1, { duration: 250 }),
+        withTiming(1, { duration: 250 })
       );
     }
   }, [contentDelay, fadeIn]);
@@ -51,6 +50,6 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 10,
     textAlign: "right",
-    paddingEnd: theme.spacing.p2,
+    paddingEnd: 2,
   },
 });

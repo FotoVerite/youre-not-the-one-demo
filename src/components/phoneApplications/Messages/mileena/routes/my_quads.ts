@@ -1,6 +1,6 @@
 import { MILEENA_ROUTE_IDS } from "./routes";
 import { MESSAGE_CONTACT_NAME } from "../../constants";
-import { MessageRouteType } from "../../hooks/routes/types";
+import { ChoosableRouteType } from "../../hooks/routes/types";
 
 export enum MILEENA_QUAD_OPTIONS {
   A = "My quads",
@@ -10,7 +10,7 @@ const OPTIONS = MILEENA_QUAD_OPTIONS;
 const MILEENA = MESSAGE_CONTACT_NAME.MILEENA;
 const SELF = MESSAGE_CONTACT_NAME.SELF;
 
-export const my_quads: MessageRouteType = {
+export const my_quads: ChoosableRouteType = {
   id: MILEENA_ROUTE_IDS.MY_QUADS,
   options: Object.values(OPTIONS),
   routes: {

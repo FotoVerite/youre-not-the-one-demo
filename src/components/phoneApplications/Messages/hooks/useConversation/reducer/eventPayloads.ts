@@ -1,58 +1,65 @@
 import { APP_EVENTS_ACTIONS } from "@Components/appEvents/reducer/types";
 
+import { StartedRouteType } from "../../routes/types";
 import {
   DigestedConversationType,
-  DigestedConversationWithAvailableRoute,
+  DigestedConversationWithStartedRoute,
 } from "../digestion/types";
 
 export const createCleanupPayload = (
-  draft: DigestedConversationWithAvailableRoute,
+  draft: DigestedConversationWithStartedRoute,
   forewordToIndex: number,
   finished: boolean,
+  logline: string
 ) => {
   return {
     type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_UPDATE,
     payload: {
-      routeId: draft.availableRoute.id,
+      routeId: draft.activeRoute.id,
       name: draft.name,
-      atIndex: (draft.routeAtIndex || 0) + forewordToIndex,
+      atIndex: forewordToIndex,
       finished,
+      logline,
     },
   };
 };
 
 export const routeStartedPayload = (
   draft: DigestedConversationType,
-  routeID: number,
+  route: StartedRouteType,
+  logline: string
 ) => ({
   type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_CREATE,
   payload: {
+    logline,
     name: draft.name,
-    chosen: draft.chosenRoute,
-    routeId: routeID,
+    chosen: route.chosen,
+    routeId: route.id,
     atIndex: 1,
     finished: false,
   },
 });
 
 export const routeUpdatePayload = (
-  draft: DigestedConversationWithAvailableRoute,
+  draft: DigestedConversationWithStartedRoute,
+  index: number,
+  logline: string
 ) => ({
   type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_UPDATE,
   payload: {
-    routeId: draft.availableRoute.id,
+    logline,
+    routeId: draft.activeRoute.id,
     name: draft.name,
-    atIndex: draft.routeAtIndex,
+    atIndex: draft.activeRoute.indexAt + 1,
   },
 });
 
 export const routeFinishedPayload = (
-  draft: DigestedConversationWithAvailableRoute,
-  routeID: number,
+  draft: DigestedConversationWithStartedRoute
 ) => ({
   type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_UPDATE,
   payload: {
-    routeId: routeID,
+    routeId: draft.activeRoute.id,
     name: draft.name,
     finished: true,
   },

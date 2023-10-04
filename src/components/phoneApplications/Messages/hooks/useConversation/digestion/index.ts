@@ -1,64 +1,74 @@
 import { AppEventsType } from "@Components/appEvents/reducer/types";
 
 import { blockableConditionsMet } from "./blockable";
-import { appendSeenRoutes, digestExchanges } from "./digestRoute";
-import { appendReadLabel, lastRouteTime } from "./readLabel";
-import { resolveSnapshots } from "./snapshotResolver";
 import {
-  DigestedConversationListItem,
-  DigestedConversationType,
-  BaseConfigType,
-} from "./types";
-import { digestUnfinishedRoute } from "./unfinishedRoute";
-import { findAvailableRoutes } from "../../routes/available";
+  appendFromDigestedRoute,
+  appendSeenRoutes,
+  convertRoutesToDigestedRoutes,
+  digestExchanges,
+} from "./digestRoute";
+import { appendReadLabel } from "./readLabel";
+import { resolveSnapshots } from "./snapshotResolver";
+import { BaseConfigType } from "./types";
+import { findStartableRoute } from "../../routes/available";
+import { removeMessagesThatConditionsHaveNotBeenMet } from "../../routes/conditionals";
+import { isStarted } from "../../routes/guards";
 import { ConversationType } from "../../useConversations/types";
-
-const combineIntoDigestedConversationType = (
-  exchanges: DigestedConversationListItem[],
-  props: Omit<ConversationType, "exchanges">,
-  events: AppEventsType,
-): DigestedConversationType => {
-  const availableRoute = findAvailableRoutes(
-    props.name,
-    props.routes.map((route) => ({ ...route, ...{ name: props.name } })) || [],
-    events,
-  )[0];
-
-  return {
-    ...props,
-    exchanges,
-    availableRoute,
-    seenRoutes: [],
-    ...{ activePath: [] },
-  };
-};
 
 export const digestConversation = async (
   config: BaseConfigType,
   conversation: ConversationType,
-  events: AppEventsType,
+  events: AppEventsType
 ) => {
+  const [available, seen, startedRoute] = convertRoutesToDigestedRoutes(
+    conversation,
+    events.Messages
+  );
+  if (startedRoute) {
+    startedRoute.pending = removeMessagesThatConditionsHaveNotBeenMet(
+      events,
+      startedRoute.pending
+    );
+  }
   const { exchanges, ...conversationProps } = conversation;
-
+  const activeRoute =
+    startedRoute ||
+    findStartableRoute(
+      conversation.name,
+      Object.entries(available).map(([id, route]) => route),
+      events
+    );
   const digestedExchanges = digestExchanges(
     config,
     exchanges,
-    conversationProps.group,
+    conversationProps.group
   );
-  const digested = combineIntoDigestedConversationType(
-    digestedExchanges,
-    conversationProps,
-    events,
-  );
+
+  const digested = {
+    ...conversationProps,
+    ...{
+      exchanges: digestedExchanges,
+      availableRoutes: available,
+      activeRoute,
+    },
+  };
   digested.blockable = blockableConditionsMet(digested, events);
-  digested.exchanges = appendSeenRoutes(digested, events, config);
-  digestUnfinishedRoute(digested, events, config);
+  digested.exchanges = appendSeenRoutes(digested, seen, config);
+  if (isStarted(digested.activeRoute)) {
+    digested.exchanges = appendFromDigestedRoute(
+      digested.exchanges,
+      digested.activeRoute,
+      digested.group,
+      config
+    );
+  }
+
   digested.exchanges = await resolveSnapshots(digested.exchanges);
   digested.exchanges = appendReadLabel(
     digested.exchanges,
     config.width,
-    lastRouteTime(digested, events),
-    digested.leaveAsDelivered,
+    digested.exchanges.slice(-1)[0].timestamp,
+    digested.leaveAsDelivered
   );
   return digested;
 };

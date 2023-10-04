@@ -3,7 +3,7 @@ import {
   EFFECT_TYPE,
   MESSAGE_CONTENT,
 } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
-import { MessageRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
+import { ChoosableRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
 
 import { ZARA_ROUTE_IDS } from "./routes";
 import creepyBabyThree from "../../spam1/assets/creepyBaby3.jpeg";
@@ -122,7 +122,7 @@ const did_send_images = {
   ],
 };
 
-export const i_fell_for_spam: MessageRouteType = {
+export const i_fell_for_spam: ChoosableRouteType = {
   id: ZARA_ROUTE_IDS.I_FELL_FOR_SPAM,
   options: Object.values(NOT_OPTIONS),
   conditions: {

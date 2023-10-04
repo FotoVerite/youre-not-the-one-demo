@@ -1,6 +1,6 @@
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
 import { MESSAGE_CONTENT } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
-import { MessageRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
+import { ChoosableRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
 
 import { ZARA_ROUTE_IDS } from "./routes";
 
@@ -13,7 +13,7 @@ const OPTIONS = ZARA_CONTACT_CONVERSATIONS_OPTIONS;
 const ZARA = MESSAGE_CONTACT_NAME.ZARA;
 const SELF = MESSAGE_CONTACT_NAME.SELF;
 
-export const zara_contact_conversation: MessageRouteType = {
+export const zara_contact_conversation: ChoosableRouteType = {
   id: ZARA_ROUTE_IDS.CONTACT_CONVERSATION,
   options: Object.values(OPTIONS),
   conditions: {

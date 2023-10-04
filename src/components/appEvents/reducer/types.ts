@@ -17,6 +17,8 @@ export type MessageRouteEventDataType = {
   chosen?: string;
   createdAt: string;
   finished?: boolean;
+  logline: string;
+  messageTimestamps: string[];
   position: number;
   updatedAt: string;
 };
@@ -51,12 +53,13 @@ export type BlockMessageAppConversationEventAction = {
 };
 
 export type EventPropsPayloadType = {
-  name: MESSAGE_CONTACT_NAME;
-  routeId: number;
+  atIndex?: number;
   chosen?: string;
   finished?: boolean;
-  atIndex?: number;
+  logline: string;
   notification?: NotificationDataType;
+  name: MESSAGE_CONTACT_NAME;
+  routeId: string;
 };
 
 export type CreateMessageAppRouteEventAction = {

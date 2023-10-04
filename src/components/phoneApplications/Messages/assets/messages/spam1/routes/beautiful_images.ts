@@ -1,6 +1,6 @@
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
 import { MESSAGE_CONTENT } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
-import { MessageRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
+import { ChoosableRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
 
 import { SPAM1_IDS } from "./routes";
 import doll1 from "../../../images/broken_dolls1.jpeg";
@@ -14,7 +14,7 @@ const OPTIONS = SPAM1_SECOND_EXCHANGE_OPTIONS;
 const SPAM1 = MESSAGE_CONTACT_NAME.SPAM1;
 const SELF = MESSAGE_CONTACT_NAME.SELF;
 
-export const beautiful_images: MessageRouteType = {
+export const beautiful_images: ChoosableRouteType = {
   id: SPAM1_IDS.BEAUTIFUL_IMAGES,
   options: Object.values(OPTIONS),
   routes: {

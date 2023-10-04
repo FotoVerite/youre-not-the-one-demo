@@ -1,5 +1,5 @@
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
-import { MessageRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
+import { ChoosableRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
 
 import { ZARA_ROUTE_IDS } from "./routes";
 import { LENNY_ROUTE_IDS } from "../../lenny/routes/routes";
@@ -12,7 +12,7 @@ const OPTIONS = ZARA_MY_BRO_IS_BEING_SO_ANNOYING;
 const ZARA = MESSAGE_CONTACT_NAME.ZARA;
 const SELF = MESSAGE_CONTACT_NAME.SELF;
 
-export const my_bro_is_being_annoying: MessageRouteType = {
+export const my_bro_is_being_annoying: ChoosableRouteType = {
   id: ZARA_ROUTE_IDS.MY_BRO_IS_BEING_SO_ANNOYING,
   options: Object.values(OPTIONS),
   conditions: {

@@ -3,7 +3,7 @@
 
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
 import { MESSAGE_CONTENT } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
-import { MessageRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
+import { ChoosableRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
 
 import { ZARA_ROUTE_IDS } from "./routes";
 
@@ -50,7 +50,7 @@ const exchanges = [
   },
 ];
 
-export const your_new_video: MessageRouteType = {
+export const your_new_video: ChoosableRouteType = {
   id: ZARA_ROUTE_IDS.YOUR_NEW_VIDEO,
   options: Object.values(OPTIONS),
   conditions: {

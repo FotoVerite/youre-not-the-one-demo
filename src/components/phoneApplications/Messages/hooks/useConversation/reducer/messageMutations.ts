@@ -4,6 +4,7 @@ import {
   isSentMessage,
   DigestedConversationListItem,
   isReceivedMessage,
+  hasStartedRoute,
 } from "../digestion/types";
 
 const DEFAULT_CONTENT_DELAY = 400;
@@ -18,11 +19,13 @@ export const resetMessageDelays = (draft: DigestedConversationType) => {
 };
 
 export const revertPreviousMessageEphemeralProps = (
-  draft: DigestedConversationType,
+  draft: DigestedConversationType
 ) => {
-  const previous = draft.previousExchangeProps;
+  if (!hasStartedRoute(draft)) return;
+  const previous = draft.activeRoute.previousExchangeProps;
   if (!previous) return;
   const index = draft.exchanges.findIndex((e) => e.ID === previous.ID);
+  if (index === -1) return;
   draft.exchanges[index] = {
     ...draft.exchanges[index],
     ...previous,
@@ -31,11 +34,12 @@ export const revertPreviousMessageEphemeralProps = (
 
 export const setMessageEphemeralProps = (
   draft: DigestedConversationType,
-  message: BubbleItemType,
+  message: BubbleItemType
 ) => {
+  if (!hasStartedRoute(draft)) return;
   message.contentDelay = message.contentDelay || DEFAULT_CONTENT_DELAY;
 
-  draft.previousExchangeProps = {
+  draft.activeRoute.previousExchangeProps = {
     contentDelay: undefined,
     typingDelay: undefined,
     ID: message.ID,

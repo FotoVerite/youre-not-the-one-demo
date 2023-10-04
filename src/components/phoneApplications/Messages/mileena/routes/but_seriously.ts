@@ -1,6 +1,6 @@
 import { MILEENA_ROUTE_IDS } from "./routes";
 import { MESSAGE_CONTACT_NAME } from "../../constants";
-import { MessageRouteType } from "../../hooks/routes/types";
+import { ChoosableRouteType } from "../../hooks/routes/types";
 
 export enum MILEENA_BUT_SERIOUSLY_OPTIONS {
   A = "But seriously, I can't walk",
@@ -11,7 +11,7 @@ const OPTIONS = MILEENA_BUT_SERIOUSLY_OPTIONS;
 const MILEENA = MESSAGE_CONTACT_NAME.MILEENA;
 const SELF = MESSAGE_CONTACT_NAME.SELF;
 
-export const but_seriously: MessageRouteType = {
+export const but_seriously: ChoosableRouteType = {
   id: MILEENA_ROUTE_IDS.BUT_SERIOUSLY,
   options: Object.values(OPTIONS),
   routes: {

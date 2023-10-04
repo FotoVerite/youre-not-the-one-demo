@@ -3,12 +3,12 @@ import ConversationEmitter, {
   CONVERSATION_EMITTER_EVENTS,
 } from "@Components/phoneApplications/Messages/emitters";
 import {
-  DigestedConversationType,
-  choosableRoute,
-} from "@Components/phoneApplications/Messages/hooks/useConversation/digestion/types";
+  isActiveChoosableRoute,
+  isStarted,
+} from "@Components/phoneApplications/Messages/hooks/routes/guards";
+import { DigestedConversationType } from "@Components/phoneApplications/Messages/hooks/useConversation/digestion/types";
 import { CONVERSATION_REDUCER_ACTIONS } from "@Components/phoneApplications/Messages/hooks/useConversation/reducer/type";
 import { ConversationDispatchType } from "@Components/phoneApplications/Messages/hooks/useConversation/types";
-import { convertMessageToString } from "@Components/phoneApplications/Messages/hooks/useConversations/determineLogLine";
 import { BlurView } from "expo-blur";
 import { FC, useState, useEffect, useMemo, useCallback, memo } from "react";
 import { Platform, StyleSheet } from "react-native";
@@ -29,17 +29,18 @@ const RootChooser: FC<
 
   const { width } = useInsetDimensions();
 
-  const { nextMessageInQueue, availableRoute, chosenRoute } = conversation;
+  const activeRoute = conversation.activeRoute;
+
   useEffect(() => {
     setChosenOption("...");
   }, [conversation.exchanges, setChosenOption]);
 
   const displayedText = useMemo(() => {
-    if (nextMessageInQueue) {
-      return convertMessageToString(nextMessageInQueue);
+    if (isStarted(activeRoute) && activeRoute.nextMessageInQueue) {
+      return activeRoute.nextMessageInQueue;
     }
-    if (choosableRoute(availableRoute) && chosenRoute == null) {
-      const { options } = availableRoute;
+    if (isActiveChoosableRoute(activeRoute)) {
+      const options = activeRoute.options;
       if (options.length === 1) {
         return options[0];
       } else {
@@ -47,15 +48,15 @@ const RootChooser: FC<
       }
     }
     return undefined;
-  }, [nextMessageInQueue, availableRoute, chosenRoute, chosenOption]);
+  }, [activeRoute, chosenOption]);
 
   const callback = useCallback(() => {
-    if (nextMessageInQueue) {
+    if (isStarted(activeRoute)) {
       dispatch({ type: CONVERSATION_REDUCER_ACTIONS.CONTINUE_ROUTE });
       return;
     }
-    if (choosableRoute(availableRoute)) {
-      const { options } = availableRoute;
+    if (isActiveChoosableRoute(activeRoute)) {
+      const options = activeRoute.options;
       if (options.length === 1) {
         dispatch({
           type: CONVERSATION_REDUCER_ACTIONS.START_ROUTE,
@@ -69,14 +70,14 @@ const RootChooser: FC<
       }
     }
     return () => {};
-  }, [nextMessageInQueue, availableRoute, dispatch, chosenOption]);
+  }, [activeRoute, dispatch, chosenOption]);
 
   const Options = useMemo(() => {
-    if (choosableRoute(availableRoute)) {
-      const nodes = availableRoute.options.map((option) => (
+    if (isActiveChoosableRoute(activeRoute)) {
+      const nodes = activeRoute.options.map((option) => (
         <Option
-          key={`${availableRoute.routes.id}-${option}`}
-          id={availableRoute.id}
+          key={`${activeRoute.routes.id}-${option}`}
+          id={activeRoute.id}
           option={option}
           cb={() => {
             openOptionList(false);
@@ -86,7 +87,7 @@ const RootChooser: FC<
       ));
       return nodes;
     }
-  }, [availableRoute]);
+  }, [activeRoute]);
 
   useEffect(() => {
     const cb = (payload: {

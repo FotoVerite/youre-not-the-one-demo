@@ -3,7 +3,7 @@ import {
   EFFECT_TYPE,
   MESSAGE_CONTENT,
 } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
-import { MessageRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
+import { ChoosableRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
 
 import { leo_monologue_replacement_one } from "./monologue_replacement";
 import { TO_SELF_IDS } from "./routes";
@@ -15,7 +15,7 @@ enum OPTIONS {
   A = "Okay, lets try it now without wifi",
 }
 
-export const check_if_txt_is_working: MessageRouteType = {
+export const check_if_txt_is_working: ChoosableRouteType = {
   id: TO_SELF_IDS.CHECK_IF_TEXT_IS_WORKING,
   options: Object.values(OPTIONS),
   effects: [

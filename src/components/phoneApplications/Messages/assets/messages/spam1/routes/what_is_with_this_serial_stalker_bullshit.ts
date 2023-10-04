@@ -1,5 +1,5 @@
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
-import { MessageRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
+import { ChoosableRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
 
 import { SPAM1_IDS } from "./routes";
 
@@ -11,7 +11,7 @@ const OPTIONS = SPAM1_WHAT_IS_WITH_THIS_SERIAL_STALKER_BULLSHIT_OPTIONS;
 const SPAM1 = MESSAGE_CONTACT_NAME.SPAM1;
 const SELF = MESSAGE_CONTACT_NAME.SELF;
 
-export const what_is_with_this_serial_killer_bullshit: MessageRouteType = {
+export const what_is_with_this_serial_killer_bullshit: ChoosableRouteType = {
   id: SPAM1_IDS.WHAT_IS_WITH_THIS_SERIAL_STALKER_BULLSHIT,
   options: Object.values(OPTIONS),
   conditions: {

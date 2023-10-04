@@ -54,9 +54,14 @@ const CreateRouteEvent = (
   const position = routeInfo[stringRouteID]
     ? routeInfo[stringRouteID].position
     : Object.keys(routeInfo).length + 1;
+  const time = new Date().toISOString();
+  const messageTimestamp = [] as string[];
+  const startingIndex = props.atIndex ? props.atIndex - 1 : 0;
+  messageTimestamp[startingIndex] = time;
   routeInfo[stringRouteID] = {
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    createdAt: time,
+    updatedAt: time,
+    messageTimestamps: messageTimestamp,
     position,
     ...props,
   };
@@ -70,24 +75,26 @@ const CreateRouteEvent = (
 
 const UpdateRouteEvent = (
   draft: AppEventsType,
-  payload: EventPropsPayloadType,
+  payload: Omit<EventPropsPayloadType, "logline"> & { logline?: string },
 ) => {
   const { routeId, name, ...props } = payload;
   const stringRouteID = routeId.toString();
+  const route = draft.Messages[name].routes[stringRouteID];
+
   LOG(
     LOG_COLORS.FgGreen,
     "MESSAGE_APP_ROUTE_UPDATED",
     routeId.toString(),
     props,
   );
-
-  const routeInfo = draft.Messages[name].routes;
+  if (props.atIndex) {
+    route.messageTimestamps[props.atIndex - 1] = new Date().toISOString();
+  }
   draft.Messages[name].routes[stringRouteID] = {
-    ...routeInfo[routeId.toString()],
+    ...route,
     ...props,
     ...{ updatedAt: new Date().toISOString() },
   };
-
   return draft;
 };
 

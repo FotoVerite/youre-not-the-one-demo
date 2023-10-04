@@ -2,6 +2,7 @@ import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/con
 import { FontAwesomeGlyphs } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
 import { PropsWithChildren } from "react";
 import { FlexAlignType, ImageSourcePropType } from "react-native";
+import { SharedValue } from "react-native-reanimated";
 
 export type ConversationExchangeWrapperType = {
   addressee: boolean;
@@ -16,4 +17,6 @@ export type ConversationExchangeWrapperType = {
   reactionColor?: string;
   reactionAnimated?: boolean;
   reactionDelay?: number;
+  timestamp?: string;
+  translateX: SharedValue<number>;
 } & PropsWithChildren;

@@ -18,7 +18,7 @@ const ListItem: FC<ConversationShowListItem> = (props) => {
     (isResolved: boolean) => {
       _setAsResolved(isResolved);
     },
-    [_setAsResolved],
+    [_setAsResolved]
   );
   const item = useBubbleResolver({ ...props, setAsResolved });
   let bubble: React.JSX.Element;
@@ -42,6 +42,8 @@ const ListItem: FC<ConversationShowListItem> = (props) => {
           0 + (props.contentDelay || 0) + (props.typingDelay || 0)
         }
         reactionColor={props.reactionColor}
+        timestamp={props.timestamp}
+        translateX={props.translateX}
       >
         {item}
       </ExchangeWrapper>

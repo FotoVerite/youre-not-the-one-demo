@@ -1,5 +1,5 @@
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
-import { MessageRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
+import { ChoosableRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
 
 import { ZARA_ROUTE_IDS } from "./routes";
 
@@ -11,7 +11,7 @@ const OPTIONS = ZARA_I_DONT_FEEL_SECURE_OPTIONS;
 const ZARA = MESSAGE_CONTACT_NAME.ZARA;
 const SELF = MESSAGE_CONTACT_NAME.SELF;
 
-export const i_dont_feel_secure: MessageRouteType = {
+export const i_dont_feel_secure: ChoosableRouteType = {
   id: ZARA_ROUTE_IDS.I_DONT_FEEL_SECURE,
   options: Object.values(OPTIONS),
   conditions: {

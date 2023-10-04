@@ -1,6 +1,6 @@
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
 import { MESSAGE_CONTENT } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
-import { MessageRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
+import { ChoosableRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
 
 import { ZARA_ROUTE_IDS } from "./routes";
 
@@ -14,7 +14,7 @@ const SELF = MESSAGE_CONTACT_NAME.SELF;
 // Description: OP and ZARA discuss why OP has no contacts in his phone.
 // Point: Give context for the setting of the game and set tone of most messages.
 
-export const i_am_being_harassed: MessageRouteType = {
+export const i_am_being_harassed: ChoosableRouteType = {
   id: ZARA_ROUTE_IDS.I_AM_BEING_HARASSED,
   options: Object.values(I_AM_BEING_HARASSED_OPTIONS),
   routes: {

@@ -1,6 +1,6 @@
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
 import { MESSAGE_CONTENT } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
-import { MessageRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
+import { ChoosableRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
 import { ExchangeBlockType } from "@Components/phoneApplications/Messages/hooks/useConversations/types";
 
 import { MICHAEL_IDS } from "./routes";
@@ -89,7 +89,7 @@ const exchanges: ExchangeBlockType[] = [
   },
 ];
 
-export const michael_about_tonight_reply: MessageRouteType = {
+export const michael_about_tonight_reply: ChoosableRouteType = {
   id: MICHAEL_IDS.ABOUT_TONIGHT_REPLY,
   options: Object.values(OPTIONS),
   routes: {

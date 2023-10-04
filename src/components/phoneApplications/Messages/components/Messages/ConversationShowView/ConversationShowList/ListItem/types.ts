@@ -11,6 +11,7 @@ export type ConversationShowListItem = DigestedConversationListItem & {
   scrollRef: React.RefObject<Animated.FlatList<DigestedConversationListItem>>;
   dispatch: (action: ConversationReducerActionsType) => void;
   setAsResolved: (isResolved: boolean) => void;
+  translateX: SharedValue<number>;
 };
 
 export type ConversationShowBubbleItem = BubbleItemType & {

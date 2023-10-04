@@ -2,7 +2,7 @@
 // Point: Give context for the setting of the game and set tone of the horror. Also so how fractured his family is
 
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
-import { MessageRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
+import { ChoosableRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
 import { ExchangeBlockType } from "@Components/phoneApplications/Messages/hooks/useConversations/types";
 
 import { LENNY_ROUTE_IDS } from "./routes";
@@ -126,9 +126,16 @@ const exchanges: ExchangeBlockType[] = [
   },
 ];
 
-export const lenny_midnight_society: MessageRouteType = {
+export const lenny_midnight_society: ChoosableRouteType = {
   id: LENNY_ROUTE_IDS.MIDNIGHT_SOCIETY,
   options: Object.values(OPTIONS),
+  conditions: {
+    [MESSAGE_CONTACT_NAME.LENNY]: {
+      routes: {
+        [LENNY_ROUTE_IDS.WANT_TO_HEAR_SOMETHING_SCARY]: { finished: true },
+      },
+    },
+  },
   routes: {
     [OPTIONS.A]: [
       {

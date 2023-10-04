@@ -5,9 +5,11 @@ import {
 } from "@Components/appEvents/reducer/types";
 import { useRef, useMemo, useReducer, useCallback, useEffect } from "react";
 import { useFontsContext } from "src/contexts/fonts";
+import { delayFor } from "src/utility/async";
 import { LOG, LOG_COLORS } from "src/utility/logger";
 
 import { digestConversation } from "./digestion";
+import { blockableConditionsMet } from "./digestion/blockable";
 import createConversationReducer from "./reducer";
 import {
   CONVERSATION_REDUCER_ACTIONS,
@@ -16,11 +18,14 @@ import {
 import ConversationEmitter, {
   CONVERSATION_EMITTER_EVENTS,
 } from "../../emitters";
+import { findStartableRoute } from "../routes/available";
+import { isActiveNotificationRoute } from "../routes/guards";
 import { ConversationType } from "../useConversations/types";
+import { ROUTE_STATE_TYPE } from "../routes/types";
 
 export const useConversation = (
   width: number,
-  conversation?: ConversationType,
+  conversation?: ConversationType
 ) => {
   const { state: events, dispatch: eventsDispatch } = useAppEventsContext();
   const fontsContext = useFontsContext();
@@ -36,14 +41,14 @@ export const useConversation = (
 
   const [state, dispatch] = useReducer(
     createConversationReducer(config),
-    undefined,
+    undefined
   );
 
   const reducerResolver = useCallback(
     (action: ConversationReducerActionsType) => {
       dispatch(action);
     },
-    [dispatch],
+    [dispatch]
   );
 
   const _digestConversation = useCallback(
@@ -58,7 +63,7 @@ export const useConversation = (
         payload: digested,
       });
     },
-    [config, events],
+    [config, events]
   );
 
   useEffect(() => {
@@ -76,11 +81,32 @@ export const useConversation = (
   }, [state?.eventAction, state?.name, eventsDispatch]);
 
   useEffect(() => {
-    dispatch({
-      type: CONVERSATION_REDUCER_ACTIONS.REFRESH,
-      payload: events,
-    });
-  }, [events]);
+    const refreshConversation = () => {
+      if (!state) return;
+      if (state.activeRoute) return;
+
+
+      const blockable = blockableConditionsMet(state, events);
+      const routes = Object.entries(events.Messages[state.name].routes).filter(
+        ([id, r]) => !r.finished,
+      );
+      let activeRoute
+      if (routes.length > 0 && state.availableRoutes[routes[0][0]]) {
+        activeRoute = {
+          ...state.availableRoutes[routes[0][0]],
+          ...{ finished: ROUTE_STATE_TYPE.ACTIVE as const }
+        }
+      }
+      dispatch({
+        type: CONVERSATION_REDUCER_ACTIONS.REFRESH,
+        payload: {
+          blockable,
+          activeRoute
+        },
+      });
+    };
+    refreshConversation();
+  }, [state, events]);
 
   useEffect(() => {
     if (!state && cleanupAction.current) {

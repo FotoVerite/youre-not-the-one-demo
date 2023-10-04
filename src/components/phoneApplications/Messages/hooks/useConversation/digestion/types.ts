@@ -8,10 +8,14 @@ import {
   MESSAGE_CONTENT,
   MessageEffectType,
 } from "../../contentWithMetaTypes";
+import { isStarted } from "../../routes/guards";
 import {
-  DigestedMessageRouteType,
-  DigestedNotificationRouteType,
+  ActiveChoosableRoute,
+  ActiveNotificationRoute,
+  StartedRouteType,
+  DigestedRouteType,
   RouteConditionsType,
+  ROUTE_STATE_TYPE,
 } from "../../routes/types";
 import {
   ConversationType,
@@ -61,6 +65,7 @@ export interface AbstractDigestedConversationItemType {
   lastMessageSent?: boolean;
   deliveredOnly?: boolean;
   readTimeStamp?: Date;
+  timestamp: string;
 }
 
 export interface DigestedConversationTimeType
@@ -165,29 +170,27 @@ export type MessagePayloadType = {
   messageContent: MessageContentType;
   name: MESSAGE_CONTACT_NAME;
   isLastInExchange: boolean;
+  index: number;
+  timestamp: string;
 };
 
-export type SentMessagePayloadType = {
-  messageContent: MessageContentType;
+export type SentMessagePayloadType = MessagePayloadType & {
   name: MESSAGE_CONTACT_NAME.SELF | MESSAGE_CONTACT_NAME.MY_SELF;
-  isLastInExchange: boolean;
 };
 
 export type DigestedConversationType = Omit<
   ConversationType,
   "exchanges" | "blocked" | "hasAvailableRoute"
 > & {
-  activePath: MessagePayloadType[];
-  seenRoutes: string[];
-  availableRoute?: DigestedMessageRouteType | DigestedNotificationRouteType;
-  chosenRoute?: string;
+  activeRoute?:
+    | ActiveChoosableRoute
+    | ActiveNotificationRoute
+    | StartedRouteType;
+  availableRoutes: { [id: string]: DigestedRouteType };
   cleanupAction?: AppEventsReducerActionsType;
-  eventAction?: AppEventsReducerActionsType;
-  nextMessageInQueue?: MessageContentType;
-  receivingMessage?: boolean;
-  previousExchangeProps?: Omit<DigestedBubbleProps, "ID"> & { ID: string };
   exchanges: DigestedConversationListItem[];
-  routeAtIndex?: number;
+  eventAction?: AppEventsReducerActionsType;
+  receivingMessage?: boolean;
 };
 export type DigestedMessageProps = {
   [index in keyof DigestedConversationListItem]?: DigestedConversationListItem[index];
@@ -197,21 +200,18 @@ export type DigestedBubbleProps = {
   [index in keyof BubbleItemType]?: BubbleItemType[index];
 };
 
-export type DigestedConversationWithChoosableRoute = Omit<
+export type DigestedConversationWithActiveRoute = Omit<
   DigestedConversationType,
-  "availableRoute"
-> & { availableRoute: DigestedMessageRouteType };
-
-export type DigestedConversationWithNotificationRoute = Omit<
-  DigestedConversationType,
-  "availableRoute"
-> & { availableRoute: DigestedNotificationRouteType };
-
-export type DigestedConversationWithAvailableRoute = Omit<
-  DigestedConversationType,
-  "availableRoute"
+  "activeRoute"
 > & {
-  availableRoute: DigestedMessageRouteType | DigestedNotificationRouteType;
+  activeRoute: ActiveChoosableRoute | ActiveNotificationRoute;
+};
+
+export type DigestedConversationWithStartedRoute = Omit<
+  DigestedConversationType,
+  "activeRoute"
+> & {
+  activeRoute: StartedRouteType;
 };
 
 export type DigestedConversationWithConditionalBlockability = Omit<
@@ -219,24 +219,20 @@ export type DigestedConversationWithConditionalBlockability = Omit<
   "blockable"
 > & { blockable: { conditions: RouteConditionsType } };
 
-export const hasAvailableRoute = (
-  draft: DigestedConversationType,
-): draft is DigestedConversationWithAvailableRoute => {
-  return draft.availableRoute != null;
+export const hasActiveRoute = (
+  draft: DigestedConversationType
+): draft is DigestedConversationWithActiveRoute => {
+  return draft.activeRoute?.finished === ROUTE_STATE_TYPE.ACTIVE;
 };
 
 export const hasStartedRoute = (
-  draft: DigestedConversationType,
-): draft is DigestedConversationWithAvailableRoute => {
-  return (
-    hasAvailableRoute(draft) &&
-    draft.activePath != null &&
-    draft.activePath.length > 0
-  );
+  draft: DigestedConversationType
+): draft is DigestedConversationWithStartedRoute => {
+  return isStarted(draft.activeRoute);
 };
 
 export const isSentMessage = (
-  exchange: DigestedConversationListItem,
+  exchange: DigestedConversationListItem
 ): exchange is BubbleItemType => {
   if (isDigestedLabel(exchange)) {
     return false;
@@ -245,13 +241,13 @@ export const isSentMessage = (
 };
 
 export const isSentMessagePayload = (
-  payload: MessagePayloadType,
+  payload: MessagePayloadType
 ): payload is SentMessagePayloadType => {
   return SELF_NAMES_CONST.includes(payload.name);
 };
 
 export const isReceivedMessage = (
-  exchange: DigestedConversationListItem,
+  exchange: DigestedConversationListItem
 ): exchange is BubbleItemType => {
   if (isDigestedLabel(exchange)) {
     return false;
@@ -260,36 +256,21 @@ export const isReceivedMessage = (
 };
 
 export const isDigestedBubble = (
-  exchange: DigestedConversationListItem,
+  exchange: DigestedConversationListItem
 ): exchange is BubbleItemType => {
   return ![MESSAGE_CONTENT.TIME, MESSAGE_CONTENT.READ_LABEL].includes(
-    exchange.type,
+    exchange.type
   );
 };
 
 export const isDigestedLabel = (
-  exchange: DigestedConversationListItem,
+  exchange: DigestedConversationListItem
 ): exchange is DigestedLabelType => {
   return !isDigestedBubble(exchange);
 };
 
-export const choosableRoute = (
-  route: DigestedMessageRouteType | DigestedNotificationRouteType | undefined,
-): route is DigestedMessageRouteType => {
-  return route != null && route.hasOwnProperty("options");
-};
-
-export const hasChoosableRoute = (
-  draft: DigestedConversationType,
-): draft is DigestedConversationWithChoosableRoute => {
-  return (
-    draft.availableRoute != null &&
-    draft.availableRoute.hasOwnProperty("options")
-  );
-};
-
 export const hasBlockableConditions = (
-  draft: DigestedConversationType,
+  draft: DigestedConversationType
 ): draft is DigestedConversationWithConditionalBlockability => {
   return (
     draft.blockable != null && draft.blockable.hasOwnProperty("conditions")

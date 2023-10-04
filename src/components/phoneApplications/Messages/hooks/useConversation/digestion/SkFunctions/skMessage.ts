@@ -33,6 +33,7 @@ export const SkMessage = (
   message: ContentWithMetaType,
   name: MESSAGE_CONTACT_NAME,
   isLastInExchange: boolean,
+  timeStamp?: string
 ) => {
   const DEFAULT_BOTTOM_PADDING = 4;
   const BOTTOM_PADDING_FOR_LAST_IN_BLOCK = 8;
@@ -44,7 +45,7 @@ export const SkMessage = (
     message,
     width,
     addressee,
-    font,
+    font
   );
 
   const skItem = {
@@ -72,6 +73,7 @@ export const SkMessage = (
     reactionDelay: message.reaction?.delay,
     contentDelay: message.contentDelay,
     typingDelay: message.typingDelay,
+    timestamp: timeStamp || new Date().toISOString(),
     effect: message.effect,
   } as BubbleItemType;
 
@@ -82,7 +84,7 @@ const calculateWidthHeightAndContent = (
   message: ContentWithMetaType,
   width: number,
   addressee: boolean,
-  font: SkFont,
+  font: SkFont
 ): CalculationsType => {
   const itemWidth = addressee ? width * 0.7 - 30 : width * 0.7;
   switch (message.type) {
@@ -109,7 +111,7 @@ const calculateWidthHeightAndContent = (
       };
     case MESSAGE_CONTENT.IMAGE: {
       const imageDimensions = Image.resolveAssetSource(
-        message.content as ImageSourcePropType,
+        message.content as ImageSourcePropType
       );
       const aspectRation = imageDimensions.height / imageDimensions.width;
       const imageHeight = itemWidth * aspectRation;
@@ -134,7 +136,7 @@ const calculateWidthHeightAndContent = (
           font,
           message.content,
           width,
-          addressee,
+          addressee
         );
       return {
         width: boxWidth,
@@ -149,7 +151,7 @@ const calculateWidthHeightAndContent = (
         font,
         message.content,
         width,
-        addressee,
+        addressee
       );
       return {
         width: glyphWidth,
