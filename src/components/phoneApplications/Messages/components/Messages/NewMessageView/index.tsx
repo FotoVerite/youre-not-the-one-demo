@@ -6,8 +6,8 @@ import { FC, useEffect } from "react";
 import { SharedValue } from "react-native-gesture-handler/lib/typescript/handlers/gestures/reanimatedWrapper";
 import { useInsetDimensions } from "src/utility/useInsetDimensions";
 
-import Container from "./Container";
 import Header from "./Header";
+import ExchangeList from "../ExchangeList";
 
 const NewMessageView: FC<{
   conversation?: ConversationType;
@@ -34,7 +34,7 @@ const NewMessageView: FC<{
       {state && (
         <>
           <Header name={state.name} />
-          <Container conversation={state} dispatch={dispatch} />
+          <ExchangeList conversation={state} dispatch={dispatch} />
         </>
       )}
     </SlideInTransitionContainer>

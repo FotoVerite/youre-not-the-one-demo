@@ -4,7 +4,7 @@ import { StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native";
 import { theme } from "src/theme";
 import { Row } from "src/utility/layout";
 
-import Cursor from "../../../ConversationShowView/RouteChooser/Cursor";
+import Cursor from "../../../ExchangeList/RouteChooser/Cursor";
 
 const NameSelect: FC<{
   contact?: string;

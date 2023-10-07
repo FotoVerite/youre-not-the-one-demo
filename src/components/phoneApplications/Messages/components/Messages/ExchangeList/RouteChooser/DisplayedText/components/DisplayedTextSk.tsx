@@ -23,7 +23,7 @@ import {
   withTiming,
 } from "react-native-reanimated";
 
-import { useBubbleClip } from "../../../ConversationShowList/ListItem/SkBubbles/useBubbleClip";
+import { useBubbleClip } from "../../../ListItem/SkBubbles/useBubbleClip";
 
 export const DisplayedTextSk: FC<{
   numberOfLines: number;

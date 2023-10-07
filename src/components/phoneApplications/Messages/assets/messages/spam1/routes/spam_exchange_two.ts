@@ -19,6 +19,13 @@ const SELF = MESSAGE_CONTACT_NAME.SELF;
 export const spam1_exchange_two: ChoosableRouteType = {
   id: SPAM1_IDS.EXCHANGE_TWO,
   options: Object.values(OPTIONS),
+  conditions: {
+    [SPAM1]: {
+      routes: {
+        [SPAM1_IDS.EXCHANGE_ONE]: {},
+      },
+    },
+  },
   routes: {
     [OPTIONS.A]: [
       {

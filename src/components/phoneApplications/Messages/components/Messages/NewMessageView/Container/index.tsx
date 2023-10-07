@@ -2,8 +2,8 @@ import { DigestedConversationType } from "@Components/phoneApplications/Messages
 import { ConversationDispatchType } from "@Components/phoneApplications/Messages/hooks/useConversation/types";
 import { FC } from "react";
 
-import ConversationList from "../../ConversationShowView/ConversationShowList";
-import RouteChooser from "../../ConversationShowView/RouteChooser";
+import ConversationList from "../../ExchangeList";
+import RouteChooser from "../../ExchangeList/RouteChooser";
 
 const Container: FC<
   {

@@ -56,7 +56,8 @@ export type EventPropsPayloadType = {
   atIndex?: number;
   chosen?: string;
   finished?: boolean;
-  logline: string;
+  logline?: string;
+  messageTimestamps?: string[];
   notification?: NotificationDataType;
   name: MESSAGE_CONTACT_NAME;
   routeId: string;

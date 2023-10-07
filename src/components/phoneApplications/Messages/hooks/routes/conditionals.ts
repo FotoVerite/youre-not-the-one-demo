@@ -19,7 +19,7 @@ import { MessagePayloadType } from "../useConversation/digestion/types";
 const contactHasBeenViewedCheck = (
   name: MESSAGE_CONTACT_NAME,
   messageEvents: MessageAppEventsContainerType,
-  conditions: RouteConditionsType
+  conditions: RouteConditionsType,
 ) => {
   const viewCondition = conditions[name]?.views;
   if (viewCondition == null) {
@@ -44,7 +44,7 @@ const contactHasBeenViewedCheck = (
 
 const routeChosenSelected = (
   chosen?: string[],
-  viewed?: MessageRouteEventDataType
+  viewed?: MessageRouteEventDataType,
 ) => {
   if (!viewed) {
     return false;
@@ -62,7 +62,7 @@ const routeChosenSelected = (
 
 const routeNotChosenSelected = (
   not_chosen?: string[],
-  viewed?: MessageRouteEventDataType
+  viewed?: MessageRouteEventDataType,
 ) => {
   if (!viewed) {
     return false;
@@ -80,7 +80,7 @@ const routeNotChosenSelected = (
 
 const routeFinished = (
   finished?: boolean,
-  viewed?: MessageRouteEventDataType
+  viewed?: MessageRouteEventDataType,
 ) => {
   if (!viewed) {
     return false;
@@ -96,7 +96,7 @@ const routeHasBeenBlockedCheck = (
   name: MESSAGE_CONTACT_NAME,
   messageEvents: MessageAppEventsContainerType,
   conditions: RouteConditionsType,
-  conditionTime?: Moment
+  conditionTime?: Moment,
 ) => {
   const blockCondition = conditions[name]?.blocked;
   if (!blockCondition) {
@@ -111,7 +111,7 @@ const routeHasBeenBlockedCheck = (
 const routeHasBeenChosenCheck = (
   name: MESSAGE_CONTACT_NAME,
   messageEvents: MessageAppEventsContainerType,
-  conditions: RouteConditionsType
+  conditions: RouteConditionsType,
 ) => {
   const routeConditions = conditions[name]?.routes || {};
   const routeConditionsKeys = Object.keys(routeConditions);
@@ -133,7 +133,7 @@ const routeHasBeenChosenCheck = (
 
 export const messageAppConditionsMet = (
   state: MessageAppEventsContainerType,
-  conditions?: RouteConditionsType
+  conditions?: RouteConditionsType,
 ) => {
   let ret = true;
   if (conditions == null) {
@@ -155,28 +155,28 @@ export const messageAppConditionsMet = (
 
 export const mergeConditionalExchanges = (
   events: AppEventsType,
-  draft: Draft<DigestedChoosableRouteType | DigestedNotificationRouteType>
+  draft: Draft<DigestedChoosableRouteType | DigestedNotificationRouteType>,
 ) => {
   if (!isChoosableRoute(draft)) return;
   const effect = draft.effects?.filter(
     (effect) =>
       effect.type === EFFECT_TYPE.CONDITIONAL_EXCHANGE &&
-      messageAppConditionsMet(events.Messages, effect.conditions)
+      messageAppConditionsMet(events.Messages, effect.conditions),
   )[0];
   if (effect) draft.routes = { ...draft.routes, ...effect.data };
 };
 
 export const removeMessagesThatConditionsHaveNotBeenMet = (
   events: AppEventsType,
-  exchanges: MessagePayloadType[]
+  exchanges: MessagePayloadType[],
 ) =>
   exchanges.filter(
     (message) =>
       !isContentWithMeta(message.messageContent) ||
       messageAppConditionsMet(
         events.Messages,
-        message.messageContent.conditions
-      )
+        message.messageContent.conditions,
+      ),
   );
 
 export const messagesConditionalCheck = <
@@ -185,7 +185,7 @@ export const messagesConditionalCheck = <
     | DigestedNotificationRouteType,
 >(
   events: AppEventsType,
-  route: AvailableRouteType
+  route: AvailableRouteType,
 ): AvailableRouteType => {
   return produce(route, (draft) => {
     mergeConditionalExchanges(events, draft);
@@ -193,13 +193,13 @@ export const messagesConditionalCheck = <
       for (const option in draft.routes) {
         draft.routes[option] = removeMessagesThatConditionsHaveNotBeenMet(
           events,
-          draft.routes[option]
+          draft.routes[option],
         );
       }
     } else {
       draft.exchanges = removeMessagesThatConditionsHaveNotBeenMet(
         events,
-        draft.exchanges
+        draft.exchanges,
       );
     }
     return draft;

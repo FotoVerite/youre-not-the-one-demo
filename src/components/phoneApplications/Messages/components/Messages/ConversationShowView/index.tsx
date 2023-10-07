@@ -11,8 +11,8 @@ import Animated, {
 } from "react-native-reanimated";
 import { useInsetDimensions } from "src/utility/useInsetDimensions";
 
-import ConversationContainer from "./ConversationContainer";
 import Header from "./Header.tsx";
+import ExchangeList from "../ExchangeList";
 
 const ConversationShowView: FC<{
   conversation?: ConversationType;
@@ -46,7 +46,7 @@ const ConversationShowView: FC<{
     <SlideInTransitionContainer toObserve={state} resolver={conversationShown}>
       {state && (
         <Animated.View style={[{ flex: 1 }, animatedShrink]}>
-          <ConversationContainer conversation={state} dispatch={dispatch} />
+          <ExchangeList conversation={state} dispatch={dispatch} />
           <Header
             color={state.interfaceColor}
             name={state?.name}

@@ -1,14 +1,13 @@
 import { DigestedConversationType } from "@Components/phoneApplications/Messages/hooks/useConversation/digestion/types";
 import { ConversationDispatchType } from "@Components/phoneApplications/Messages/hooks/useConversation/types";
-import { FC } from "react";
-import { View } from "react-native";
+import React, { FC } from "react";
 import { useSharedValue } from "react-native-reanimated";
 
-import ConversationList from "../ConversationShowList";
-import TimeStampPan from "../ConversationShowList/TimeStampPan";
-import RouteChooser from "../RouteChooser";
+import List from "./List";
+import RouteChooser from "./RouteChooser";
+import TimeStampPan from "./TimeStampPan";
 
-const ConversationContainer: FC<
+const ExchangeList: FC<
   {
     conversation: DigestedConversationType;
   } & ConversationDispatchType
@@ -17,7 +16,7 @@ const ConversationContainer: FC<
   return (
     <>
       <TimeStampPan translateX={translateX}>
-        <ConversationList
+        <List
           blockable={conversation.blockable === true}
           exchanges={conversation?.exchanges}
           dispatch={dispatch}
@@ -29,4 +28,4 @@ const ConversationContainer: FC<
   );
 };
 
-export default ConversationContainer;
+export default ExchangeList;

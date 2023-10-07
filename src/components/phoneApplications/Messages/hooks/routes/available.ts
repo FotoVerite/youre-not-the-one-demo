@@ -26,12 +26,12 @@ type GenericRouteType =
 export const filterForStartableRoutes = <T extends GenericRouteType>(
   routes: T[],
   events: MessageAppEventsContainerType,
-  state: MessageAppEventsType
+  state: MessageAppEventsType,
 ): T[] => {
   return routes.filter((route) => {
     // Convert number to string due to objects keys needing to be strings
     const finishedRoutes = Object.keys(state.routes || {}).filter(
-      (key) => state.routes[key].finished
+      (key) => state.routes[key].finished,
     );
     return (
       !finishedRoutes.includes(route.id.toString()) &&
@@ -44,11 +44,11 @@ export const filterForStartableRoutes = <T extends GenericRouteType>(
 const filterForAvailableRoutes = <T extends GenericRouteType>(
   routes: T[],
   events: MessageAppEventsContainerType,
-  state: MessageAppEventsType
+  state: MessageAppEventsType,
 ): T[] => {
   return routes.filter((route) => {
     // Convert number to string due to objects keys needing to be strings
-    const startedRoutes = Object.keys(state.routes || {})
+    const startedRoutes = Object.keys(state.routes || {});
     // eslint-disable-next-line prettier/prettier
     return (
       !startedRoutes.includes(route.id.toString())
@@ -64,7 +64,7 @@ export const hasStartableRoute = (
     | DigestedChoosableRouteType
     | DigestedNotificationRouteType
   )[],
-  state: AppEventsType
+  state: AppEventsType,
 ) => {
   if (routes == null || routes.length === 0) {
     return false;
@@ -78,7 +78,7 @@ export const hasStartableRoute = (
 export const findStartableRoute = (
   name: MESSAGE_CONTACT_NAME,
   routes: (DigestedChoosableRouteType | DigestedNotificationRouteType)[],
-  state: AppEventsType
+  state: AppEventsType,
 ) => {
   if (routes == null || routes.length === 0) {
     return;
@@ -86,7 +86,7 @@ export const findStartableRoute = (
   let route = filterForStartableRoutes<
     DigestedChoosableRouteType | DigestedNotificationRouteType
   >(routes, state.Messages, state.Messages[name]).sort(
-    (a, b) => a.order - b.order
+    (a, b) => a.order - b.order,
   )[0];
   if (!route) {
     return;
@@ -101,7 +101,7 @@ export const findStartableRoute = (
 export const findStartableRoutes = (
   name: MESSAGE_CONTACT_NAME,
   routes: (NotificationRouteType | ChoosableRouteType)[],
-  state: AppEventsType
+  state: AppEventsType,
 ) => {
   if (routes == null || routes.length === 0) {
     return [];
@@ -109,14 +109,14 @@ export const findStartableRoutes = (
   return filterForStartableRoutes<NotificationRouteType | ChoosableRouteType>(
     routes,
     state.Messages,
-    state.Messages[name]
+    state.Messages[name],
   );
 };
 
 export const findAvailableRoutes = (
   name: MESSAGE_CONTACT_NAME,
   routes: (NotificationRouteType | ChoosableRouteType)[],
-  state: AppEventsType
+  state: AppEventsType,
 ) => {
   if (routes == null || routes.length === 0) {
     return [];
@@ -124,7 +124,6 @@ export const findAvailableRoutes = (
   return filterForAvailableRoutes<NotificationRouteType | ChoosableRouteType>(
     routes,
     state.Messages,
-    state.Messages[name]
+    state.Messages[name],
   );
 };
-

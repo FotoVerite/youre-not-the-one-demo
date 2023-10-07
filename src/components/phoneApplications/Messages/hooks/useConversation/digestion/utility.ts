@@ -13,7 +13,7 @@ export const getListHeight = (exchanges: DigestedConversationListItem[]) => {
 
 export const digestBlockAndFilterSkipped = (
   block: ExchangeBlockType[],
-  timestamps: string[]
+  timestamps: string[],
 ) => {
   let blockIndex = 0;
   return block.reduce((ret, exchange) => {

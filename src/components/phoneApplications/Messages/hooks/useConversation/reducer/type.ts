@@ -1,10 +1,5 @@
 import { AppEventsType } from "@Components/appEvents/reducer/types";
 
-import {
-  ActiveChoosableRoute,
-  ActiveNotificationRoute,
-  RouteConditionsType,
-} from "../../routes/types";
 import { ConversationType } from "../../useConversations/types";
 import {
   DigestedConversationType,
@@ -45,10 +40,7 @@ export type DigestConversationActionType = {
   };
 };
 
-export type RefreshAvailablePayloadType = {
-  blockable?: boolean | { conditions: RouteConditionsType };
-  activeRoute?: ActiveNotificationRoute | ActiveChoosableRoute;
-};
+export type RefreshAvailablePayloadType = AppEventsType;
 type RefreshAvailableRouteActionType = {
   type: CONVERSATION_REDUCER_ACTIONS.REFRESH;
   payload: RefreshAvailablePayloadType;

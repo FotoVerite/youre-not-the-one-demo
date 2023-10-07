@@ -1,6 +1,6 @@
 import { DigestedConversationListItem } from "@Components/phoneApplications/Messages/hooks/useConversation/digestion/types";
 import { ConversationReducerActionsType } from "@Components/phoneApplications/Messages/hooks/useConversation/reducer/type";
-import React, { FC, useEffect, useMemo } from "react";
+import { FC, useMemo, useEffect } from "react";
 import { ListRenderItem, StyleSheet, View } from "react-native";
 import Animated, {
   SharedValue,
@@ -10,10 +10,10 @@ import Animated, {
 } from "react-native-reanimated";
 import { theme } from "src/theme";
 
-import Footer from "./Footer";
-import ListItem from "./ListItem";
-import { ConversationShowListItem } from "./ListItem/types";
-import ListOffsetEmitter, { LIST_EMITTER_EVENTS } from "./emitters";
+import Footer from "../Footer";
+import ListItem from "../ListItem";
+import { ConversationShowListItem } from "../ListItem/types";
+import ListOffsetEmitter, { LIST_EMITTER_EVENTS } from "../emitters";
 
 const renderItem: ListRenderItem<ConversationShowListItem> = ({ item }) => (
   <ListItem {...item} />
@@ -21,7 +21,7 @@ const renderItem: ListRenderItem<ConversationShowListItem> = ({ item }) => (
 
 const getItemLayout = (
   data: ArrayLike<ConversationShowListItem> | null | undefined,
-  index: number
+  index: number,
 ) => ({
   length: data ? data[index].height + data[index].paddingBottom : 0,
   offset: data ? data[index].offset : 0,
@@ -31,7 +31,7 @@ const getItemLayout = (
 const keyExtractor = (item: DigestedConversationListItem, index: number) =>
   index + `-conversation-${item.ID}`;
 
-const ConversationList: FC<{
+const List: FC<{
   blockable: boolean;
   exchanges: DigestedConversationListItem[];
   height?: number;
@@ -106,7 +106,7 @@ const ConversationList: FC<{
   );
 };
 
-export default ConversationList;
+export default List;
 
 const styles = StyleSheet.create({
   list: {

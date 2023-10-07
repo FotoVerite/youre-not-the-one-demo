@@ -3,9 +3,7 @@ import { View, TouchableWithoutFeedback, StyleSheet } from "react-native";
 import { theme } from "src/theme";
 import { Row } from "src/utility/layout";
 
-import ListOffsetEmitter, {
-  LIST_EMITTER_EVENTS,
-} from "../../ConversationShowList/emitters";
+import ListOffsetEmitter, { LIST_EMITTER_EVENTS } from "../../emitters";
 import ChevronButton, { MESSAGE_SEND_BUTTON_STATE } from "../ChevronButton";
 import DisplayedText, { DISPLAYED_TEXT_STATES } from "../DisplayedText";
 

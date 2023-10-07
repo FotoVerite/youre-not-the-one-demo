@@ -1,5 +1,5 @@
 import { formatConversationTime } from "@Components/phoneApplications/Messages/hooks/useConversations/determineLogLine";
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 import { LayoutChangeEvent, Text } from "react-native";
 import Animated, {
   SharedValue,
@@ -11,7 +11,7 @@ import { theme } from "src/theme";
 export const Timestamp: FC<{
   addressee: boolean;
   height: number;
-  timestamp: string;
+  timestamp?: string;
   translateX: SharedValue<number>;
   timeWidth: number;
   setTimeWidth: React.Dispatch<React.SetStateAction<number>>;
@@ -27,10 +27,14 @@ export const Timestamp: FC<{
     const translate = interpolate(
       translateX.value,
       [0, 1],
-      [timeWidth, addressee ? 0 : timeWidth - 20]
+      [timeWidth, addressee ? 0 : timeWidth - 20],
     );
     return { transform: [{ translateX: translate }] };
   });
+
+  if (!timestamp) {
+    return <></>;
+  }
 
   return (
     <Animated.View

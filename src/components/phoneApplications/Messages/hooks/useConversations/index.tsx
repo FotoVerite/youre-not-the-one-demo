@@ -18,8 +18,8 @@ import { spam1 } from "../../assets/messages/spam1";
 import { toSelf } from "../../assets/messages/toSelf";
 import { zara } from "../../assets/messages/zara";
 import { MESSAGE_CONTACT_NAME } from "../../constants";
-import { messageAppConditionsMet } from "../routes/conditionals";
 import { hasStartableRoute } from "../routes/available";
+import { messageAppConditionsMet } from "../routes/conditionals";
 
 const _conversations: ConversationFileType[] = [
   toSelf,
@@ -37,10 +37,12 @@ const viewableConversationsFilter =
 
 const conversationHasExchange = (
   conversation: ConversationFileType,
-  events: AppEventsType
-) =>
-  conversation.exchanges.length > 0 ||
-  Object.keys(events.Messages[conversation.name].routes).length > 0;
+  events: AppEventsType,
+) => {
+  const routes = events.Messages[conversation.name].routes;
+  const hasViewableRoute = Object.values(routes).filter((r) => r.logline);
+  return conversation.exchanges.length > 0 || hasViewableRoute.length > 0;
+};
 
 export const sortConversations =
   () => (c1: ConversationListType, c2: ConversationListType) => {
@@ -57,7 +59,7 @@ export const sortConversations =
 
 const convertFromConversationFromFileToListType = (
   conversation: ConversationFileType,
-  events: AppEventsType
+  events: AppEventsType,
 ): ConversationListType => {
   const {
     blockable,
@@ -72,7 +74,7 @@ const convertFromConversationFromFileToListType = (
   const hasAvailableRoute = hasStartableRoute(props.name, routes || [], events);
   const { time, logline } = determineLoglineAndTimeOfLastMessage(
     conversation,
-    events
+    events,
   );
 
   return {
@@ -89,7 +91,7 @@ export const useConversations = (override?: ConversationFileType[]) => {
   const eventsContext = useAppEventsContext();
   const events = eventsContext.state;
   const [conversations, setConversations] = useState(
-    override || _conversations
+    override || _conversations,
   );
   const viewableConversations = useMemo(() => {
     return produce(conversations, (draft) => {
@@ -116,12 +118,12 @@ export const useConversations = (override?: ConversationFileType[]) => {
         produce(conversations, (draft) => {
           determinedBlockedConversations.forEach((name) => {
             const index = draft.findIndex(
-              (_conversation) => _conversation.name === name
+              (_conversation) => _conversation.name === name,
             );
             draft[index].blocked = true;
           });
           return draft;
-        })
+        }),
       );
     }
   }, [conversations, determinedBlockedConversations]);

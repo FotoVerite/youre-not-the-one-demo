@@ -87,12 +87,15 @@ const UpdateRouteEvent = (
     routeId.toString(),
     props,
   );
-  if (props.atIndex) {
-    route.messageTimestamps[props.atIndex - 1] = new Date().toISOString();
+  const { messageTimestamps, ...restOfProps } = props;
+  if (restOfProps.atIndex && !messageTimestamps) {
+    route.messageTimestamps[restOfProps.atIndex - 1] = new Date().toISOString();
   }
+  if (messageTimestamps)
+    route.messageTimestamps = route.messageTimestamps.concat(messageTimestamps);
   draft.Messages[name].routes[stringRouteID] = {
     ...route,
-    ...props,
+    ...restOfProps,
     ...{ updatedAt: new Date().toISOString() },
   };
   return draft;

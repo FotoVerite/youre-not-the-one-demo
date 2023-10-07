@@ -1,5 +1,6 @@
 import { MessageAppEventsContainerType } from "@Components/appEvents/reducer/types";
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
+import moment, { Moment } from "moment";
 
 import { createSkBubbleFromPayload } from "./SkFunctions/createSkBubble";
 import { createTimeStampLabel } from "./SkFunctions/createTimeStampLabel";
@@ -28,20 +29,18 @@ import {
   ConversationType,
   ExchangeBlockType,
 } from "../../useConversations/types";
-import { Moment } from "moment";
-import moment from "moment";
 
 export const appendSeenRoutes = (
   digested: DigestedConversationType,
   seenRoutes: FinishedRouteType[],
-  config: BaseConfigType
+  config: BaseConfigType,
 ) => {
   return seenRoutes.reduce((digestedExchanges, route) => {
     return appendFromDigestedRoute(
       digestedExchanges,
       route,
       digested.group,
-      config
+      config,
     );
   }, digested.exchanges);
 };
@@ -50,7 +49,7 @@ export const appendFromDigestedRoute = (
   exchanges: DigestedConversationListItem[],
   route: FinishedRouteType | StartedRouteType,
   group: boolean = false,
-  config: BaseConfigType
+  config: BaseConfigType,
 ) => {
   const offset = getListHeight(exchanges);
   const itemConfiguration: SkItemConfigurationType = {
@@ -64,17 +63,17 @@ export const appendFromDigestedRoute = (
     convertFromPayloadsToSkItems(
       itemConfiguration,
       route.exchanges,
-      route.createdAt
-    )
+      route.createdAt,
+    ),
   );
 };
 
 export const convertBlockToMessagePayloadType = (
   block: ExchangeBlockType[],
-  time?: Moment
+  time?: Moment,
 ) => {
   let blockIndex = 0;
-  const timestamp = time ? time : undefined
+  const timestamp = time ? time : undefined;
   return block.reduce((ret, exchange) => {
     const name = exchange.name;
     const size = exchange.messages.length - 1;
@@ -85,12 +84,12 @@ export const convertBlockToMessagePayloadType = (
           name,
           isLastInExchange: size === index,
           index: blockIndex,
-          timestamp: timestamp ? timestamp.toISOString() : undefined
+          timestamp: timestamp ? timestamp.toISOString() : undefined,
         } as MessagePayloadType;
         blockIndex += 1;
         if (timestamp) timestamp.add(30);
         return message;
-      })
+      }),
     );
   }, [] as MessagePayloadType[]);
 };
@@ -98,12 +97,12 @@ export const convertBlockToMessagePayloadType = (
 export const convertFromPayloadsToSkItems = (
   configuration: SkItemConfigurationType,
   payloads: MessagePayloadType[],
-  time: string | Date
+  time: string | Date,
 ) => {
   const skTime = createTimeStampLabel(
     time,
     configuration.width,
-    configuration.offset
+    configuration.offset,
   );
   configuration.offset += skTime.height;
   return payloads.reduce(
@@ -113,7 +112,7 @@ export const convertFromPayloadsToSkItems = (
       ret.push(item);
       return ret;
     },
-    [skTime] as DigestedConversationListItem[]
+    [skTime] as DigestedConversationListItem[],
   );
 };
 
@@ -121,7 +120,7 @@ export const digestExchanges = (
   configuration: BaseConfigType,
   conversationExchanges: ConversationExchangeType[],
   group: boolean = false,
-  offset: number = 50
+  offset: number = 50,
 ) => {
   const itemConfiguration: SkItemConfigurationType = {
     font: configuration.font,
@@ -136,14 +135,14 @@ export const digestExchanges = (
       moment(block.time),
     );
     return ret.concat(
-      convertFromPayloadsToSkItems(itemConfiguration, payloads, block.time)
+      convertFromPayloadsToSkItems(itemConfiguration, payloads, block.time),
     );
   }, [] as DigestedConversationListItem[]);
 };
 
 export const convertRoutesToDigestedRoutes = (
   conversation: ConversationType,
-  events: MessageAppEventsContainerType
+  events: MessageAppEventsContainerType,
 ) => {
   const ret = conversation.routes.reduce(reduceRoute(conversation, events), {
     seen: [],
@@ -152,7 +151,7 @@ export const convertRoutesToDigestedRoutes = (
   });
   conversation.notificationRoutes?.reduce(
     reduceRoute(conversation, events),
-    ret
+    ret,
   );
   return [
     ret.available,
@@ -165,7 +164,7 @@ const reduceRoute =
   (conversation: ConversationType, events: MessageAppEventsContainerType) =>
   (
     ret: DigestedRoutesType,
-    route: ChoosableRouteType | NotificationRouteType
+    route: ChoosableRouteType | NotificationRouteType,
   ) => {
     const { id, ...routeProps } = route;
     const routeID = id.toString();
@@ -187,7 +186,7 @@ const reduceRoute =
           routeID,
           route.options,
           route.routes,
-          events
+          events,
         ),
       };
     } else {
@@ -198,7 +197,7 @@ const reduceRoute =
           conversation.name,
           routeID,
           route.exchanges,
-          events
+          events,
         ),
       };
     }
@@ -211,7 +210,7 @@ const digestChoosableRoute = (
   routeId: string,
   options: string[],
   routes: { [choice: string]: ExchangeBlockType[] },
-  events: MessageAppEventsContainerType
+  events: MessageAppEventsContainerType,
 ) => {
   const routeEvent = events[name].routes[routeId];
   if (routeEvent == null || !routeEvent.chosen) {
@@ -220,7 +219,7 @@ const digestChoosableRoute = (
         ret[choice] = convertBlockToMessagePayloadType(route);
         return ret;
       },
-      {} as { [choice: string]: MessagePayloadType[] }
+      {} as { [choice: string]: MessagePayloadType[] },
     );
     return {
       routes: payloads,
@@ -233,7 +232,7 @@ const digestChoosableRoute = (
       createdAt: routeEvent.createdAt,
       exchanges: digestBlockAndFilterSkipped(
         routes[routeEvent.chosen],
-        routeEvent.messageTimestamps
+        routeEvent.messageTimestamps,
       ),
       finished: ROUTE_STATE_TYPE.FINISHED as const,
       position: routeEvent.position,
@@ -245,12 +244,12 @@ const digestChoosableRoute = (
   const seen = payloads.splice(0, atIndex);
   return {
     createdAt: routeEvent.createdAt,
-    exchanges:   seen.reduce((acc, payload) => {
+    exchanges: seen.reduce((acc, payload) => {
       if (routeEvent.messageTimestamps[payload.index]) {
-        payload.timestamp = routeEvent.messageTimestamps[payload.index]
+        payload.timestamp = routeEvent.messageTimestamps[payload.index];
         acc.push(payload);
       }
-      return acc
+      return acc;
     }, [] as MessagePayloadType[]),
     finished: ROUTE_STATE_TYPE.STARTED as const,
     indexAt: atIndex,
@@ -265,7 +264,7 @@ const digestNotificationRouteType = (
   name: MESSAGE_CONTACT_NAME,
   routeId: string,
   exchanges: ExchangeBlockType[],
-  events: MessageAppEventsContainerType
+  events: MessageAppEventsContainerType,
 ) => {
   const routeEvent = events[name].routes[routeId];
   if (routeEvent == null || !routeEvent.finished) {
@@ -278,7 +277,7 @@ const digestNotificationRouteType = (
     createdAt: routeEvent.createdAt,
     exchanges: digestBlockAndFilterSkipped(
       exchanges,
-      routeEvent.messageTimestamps
+      routeEvent.messageTimestamps,
     ),
     finished: ROUTE_STATE_TYPE.FINISHED as const,
     position: routeEvent.position,
@@ -288,7 +287,7 @@ const digestNotificationRouteType = (
 
 const sortDigestedRoute = (
   ret: DigestedRoutesType,
-  route: DigestedRouteType | FinishedRouteType | StartedRouteType
+  route: DigestedRouteType | FinishedRouteType | StartedRouteType,
 ) => {
   if (route.finished === ROUTE_STATE_TYPE.FINISHED) {
     ret.seen.push(route);

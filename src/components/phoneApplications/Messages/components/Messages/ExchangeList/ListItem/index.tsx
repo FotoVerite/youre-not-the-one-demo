@@ -8,17 +8,17 @@ import { FC, memo, useCallback, useState } from "react";
 import { ExchangeWrapper } from "./ExchangeWrapper";
 import SentMessageContainer from "./SentMessageContainer";
 import { TypingContainer } from "./TypingContainer";
-import { ConversationShowListItem } from "./types";
+import { ExchangeListItemType } from "./types";
 import useBubbleResolver from "./useBubbleResolver";
 
-const ListItem: FC<ConversationShowListItem> = (props) => {
+const ListItem: FC<ExchangeListItemType> = (props) => {
   const [resolved, _setAsResolved] = useState(false);
 
   const setAsResolved = useCallback(
     (isResolved: boolean) => {
       _setAsResolved(isResolved);
     },
-    [_setAsResolved]
+    [_setAsResolved],
   );
   const item = useBubbleResolver({ ...props, setAsResolved });
   let bubble: React.JSX.Element;

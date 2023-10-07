@@ -1,19 +1,16 @@
 import React, { FC, useState } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View } from "react-native";
+import Animated, {
+  interpolate,
+  useAnimatedStyle,
+} from "react-native-reanimated";
 import { Row } from "src/utility/layout";
 
 import { Avatar } from "./Avatar";
 import NameLabel from "./NameLabel";
 import Reaction from "./Reaction";
-import { ConversationExchangeWrapperType } from "./types";
-import moment from "moment";
-import { formatConversationTime } from "@Components/phoneApplications/Messages/hooks/useConversations/determineLogLine";
 import { Timestamp } from "./Timestamp";
-import Animated, {
-  interpolate,
-  useAnimatedStyle,
-} from "react-native-reanimated";
-
+import { ConversationExchangeWrapperType } from "./types";
 export const ExchangeWrapper: FC<ConversationExchangeWrapperType> = ({
   avatar,
   addressee,
@@ -34,13 +31,10 @@ export const ExchangeWrapper: FC<ConversationExchangeWrapperType> = ({
   const [timeWidth, setTimeWidth] = useState(0);
 
   const slideIn = useAnimatedStyle(() => {
-    if (!translateX) {
-      return {};
-    }
     const translate = interpolate(
       translateX.value,
       [0, 1],
-      [0, -timeWidth + 20]
+      [0, -timeWidth + 20],
     );
     if (addressee) {
       return {};
@@ -71,16 +65,14 @@ export const ExchangeWrapper: FC<ConversationExchangeWrapperType> = ({
           <NameLabel name={name} group={group || false} />
         </View>
       </Row>
-      {translateX && (
-        <Timestamp
-          addressee={addressee}
-          height={height}
-          timestamp={timestamp}
-          timeWidth={timeWidth}
-          setTimeWidth={setTimeWidth}
-          translateX={translateX}
-        />
-      )}
+      <Timestamp
+        addressee={addressee}
+        height={height}
+        timestamp={timestamp}
+        timeWidth={timeWidth}
+        setTimeWidth={setTimeWidth}
+        translateX={translateX}
+      />
     </Animated.View>
   );
 };

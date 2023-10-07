@@ -1,4 +1,7 @@
-import { APP_EVENTS_ACTIONS } from "@Components/appEvents/reducer/types";
+import {
+  APP_EVENTS_ACTIONS,
+  AppEventsType,
+} from "@Components/appEvents/reducer/types";
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
 import { nothing, produce } from "immer";
 
@@ -7,6 +10,7 @@ import {
   routeUpdatePayload,
   routeFinishedPayload,
   createCleanupPayload,
+  RouteOptionalProps,
 } from "./eventPayloads";
 import {
   setMessageEphemeralProps,
@@ -16,17 +20,20 @@ import {
 import {
   ConversationReducerActionsType,
   CONVERSATION_REDUCER_ACTIONS,
-  RefreshAvailablePayloadType,
 } from "./type";
 import { MESSAGE_CONTENT } from "../../contentWithMetaTypes";
+import { messagesConditionalCheck } from "../../routes/conditionals";
 import {
   isStarted,
   isActiveNotificationRoute,
   isActiveChoosableRoute,
+  isDigestedChoosableRoute,
 } from "../../routes/guards";
 import { ROUTE_STATE_TYPE, ROUTE_TYPE } from "../../routes/types";
 import { convertMessageToString } from "../../useConversations/determineLogLine";
 import { createSkBubbleFromPayload } from "../digestion/SkFunctions/createSkBubble";
+import { createTimeStampLabel } from "../digestion/SkFunctions/createTimeStampLabel";
+import { blockableConditionsMet } from "../digestion/blockable";
 import { appendReadLabel } from "../digestion/readLabel";
 import {
   BaseConfigType,
@@ -40,13 +47,12 @@ import {
   DigestedConversationWithStartedRoute,
 } from "../digestion/types";
 import { getListHeight } from "../digestion/utility";
-import { createTimeStampLabel } from "../digestion/SkFunctions/createTimeStampLabel";
 
 const createConversationReducer =
   (config: BaseConfigType) =>
   (
     state: DigestedConversationType | undefined,
-    action: ConversationReducerActionsType
+    action: ConversationReducerActionsType,
   ) =>
     conversationReducer(state, action, config);
 
@@ -54,7 +60,7 @@ const conversationReducer = produce(
   (
     draft: DigestedConversationType | undefined,
     action: ConversationReducerActionsType,
-    config: BaseConfigType
+    config: BaseConfigType,
   ): DigestedConversationType | undefined | typeof nothing => {
     if (action.type === CONVERSATION_REDUCER_ACTIONS.ADD_CONVERSATION) {
       return addConversation(action.payload);
@@ -76,7 +82,7 @@ const conversationReducer = produce(
           config,
           draft,
           action.payload.props,
-          action.payload.ID
+          action.payload.ID,
         );
       case CONVERSATION_REDUCER_ACTIONS.SKIP_ROUTE:
         return _skipRoute(config, draft);
@@ -85,26 +91,38 @@ const conversationReducer = produce(
       default:
         return draft;
     }
-  }
+  },
 );
 
 const refreshConversation = (
   config: BaseConfigType,
   draft: DigestedConversationType,
-  payload: RefreshAvailablePayloadType
+  payload: AppEventsType,
 ) => {
-  const { blockable, activeRoute } = payload;
-  draft.blockable = blockable;
-  if (!isStarted(draft.activeRoute)) {
-    draft.activeRoute = activeRoute;
-  }
+  draft.blockable = blockableConditionsMet(draft, payload);
+  if (draft.activeRoute) return;
+  const routeEvents = payload.Messages[draft.name].routes;
+  const routeId = Object.entries(routeEvents)
+    .filter(([, r]) => !r.finished)
+    .map(([id]) => id)[0];
+  let startableRoute = draft.availableRoutes[routeId];
+  if (!startableRoute) return draft;
+  delete draft.availableRoutes[routeId];
+  startableRoute = messagesConditionalCheck(payload, startableRoute);
+  draft.activeRoute = {
+    ...startableRoute,
+    ...{
+      finished: ROUTE_STATE_TYPE.ACTIVE,
+    },
+  };
+  if (isDigestedChoosableRoute(startableRoute)) return draft;
   return _createMessageAndUpdateDraft(config, draft);
 };
 
 const _createMessageAndUpdateDraft = (
   config: BaseConfigType,
   draft: DigestedConversationType,
-  chosenOption?: string
+  chosenOption?: string,
 ) => {
   let route: MessagePayloadType[] = [];
   const activeRoute = draft.activeRoute;
@@ -112,9 +130,9 @@ const _createMessageAndUpdateDraft = (
   if (isStarted(activeRoute)) return draft;
   if (isActiveChoosableRoute(activeRoute) && chosenOption) {
     route = activeRoute.routes[chosenOption];
-  } 
+  }
   if (isActiveNotificationRoute(activeRoute)) {
-    activeRoute.exchanges = [...activeRoute.exchanges]
+    //activeRoute.exchanges = [...activeRoute.exchanges];
     route = activeRoute.exchanges;
   }
 
@@ -142,13 +160,13 @@ const _createMessageAndUpdateDraft = (
   const timestamp = createTimeStampLabel(
     new Date().toISOString(),
     config.width,
-    offset
+    offset,
   );
-  draft.exchanges.push(timestamp)
-  offset += timestamp.height
+  draft.exchanges.push(timestamp);
+  offset += timestamp.height;
   const message = createSkBubbleFromPayload(
     { ...config, ...{ group: draft.group || false, offset } },
-    payload
+    payload,
   );
 
   setMessageEphemeralProps(draft, message);
@@ -159,16 +177,16 @@ const _createMessageAndUpdateDraft = (
       draft.exchanges,
       config.width,
       undefined,
-      draft.leaveAsDelivered
+      draft.leaveAsDelivered,
     );
   }
 
   draft.eventAction = routeStartedPayload(
     draft,
     draft.activeRoute,
-    convertMessageToString(payload.messageContent)
+    convertMessageToString(payload.messageContent),
   );
-  delete draft.availableRoutes[draft.activeRoute.id]
+  delete draft.availableRoutes[draft.activeRoute.id];
   _createCleanupAction(draft);
   return draft;
 };
@@ -176,7 +194,7 @@ const _createMessageAndUpdateDraft = (
 const startRoute = (
   config: BaseConfigType,
   draft: DigestedConversationType,
-  payload: { chosenOption: string }
+  payload: { chosenOption: string },
 ) => {
   return _createMessageAndUpdateDraft(config, draft, payload.chosenOption);
 };
@@ -191,10 +209,10 @@ const block = (draft: DigestedConversationType) => {
 
 const _setInputDisplay = (
   draft: DigestedConversationWithStartedRoute,
-  nextMessage: MessagePayloadType
+  nextMessage: MessagePayloadType,
 ) => {
   draft.activeRoute.nextMessageInQueue = convertMessageToString(
-    nextMessage.messageContent
+    nextMessage.messageContent,
   );
   _createCleanupAction(draft);
   return draft;
@@ -203,12 +221,12 @@ const _setInputDisplay = (
 const _appendNextMessage = (
   config: BaseConfigType,
   draft: DigestedConversationWithStartedRoute,
-  nextMessage: MessagePayloadType
+  nextMessage: MessagePayloadType,
 ) => {
   const offset = getListHeight(draft.exchanges);
   const message = createSkBubbleFromPayload(
     { ...config, ...{ group: draft.group || false, offset } },
-    nextMessage
+    nextMessage,
   );
   revertPreviousMessageEphemeralProps(draft);
   setMessageEphemeralProps(draft, message);
@@ -223,7 +241,7 @@ const _appendNextMessage = (
       draft.exchanges,
       config.width,
       undefined,
-      draft.leaveAsDelivered
+      draft.leaveAsDelivered,
     );
   }
   draft.activeRoute.pending.shift();
@@ -231,8 +249,7 @@ const _appendNextMessage = (
   draft.activeRoute.nextMessageInQueue = undefined;
   draft.eventAction = routeUpdatePayload(
     draft,
-    nextMessage.index,
-    convertMessageToString(nextMessage.messageContent)
+    convertMessageToString(nextMessage.messageContent),
   );
   _createCleanupAction(draft);
   return draft;
@@ -240,7 +257,7 @@ const _appendNextMessage = (
 
 const continueRoute = (
   config: BaseConfigType,
-  draft: DigestedConversationType
+  draft: DigestedConversationType,
 ) => {
   if (!hasStartedRoute(draft)) return;
   const activeRoute = draft.activeRoute;
@@ -261,9 +278,9 @@ const continueRoute = (
 
 const finishRoute = (
   draft: DigestedConversationWithStartedRoute,
-  logline?: string
+  options?: RouteOptionalProps,
 ) => {
-  draft.eventAction = routeFinishedPayload(draft, logline);
+  draft.eventAction = routeFinishedPayload(draft, options);
   const newDraft = draft as DigestedConversationType;
   newDraft.activeRoute = undefined;
   return newDraft;
@@ -271,7 +288,7 @@ const finishRoute = (
 
 const _skipRoute = (
   config: BaseConfigType,
-  draft: DigestedConversationType
+  draft: DigestedConversationType,
 ) => {
   if (!hasStartedRoute(draft)) {
     return;
@@ -281,19 +298,22 @@ const _skipRoute = (
   const path = draft.activeRoute.pending.reduce((ret, payload) => {
     const message = createSkBubbleFromPayload(
       { ...config, offset, ...{ group: draft.group || false } },
-      payload
+      payload,
     );
     offset += message.height + message.paddingBottom;
     ret.push(message);
     return ret;
   }, [] as DigestedConversationListItem[]);
   draft.exchanges = draft.exchanges.concat(path);
-  finishRoute(
-    draft,
-    convertMessageToString(
-      draft.activeRoute.pending.slice(-1)[0].messageContent
-    )
+  const logline = convertMessageToString(
+    draft.activeRoute.pending.slice(-1)[0].messageContent,
   );
+
+  finishRoute(draft, {
+    logline,
+    atIndex: draft.activeRoute.indexAt + path.length,
+    messageTimestamps: new Array(path.length).fill(new Date().toISOString()),
+  });
   return draft;
 };
 
@@ -310,7 +330,7 @@ const updateMessage = (
   config: BaseConfigType,
   draft: DigestedConversationType,
   props: DigestedMessageProps,
-  ID: string
+  ID: string,
 ) => {
   const index = draft.exchanges.findIndex((draft) => draft.ID === ID);
   if (index !== undefined) {
@@ -334,14 +354,14 @@ const _createCleanupAction = (draft: DigestedConversationType) => {
   }
   const end = draft.activeRoute.pending.slice(-1)[0];
   const nextSent = draft.activeRoute.pending.find((e) =>
-    isSentMessagePayload(e)
+    isSentMessagePayload(e),
   );
   const forwardTo = nextSent || end;
   draft.cleanupAction = createCleanupPayload(
     draft,
     forwardTo.index,
     nextSent != null,
-    convertMessageToString(forwardTo.messageContent)
+    convertMessageToString(forwardTo.messageContent),
   );
 };
 

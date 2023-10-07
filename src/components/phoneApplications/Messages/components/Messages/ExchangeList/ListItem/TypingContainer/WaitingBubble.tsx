@@ -1,8 +1,4 @@
 import {
-  BubbleItemType,
-  DigestedConversationListItem,
-} from "@Components/phoneApplications/Messages/hooks/useConversation/digestion/types";
-import {
   Canvas,
   Group,
   LinearGradient,
@@ -11,19 +7,14 @@ import {
 } from "@shopify/react-native-skia";
 import React, { FC } from "react";
 import { View } from "react-native";
-import Animated, { SharedValue } from "react-native-reanimated";
 
 import { Dot } from "./Dot";
 import { useBubbleCloudClip } from "./useBubbleCloudClip";
 import { ExchangeWrapper } from "../ExchangeWrapper";
 import { useHeightDeterminedGradient } from "../SkBubbles/useHeightDeterminedGradient";
+import { ExchangeBubbleItemType } from "../types";
 
-export const WaitingBubble: FC<
-  BubbleItemType & {
-    scrollHandler: SharedValue<number>;
-    scrollRef: React.RefObject<Animated.FlatList<DigestedConversationListItem>>;
-  }
-> = (props) => {
+export const WaitingBubble: FC<ExchangeBubbleItemType> = (props) => {
   const width = 75;
   const height = 36;
   const clip = useBubbleCloudClip(width, height, 16);
@@ -44,6 +35,7 @@ export const WaitingBubble: FC<
       height={width}
       name={props.name}
       paddingBottom={props.paddingBottom}
+      translateX={props.translateX}
     >
       <View>
         <Canvas

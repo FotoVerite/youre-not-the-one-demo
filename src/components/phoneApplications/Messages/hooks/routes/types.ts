@@ -50,7 +50,6 @@ interface AbstractRouteType {
   conditions?: RouteConditionsType;
   delay?: number;
   effects?: MessageEffectType[];
-  
 }
 
 export interface AbstractDigestedRouteType

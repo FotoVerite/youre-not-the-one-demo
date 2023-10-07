@@ -16,10 +16,10 @@ import { delayFor } from "src/utility/async";
 
 import { WaitingBubble } from "./WaitingBubble";
 import ListOffsetEmitter, { LIST_EMITTER_EVENTS } from "../../emitters";
-import { ConversationShowBubbleItem } from "../types";
+import { ExchangeBubbleItemType } from "../types";
 
 export const TypingContainer: FC<
-  ConversationShowBubbleItem & {
+  ExchangeBubbleItemType & {
     dispatch: (action: ConversationReducerActionsType) => void;
     resolved: boolean;
   } & PropsWithChildren

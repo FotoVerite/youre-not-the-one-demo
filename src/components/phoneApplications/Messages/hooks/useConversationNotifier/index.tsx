@@ -78,15 +78,18 @@ export const useConversationNotifier = (
     );
   }, [events.Messages, routes]);
 
-  const dispatchChoosable = useCallback((route: GenericRouteType) => {
-    dispatch({
-      type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_CREATE,
-      payload: {
-        name: route.name,
-        routeId: route.id.toString(),
-      },
-    });
-  }, []);
+  const dispatchChoosable = useCallback(
+    (route: GenericRouteType) => {
+      dispatch({
+        type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_CREATE,
+        payload: {
+          name: route.name,
+          routeId: route.id.toString(),
+        },
+      });
+    },
+    [dispatch],
+  );
 
   const notify = useCallback(
     (route: GenericRouteType) => {

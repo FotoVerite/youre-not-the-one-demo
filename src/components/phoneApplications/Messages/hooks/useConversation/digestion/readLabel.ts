@@ -1,4 +1,3 @@
-import { AppEventsType } from "@Components/appEvents/reducer/types";
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
 
 import { createReadLabel } from "./SkFunctions/createReadLabel";
@@ -9,7 +8,6 @@ import {
   isDigestedLabel,
 } from "./types";
 import { MESSAGE_CONTENT } from "../../contentWithMetaTypes";
-import { StartedRouteType } from "../../routes/types";
 
 type FilterType = {
   type: MESSAGE_CONTENT;
@@ -17,7 +15,7 @@ type FilterType = {
 };
 const filterByType = (
   exchanges: DigestedConversationListItem[],
-  type: MESSAGE_CONTENT
+  type: MESSAGE_CONTENT,
 ): FilterType | undefined => {
   return exchanges
     .map((item, index) => {
@@ -34,11 +32,11 @@ export const appendReadLabel = (
   exchanges: DigestedConversationListItem[],
   width: number,
   readTime?: string,
-  leaveAsDelivered?: boolean
+  leaveAsDelivered?: boolean,
 ) => {
   const hasSentMessage =
     exchanges.filter(
-      (e) => isDigestedBubble(e) && e.name === MESSAGE_CONTACT_NAME.SELF
+      (e) => isDigestedBubble(e) && e.name === MESSAGE_CONTACT_NAME.SELF,
     ).length > 0;
   if (!hasSentMessage) {
     return exchanges;
@@ -65,7 +63,7 @@ export const appendReadLabel = (
     width,
     lastExchange.offset + lastExchange.height + lastExchange.paddingBottom,
     leaveAsDelivered || lastExchange.leaveAsDelivered,
-    lastExchange.contentDelay
+    lastExchange.contentDelay,
   );
 
   exchanges.splice(spliceIndex, 0, readLabel);
@@ -81,7 +79,7 @@ export const appendReadLabel = (
 
 const markPreviousReadForRemoval = (
   previousIndex: number,
-  exchanges: DigestedConversationListItem[]
+  exchanges: DigestedConversationListItem[],
 ) => {
   if (previousIndex === -1) {
     return exchanges;

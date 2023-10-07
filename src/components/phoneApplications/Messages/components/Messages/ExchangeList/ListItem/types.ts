@@ -6,7 +6,7 @@ import { ConversationReducerActionsType } from "@Components/phoneApplications/Me
 import { ConversationDispatchType } from "@Components/phoneApplications/Messages/hooks/useConversation/types";
 import Animated, { SharedValue } from "react-native-reanimated";
 
-export type ConversationShowListItem = DigestedConversationListItem & {
+type AdditionalProps = {
   scrollHandler: SharedValue<number>;
   scrollRef: React.RefObject<Animated.FlatList<DigestedConversationListItem>>;
   dispatch: (action: ConversationReducerActionsType) => void;
@@ -14,12 +14,10 @@ export type ConversationShowListItem = DigestedConversationListItem & {
   translateX: SharedValue<number>;
 };
 
-export type ConversationShowBubbleItem = BubbleItemType & {
-  scrollHandler: SharedValue<number>;
-  scrollRef: React.RefObject<Animated.FlatList<DigestedConversationListItem>>;
-  dispatch: (action: ConversationReducerActionsType) => void;
-  setAsResolved: (isResolved: boolean) => void;
-};
+export type ExchangeListItemType = DigestedConversationListItem &
+  AdditionalProps;
+
+export type ExchangeBubbleItemType = BubbleItemType & AdditionalProps;
 
 export type SentMessageContainerType = {
   contentDelay?: number;

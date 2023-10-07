@@ -1,4 +1,7 @@
-import { APP_EVENTS_ACTIONS } from "@Components/appEvents/reducer/types";
+import {
+  APP_EVENTS_ACTIONS,
+  EventPropsPayloadType,
+} from "@Components/appEvents/reducer/types";
 
 import { StartedRouteType } from "../../routes/types";
 import {
@@ -10,7 +13,7 @@ export const createCleanupPayload = (
   draft: DigestedConversationWithStartedRoute,
   forewordToIndex: number,
   finished: boolean,
-  logline: string
+  logline: string,
 ) => {
   return {
     type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_UPDATE,
@@ -27,7 +30,7 @@ export const createCleanupPayload = (
 export const routeStartedPayload = (
   draft: DigestedConversationType,
   route: StartedRouteType,
-  logline: string
+  logline: string,
 ) => ({
   type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_CREATE,
   payload: {
@@ -42,8 +45,7 @@ export const routeStartedPayload = (
 
 export const routeUpdatePayload = (
   draft: DigestedConversationWithStartedRoute,
-  index: number,
-  logline: string
+  logline: string,
 ) => ({
   type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_UPDATE,
   payload: {
@@ -54,13 +56,22 @@ export const routeUpdatePayload = (
   },
 });
 
+export type RouteOptionalProps = {
+  logline?: string;
+  atIndex?: number;
+  messageTimestamps?: string[];
+};
 export const routeFinishedPayload = (
-  draft: DigestedConversationWithStartedRoute
-) => ({
-  type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_UPDATE,
-  payload: {
+  draft: DigestedConversationWithStartedRoute,
+  options?: RouteOptionalProps,
+) => {
+  const payload = {
     routeId: draft.activeRoute.id,
     name: draft.name,
     finished: true,
-  },
-});
+  } as EventPropsPayloadType;
+  return {
+    type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_UPDATE,
+    payload: { ...payload, ...options },
+  };
+};

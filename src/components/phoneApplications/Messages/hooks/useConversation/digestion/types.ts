@@ -220,19 +220,19 @@ export type DigestedConversationWithConditionalBlockability = Omit<
 > & { blockable: { conditions: RouteConditionsType } };
 
 export const hasActiveRoute = (
-  draft: DigestedConversationType
+  draft: DigestedConversationType,
 ): draft is DigestedConversationWithActiveRoute => {
   return draft.activeRoute?.finished === ROUTE_STATE_TYPE.ACTIVE;
 };
 
 export const hasStartedRoute = (
-  draft: DigestedConversationType
+  draft: DigestedConversationType,
 ): draft is DigestedConversationWithStartedRoute => {
   return isStarted(draft.activeRoute);
 };
 
 export const isSentMessage = (
-  exchange: DigestedConversationListItem
+  exchange: DigestedConversationListItem,
 ): exchange is BubbleItemType => {
   if (isDigestedLabel(exchange)) {
     return false;
@@ -241,13 +241,13 @@ export const isSentMessage = (
 };
 
 export const isSentMessagePayload = (
-  payload: MessagePayloadType
+  payload: MessagePayloadType,
 ): payload is SentMessagePayloadType => {
   return SELF_NAMES_CONST.includes(payload.name);
 };
 
 export const isReceivedMessage = (
-  exchange: DigestedConversationListItem
+  exchange: DigestedConversationListItem,
 ): exchange is BubbleItemType => {
   if (isDigestedLabel(exchange)) {
     return false;
@@ -256,21 +256,21 @@ export const isReceivedMessage = (
 };
 
 export const isDigestedBubble = (
-  exchange: DigestedConversationListItem
+  exchange: DigestedConversationListItem,
 ): exchange is BubbleItemType => {
   return ![MESSAGE_CONTENT.TIME, MESSAGE_CONTENT.READ_LABEL].includes(
-    exchange.type
+    exchange.type,
   );
 };
 
 export const isDigestedLabel = (
-  exchange: DigestedConversationListItem
+  exchange: DigestedConversationListItem,
 ): exchange is DigestedLabelType => {
   return !isDigestedBubble(exchange);
 };
 
 export const hasBlockableConditions = (
-  draft: DigestedConversationType
+  draft: DigestedConversationType,
 ): draft is DigestedConversationWithConditionalBlockability => {
   return (
     draft.blockable != null && draft.blockable.hasOwnProperty("conditions")

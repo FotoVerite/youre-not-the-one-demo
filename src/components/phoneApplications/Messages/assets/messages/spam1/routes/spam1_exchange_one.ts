@@ -29,6 +29,13 @@ const exchanges: ExchangeBlockType[] = [
 export const spam1_exchange_one: ChoosableRouteType = {
   id: SPAM1_IDS.EXCHANGE_ONE,
   options: Object.values(OPTIONS),
+  conditions: {
+    [SPAM1]: {
+      routes: {
+        [SPAM1_IDS.SPAM_INTRODUCTION]: {},
+      },
+    },
+  },
   routes: {
     [OPTIONS.A]: [{ name: SELF, messages: [OPTIONS.A] }].concat(exchanges),
     [OPTIONS.B]: [{ name: SELF, messages: [OPTIONS.B] }].concat(exchanges),

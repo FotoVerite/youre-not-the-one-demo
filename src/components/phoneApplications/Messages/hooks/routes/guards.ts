@@ -12,25 +12,25 @@ import {
 } from "./types";
 
 export const isChoosableRoute = (
-  route: NotificationRouteType | ChoosableRouteType
+  route: NotificationRouteType | ChoosableRouteType,
 ): route is ChoosableRouteType => {
   return route != null && route.hasOwnProperty("options");
 };
 
 export const isDigestedChoosableRoute = (
-  route: DigestedChoosableRouteType | DigestedNotificationRouteType
+  route: DigestedChoosableRouteType | DigestedNotificationRouteType,
 ): route is DigestedChoosableRouteType => {
   return route != null && route.hasOwnProperty("options");
 };
 
 export const isStarted = (
-  route: AbstractDigestedRouteType | undefined
+  route: AbstractDigestedRouteType | undefined,
 ): route is StartedRouteType => {
   return route != null && route.finished === ROUTE_STATE_TYPE.STARTED;
 };
 
 export const isActiveNotificationRoute = (
-  route: AbstractDigestedRouteType | undefined
+  route: AbstractDigestedRouteType | undefined,
 ): route is ActiveNotificationRoute => {
   return (
     route != null &&
@@ -40,7 +40,7 @@ export const isActiveNotificationRoute = (
 };
 
 export const isActiveChoosableRoute = (
-  route: AbstractDigestedRouteType | undefined
+  route: AbstractDigestedRouteType | undefined,
 ): route is ActiveChoosableRoute => {
   return (
     route != null &&
