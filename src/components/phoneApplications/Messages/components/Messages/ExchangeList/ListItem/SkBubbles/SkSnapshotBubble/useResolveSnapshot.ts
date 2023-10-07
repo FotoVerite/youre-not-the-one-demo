@@ -15,17 +15,17 @@ export const useSnapshotResolver = (
   width: number,
 ) => {
   const context = useSnapshotContext();
-  const { filename, image } = context;
+  const { image, setTakeSnapShot } = context;
   const skImage = useRef<SkImage | undefined>(content.image);
 
   useEffect(() => {
     if (!skImage.current && !image) {
-      context.setTakeSnapShot({
+      setTakeSnapShot({
         filename: content.filename,
         type: SNAPSHOT_TYPES.WITH_INDICATOR,
       });
     }
-  }, [image]);
+  }, [content.filename, image, setTakeSnapShot]);
 
   useEffect(() => {
     if (!skImage.current && image?.uri) {
@@ -35,7 +35,7 @@ export const useSnapshotResolver = (
 
   // Indicator is Finished and we have an image
   useEffect(() => {
-    if (!content.image && skImage.current && !context.image) {
+    if (!content.image && skImage.current && !image) {
       const aspectRation = skImage.current.height() / skImage.current.width();
       const imageHeight = width * aspectRation;
       dispatch({
@@ -44,14 +44,13 @@ export const useSnapshotResolver = (
           ID,
           props: {
             content: {
-              image: skImage.current,
-              filename: content.filename,
-              backup: content.backup,
+              ...content,
+              ...{ image: skImage.current },
             },
             height: imageHeight,
           },
         },
       });
     }
-  }, [image]);
+  }, [image, dispatch, content, width, ID, context.image]);
 };

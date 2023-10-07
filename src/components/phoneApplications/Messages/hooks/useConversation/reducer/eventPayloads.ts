@@ -23,6 +23,9 @@ export const createCleanupPayload = (
       atIndex: forewordToIndex,
       finished,
       logline,
+      messageTimestamps: new Array(
+        forewordToIndex - draft.activeRoute.indexAt,
+      ).fill(new Date().toISOString()),
     },
   };
 };

@@ -17,7 +17,7 @@ export type MessageRouteEventDataType = {
   chosen?: string;
   createdAt: string;
   finished?: boolean;
-  logline: string;
+  logline?: string;
   messageTimestamps: string[];
   position: number;
   updatedAt: string;

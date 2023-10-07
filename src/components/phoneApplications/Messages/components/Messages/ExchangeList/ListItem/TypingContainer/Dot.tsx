@@ -1,5 +1,5 @@
 import { Circle, Group } from "@shopify/react-native-skia";
-import React, { FC, useCallback, useEffect, useMemo } from "react";
+import React, { FC, useEffect, useMemo } from "react";
 import {
   Easing,
   convertToRGBA,
@@ -23,10 +23,10 @@ const repeatBlink = withRepeat(
       withTiming(0, {
         duration: 250,
         easing: Easing.inOut(Easing.ease),
-      })
-    )
+      }),
+    ),
   ),
-  -1
+  -1,
 );
 
 export const Dot: FC<{ height: number; width: number; delay: number }> = ({
@@ -48,8 +48,8 @@ export const Dot: FC<{ height: number; width: number; delay: number }> = ({
           duration: 250,
           easing: Easing.inOut(Easing.ease),
         },
-        () => (color.value = repeatBlink)
-      )
+        () => (color.value = repeatBlink),
+      ),
     );
   }, [color]);
 
@@ -58,7 +58,9 @@ export const Dot: FC<{ height: number; width: number; delay: number }> = ({
   }, [color, delay, blink]);
 
   const animatedColor = useDerivedValue(() =>
-    convertToRGBA(interpolateColor(color.value, [0, 1], ["#525252", "#acacac"]))
+    convertToRGBA(
+      interpolateColor(color.value, [0, 1], ["#525252", "#acacac"]),
+    ),
   );
 
   return (

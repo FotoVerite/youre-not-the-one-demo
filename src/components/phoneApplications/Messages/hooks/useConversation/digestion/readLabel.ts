@@ -13,19 +13,19 @@ type FilterType = {
   type: MESSAGE_CONTENT;
   index: number;
 };
+
 const filterByType = (
   exchanges: DigestedConversationListItem[],
   type: MESSAGE_CONTENT,
 ): FilterType | undefined => {
-  return exchanges
-    .map((item, index) => {
+  return exchanges.reduce<FilterType | undefined>((ret, item, index) => {
+    if (item.type === type)
       return {
         type: item.type,
         index,
       };
-    })
-    .filter((item) => item.type === type)
-    .slice(-1)[0];
+    return ret;
+  }, undefined);
 };
 
 export const appendReadLabel = (

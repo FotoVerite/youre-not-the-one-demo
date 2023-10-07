@@ -339,28 +339,41 @@ const updateMessage = (
       ...props,
     } as DigestedConversationListItem;
   }
-  //draft.exchanges = appendReadLabel(draft.exchanges, config.width);
+  draft.exchanges = appendReadLabel(
+    draft.exchanges,
+    config.width,
+    undefined,
+    draft.leaveAsDelivered,
+  );
   return draft;
 };
 
 const _createCleanupAction = (draft: DigestedConversationType) => {
-  if (
-    !hasStartedRoute(draft) ||
-    draft.activeRoute.nextMessageInQueue ||
-    draft.activeRoute.pending.length === 0
-  ) {
+  if (!hasStartedRoute(draft) || draft.activeRoute.pending.length === 0) {
     draft.cleanupAction = undefined;
     return;
   }
-  const end = draft.activeRoute.pending.slice(-1)[0];
+  const nextMessage = draft.activeRoute.pending[0];
+  if (!nextMessage || isSentMessagePayload(nextMessage)) {
+    draft.cleanupAction = undefined;
+    return;
+  }
+  const lastMessage = draft.activeRoute.pending.slice(-1)[0];
   const nextSent = draft.activeRoute.pending.find((e) =>
     isSentMessagePayload(e),
   );
-  const forwardTo = nextSent || end;
+
+  const forwardTo = nextSent
+    ? draft.activeRoute.pending.find((p) => p.index === nextSent.index - 1)
+    : lastMessage;
+  if (!forwardTo) {
+    draft.cleanupAction = undefined;
+    return;
+  }
   draft.cleanupAction = createCleanupPayload(
     draft,
-    forwardTo.index,
-    nextSent != null,
+    forwardTo.index + 1,
+    nextSent == null,
     convertMessageToString(forwardTo.messageContent),
   );
 };

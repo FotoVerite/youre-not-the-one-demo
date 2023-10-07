@@ -41,7 +41,7 @@ export const ensureDirExists = async (dir: string) => {
 };
 
 export const getPath = (dir: string, filename: string) => {
-  return `${dir}/${filename}.png`;
+  return `${dir}${filename}.jpg`;
 };
 
 export const writeImageToFs = async (file: SkImage, filename: string) => {

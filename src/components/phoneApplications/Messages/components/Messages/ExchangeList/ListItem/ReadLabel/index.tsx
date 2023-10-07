@@ -14,7 +14,7 @@ export const ReadLabel: FC<{
   contentDelay?: number;
 }> = ({ height, content, contentDelay }) => {
   const animatedHeight = useSharedValue(height);
-  const fadeIn = useSharedValue(0);
+  const fadeIn = useSharedValue(contentDelay ? 0 : 1);
   const initialHeight = useRef(height);
   useEffect(() => {
     animatedHeight.value = withTiming(height, { duration: 400 });
