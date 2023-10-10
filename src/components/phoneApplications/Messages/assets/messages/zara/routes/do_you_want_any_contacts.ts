@@ -10,7 +10,12 @@ export const zara_do_you_want_any_contacts: NotificationRouteType = {
   conditions: {
     [MESSAGE_CONTACT_NAME.MICHAEL]: {
       routes: {
-        [MICHAEL_IDS.ABOUT_TONIGHT_REPLY]: {},
+        [MICHAEL_IDS.ABOUT_TONIGHT_REPLY]: { finished: true },
+      },
+    },
+    [MESSAGE_CONTACT_NAME.ZARA]: {
+      routes: {
+        [ZARA_ROUTE_IDS.I_AM_BEING_HARASSED]: { finished: true },
       },
     },
   },

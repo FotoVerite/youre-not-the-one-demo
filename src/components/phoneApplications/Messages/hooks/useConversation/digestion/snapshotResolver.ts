@@ -1,15 +1,22 @@
 import { Skia } from "@shopify/react-native-skia";
 import { getImageFromFs } from "src/utility/filesystem";
 
-import { DigestedConversationListItem } from "./types";
-import { MESSAGE_CONTENT } from "../../contentWithMetaTypes";
+import { DigestedConversationListItem, MessagePayloadType } from "./types";
+import {
+  MESSAGE_CONTENT,
+  isBackgroundSnapshot,
+  isContentWithMeta,
+  isSnapshot,
+} from "../../contentWithMetaTypes";
+import { produce } from "immer";
 
 type SnapshotResolverType = {
   offset: number;
   arr: DigestedConversationListItem[];
 };
+
 export const resolveSnapshots = async (
-  digestedExchanges: DigestedConversationListItem[],
+  digestedExchanges: DigestedConversationListItem[]
 ) => {
   const resolver = new Promise<SnapshotResolverType>((resolve, reject) => {
     resolve({
@@ -19,7 +26,7 @@ export const resolveSnapshots = async (
   });
   const resolved = await digestedExchanges.reduce(
     resolveSnapshotAndUpdateOffset,
-    resolver,
+    resolver
   );
   return resolved.arr;
 };
@@ -29,7 +36,7 @@ const resolveSnapshotAndUpdateOffset = async (
     offset: number;
     arr: DigestedConversationListItem[];
   }>,
-  item: DigestedConversationListItem,
+  item: DigestedConversationListItem
 ) => {
   const acc = await memo;
   if (
@@ -46,7 +53,7 @@ const resolveSnapshotAndUpdateOffset = async (
       return acc;
     }
     const image = Skia.Image.MakeImageFromEncoded(
-      Skia.Data.fromBase64(base64String),
+      Skia.Data.fromBase64(base64String)
     );
     if (!image) {
       acc.arr.push(item);
@@ -61,3 +68,42 @@ const resolveSnapshotAndUpdateOffset = async (
   acc.arr.push(item);
   return acc;
 };
+
+export const resolveSnapshotPayload =
+  (width: number) =>
+  async (memo: Promise<MessagePayloadType[]>, item: MessagePayloadType) => {
+    const acc = await memo;
+    if (!isBackgroundSnapshot(item.messageContent)) {
+      acc.push(item);
+      return acc;
+    }
+    const base64String = await getImageFromFs(
+      item.messageContent.content.filename
+    );
+    if (!base64String) {
+      acc.push(item);
+      return acc;
+    }
+    const image = Skia.Image.MakeImageFromEncoded(
+      Skia.Data.fromBase64(base64String)
+    );
+
+    if (!image) {
+      acc.push(item);
+      return acc;
+    }
+    const mergedItem = produce(item, (draft) => {
+      if (isContentWithMeta(draft.messageContent)) {
+        const content = draft.messageContent.content as {
+          filename: string;
+          backup: string;
+        };
+        draft.messageContent.content = {
+          ...content,
+          ...{ image },
+        };
+      }
+    });
+    acc.push(mergedItem);
+    return acc;
+  };

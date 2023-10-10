@@ -12,11 +12,19 @@ export const useSnapshotResolver = (
   content: ImageDigestionPropsType,
   dispatch: (action: ConversationReducerActionsType) => void,
   ID: string,
-  width: number,
+  width: number
 ) => {
   const context = useSnapshotContext();
   const { image, setTakeSnapShot } = context;
   const skImage = useRef<SkImage | undefined>(content.image);
+  useEffect(() => {
+    if (!skImage.current && !image) {
+      setTakeSnapShot({
+        filename: content.filename,
+        type: SNAPSHOT_TYPES.WITH_INDICATOR,
+      });
+    }
+  }, [content.filename, image, setTakeSnapShot]);
 
   useEffect(() => {
     if (!skImage.current && !image) {

@@ -55,23 +55,23 @@ export const convertMessageToString = (message: MessageContentType) => {
 
 export const determineLoglineAndTimeOfLastMessage = (
   conversation: ConversationFileType,
-  events: AppEventsType,
+  events: AppEventsType
 ) => {
   const routes = Object.entries(
-    events.Messages[conversation.name].routes,
+    events.Messages[conversation.name].routes
   ).filter(([, event]) => event.logline);
 
   if (routes.length === 0) {
     const lastExchange = conversation.exchanges.slice(-1)[0];
     return {
-      time: conversation.exchanges.slice(-1)[0].time,
+      time: lastExchange.time,
       logline: convertMessageToString(
-        getLastMessageFromExchanges(lastExchange.exchanges),
+        getLastMessageFromExchanges(lastExchange.exchanges)
       ),
     };
   }
   const [, event] = routes.sort(([, a], [, b]) =>
-    new Date(a.updatedAt) > new Date(b.updatedAt) ? -1 : 1,
+    new Date(a.updatedAt) > new Date(b.updatedAt) ? -1 : 1
   )[0];
 
   return { time: event.updatedAt, logline: event.logline };

@@ -2,6 +2,7 @@ import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/con
 import { ChoosableRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
 
 import { ZARA_ROUTE_IDS } from "./routes";
+import { MICHAEL_IDS } from "../../michael/routes/routes";
 
 export enum ZARA_I_DONT_FEEL_SECURE_OPTIONS {
   A = "I wish I felt secure with Michael.",
@@ -15,9 +16,9 @@ export const i_dont_feel_secure: ChoosableRouteType = {
   id: ZARA_ROUTE_IDS.I_DONT_FEEL_SECURE,
   options: Object.values(OPTIONS),
   conditions: {
-    [MESSAGE_CONTACT_NAME.ZARA]: {
+    [MESSAGE_CONTACT_NAME.MICHAEL]: {
       routes: {
-        [ZARA_ROUTE_IDS.CONTACT_CONVERSATION]: {},
+        [MICHAEL_IDS.ABOUT_TONIGHT_REPLY]: { finished: true },
       },
     },
   },

@@ -2,6 +2,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 import { RouteConditionsType } from "./routes/types";
 import { MESSAGE_CONTACT_NAME } from "../constants";
+import { SkImage } from "@shopify/react-native-skia";
 
 export enum MESSAGE_CONTENT {
   EMOJI = "emoji",
@@ -21,6 +22,7 @@ export enum EFFECT_TYPE {
   GLITCH,
   LOGLINE_REPLACEMENT,
   SNAPSHOT,
+  BACKGROUND_SNAPSHOT,
 }
 
 export type MessageEffectType = {
@@ -78,7 +80,7 @@ export interface SnapshotContentWithMeta extends AbstractContentWithMetaType {
 export interface BackgroundSnapshotContentWithMeta
   extends AbstractContentWithMetaType {
   type: MESSAGE_CONTENT.BACKGROUND_SNAPSHOT;
-  content: { backup: string; filename: string };
+  content: { backup: string; filename: string; image?: SkImage };
 }
 
 export interface VCardContentWithMeta extends AbstractContentWithMetaType {
@@ -96,7 +98,27 @@ export type ContentWithMetaType =
   | VCardContentWithMeta;
 
 export const isContentWithMeta = (
-  content: ContentWithMetaType | string,
+  content: ContentWithMetaType | string
 ): content is ContentWithMetaType => {
   return (content as ContentWithMetaType).type !== undefined;
+};
+
+const SNAPSHOT_TYPES = [
+  MESSAGE_CONTENT.SNAPSHOT,
+  MESSAGE_CONTENT.BACKGROUND_SNAPSHOT,
+];
+
+export const isSnapshot = (
+  content: ContentWithMetaType | string
+): content is BackgroundSnapshotContentWithMeta | SnapshotContentWithMeta => {
+  return isContentWithMeta(content) && SNAPSHOT_TYPES.includes(content.type);
+};
+
+export const isBackgroundSnapshot = (
+  content: ContentWithMetaType | string
+): content is BackgroundSnapshotContentWithMeta | SnapshotContentWithMeta => {
+  return (
+    isContentWithMeta(content) &&
+    content.type === MESSAGE_CONTENT.BACKGROUND_SNAPSHOT
+  );
 };

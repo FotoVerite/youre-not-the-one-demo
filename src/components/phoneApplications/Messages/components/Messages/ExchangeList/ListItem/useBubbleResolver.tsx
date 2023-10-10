@@ -8,9 +8,9 @@ import { SkSnapshotBubble } from "./SkBubbles/SkSnapshotBubble";
 import { SkStringBubble } from "./SkBubbles/SkStringBubble";
 import { SkVcardBubble } from "./SkBubbles/SkVcardBubble";
 import { TimeStamp } from "./Timestamp";
-import { ConversationShowListItem } from "./types";
+import { ExchangeListItemType } from "./types";
 
-const useBubbleResolver = (props: ConversationShowListItem) => {
+const useBubbleResolver = (props: ExchangeListItemType) => {
   switch (props.type) {
     case MESSAGE_CONTENT.TIME:
       return <TimeStamp content={props.content} height={props.height} />;
@@ -35,6 +35,10 @@ const useBubbleResolver = (props: ConversationShowListItem) => {
     case MESSAGE_CONTENT.NUMBER:
       return <SkNumberBubble {...props} />;
     case MESSAGE_CONTENT.SNAPSHOT: {
+      const { scrollHandler, scrollRef, ...propsWithoutScroll } = props;
+      return <SkSnapshotBubble {...propsWithoutScroll} />;
+    }
+    case MESSAGE_CONTENT.BACKGROUND_SNAPSHOT: {
       const { scrollHandler, scrollRef, ...propsWithoutScroll } = props;
       return <SkSnapshotBubble {...propsWithoutScroll} />;
     }

@@ -14,7 +14,7 @@ const _convertibleToBase64 = (file: string | SkImage): file is SkImage => {
 export const writeToFile = async (
   dir: string,
   file: string | SkImage,
-  fileName: string,
+  fileName: string
 ) => {
   await ensureDirExists(dir);
   if (_convertibleToBase64(file)) {
@@ -23,7 +23,7 @@ export const writeToFile = async (
       file.encodeToBase64(),
       {
         encoding: FileSystem.EncodingType.Base64,
-      },
+      }
     );
   } else {
     await FileSystem.writeAsStringAsync(getPath(dir, fileName), file, {
@@ -55,7 +55,7 @@ export const getImageFromFs = async (filename: string) => {
   const path = getPath(dir, filename);
   const file = await FileSystem.getInfoAsync(path);
   if (!file.exists) {
-    LOG(LOG_COLORS.FgRed, `Image cannot be found using backup`);
+    LOG(LOG_COLORS.FgRed, `Image ${filename} cannot be found using backup`);
     return undefined;
   } else {
     return FileSystem.readAsStringAsync(path, {

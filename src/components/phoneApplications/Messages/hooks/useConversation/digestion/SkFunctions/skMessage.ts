@@ -16,6 +16,7 @@ import {
 } from "../../../contentWithMetaTypes";
 import { SkItemConfigurationType, BubbleItemType } from "../types";
 import { BUBBLE_PADDING } from "../utility";
+import { LOG, LOG_COLORS } from "src/utility/logger";
 
 type CalculationsType = {
   height: number;
@@ -33,7 +34,7 @@ export const SkMessage = (
   message: ContentWithMetaType,
   name: MESSAGE_CONTACT_NAME,
   isLastInExchange: boolean,
-  timeStamp?: string,
+  timeStamp?: string
 ) => {
   const DEFAULT_BOTTOM_PADDING = 4;
   const BOTTOM_PADDING_FOR_LAST_IN_BLOCK = 8;
@@ -45,9 +46,8 @@ export const SkMessage = (
     message,
     width,
     addressee,
-    font,
+    font
   );
-
   const skItem = {
     ID: Crypto.randomUUID(),
     alignItems: addressee ? "flex-start" : "flex-end",
@@ -84,7 +84,7 @@ const calculateWidthHeightAndContent = (
   message: ContentWithMetaType,
   width: number,
   addressee: boolean,
-  font: SkFont,
+  font: SkFont
 ): CalculationsType => {
   const itemWidth = addressee ? width * 0.7 - 30 : width * 0.7;
   switch (message.type) {
@@ -102,16 +102,32 @@ const calculateWidthHeightAndContent = (
         content: message.content,
         cursorVector: { x: itemWidth + 2, y: 0 },
       };
-    case MESSAGE_CONTENT.BACKGROUND_SNAPSHOT:
+    case MESSAGE_CONTENT.BACKGROUND_SNAPSHOT: {
+      const image = message.content.image;
+      if (!image) {
+        LOG(
+          LOG_COLORS.BgRed,
+          `IMAGE NOT FOUND FOR THIS BACKGROUND SNAP ${message.content.filename}`
+        );
+        return {
+          width: 0,
+          height: 0,
+          content: "",
+          cursorVector: { x: 0, y: 0 },
+        };
+      }
+      const aspectRation = image.height() / image.width();
+      const imageHeight = itemWidth * aspectRation;
       return {
         width: itemWidth,
-        height: 1000,
+        height: imageHeight,
         content: message.content,
         cursorVector: { x: itemWidth + 2, y: 0 },
       };
+    }
     case MESSAGE_CONTENT.IMAGE: {
       const imageDimensions = Image.resolveAssetSource(
-        message.content as ImageSourcePropType,
+        message.content as ImageSourcePropType
       );
       const aspectRation = imageDimensions.height / imageDimensions.width;
       const imageHeight = itemWidth * aspectRation;
@@ -136,7 +152,7 @@ const calculateWidthHeightAndContent = (
           font,
           message.content,
           width,
-          addressee,
+          addressee
         );
       return {
         width: boxWidth,
@@ -151,7 +167,7 @@ const calculateWidthHeightAndContent = (
         font,
         message.content,
         width,
-        addressee,
+        addressee
       );
       return {
         width: glyphWidth,

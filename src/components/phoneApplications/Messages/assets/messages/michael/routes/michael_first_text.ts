@@ -1,10 +1,19 @@
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
 
 import { MICHAEL_IDS } from "./routes";
+import { ZARA_ROUTE_IDS } from "../../zara/routes/routes";
 
 export const michael_first_text = {
   id: MICHAEL_IDS.FIRST_TEXT,
   delay: 7500,
+  conditions: {
+    [MESSAGE_CONTACT_NAME.ZARA]: {
+      routes: {
+        [ZARA_ROUTE_IDS.I_FELL_FOR_SPAM]: { finished: true },
+        [ZARA_ROUTE_IDS.MY_BRO_IS_BEING_SO_ANNOYING]: { finished: true },
+      },
+    },
+  },
   exchanges: [
     {
       name: MESSAGE_CONTACT_NAME.MICHAEL,

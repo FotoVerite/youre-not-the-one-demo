@@ -13,27 +13,30 @@ export const createCleanupPayload = (
   draft: DigestedConversationWithStartedRoute,
   forewordToIndex: number,
   finished: boolean,
-  logline: string,
+  logline?: string
 ) => {
+  const payload = {
+    routeId: draft.activeRoute.id,
+    name: draft.name,
+    atIndex: forewordToIndex,
+    finished,
+    messageTimestamps: new Array(
+      forewordToIndex - draft.activeRoute.indexAt
+    ).fill(new Date().toISOString()),
+  } as EventPropsPayloadType;
+  if (logline) {
+    payload.logline = logline;
+  }
   return {
     type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_UPDATE,
-    payload: {
-      routeId: draft.activeRoute.id,
-      name: draft.name,
-      atIndex: forewordToIndex,
-      finished,
-      logline,
-      messageTimestamps: new Array(
-        forewordToIndex - draft.activeRoute.indexAt,
-      ).fill(new Date().toISOString()),
-    },
+    payload,
   };
 };
 
 export const routeStartedPayload = (
   draft: DigestedConversationType,
   route: StartedRouteType,
-  logline: string,
+  logline: string
 ) => ({
   type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_CREATE,
   payload: {
@@ -48,7 +51,7 @@ export const routeStartedPayload = (
 
 export const routeUpdatePayload = (
   draft: DigestedConversationWithStartedRoute,
-  logline: string,
+  logline: string
 ) => ({
   type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_UPDATE,
   payload: {
@@ -66,7 +69,7 @@ export type RouteOptionalProps = {
 };
 export const routeFinishedPayload = (
   draft: DigestedConversationWithStartedRoute,
-  options?: RouteOptionalProps,
+  options?: RouteOptionalProps
 ) => {
   const payload = {
     routeId: draft.activeRoute.id,

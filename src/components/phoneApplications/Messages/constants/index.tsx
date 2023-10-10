@@ -13,10 +13,15 @@ const defaults = {
   colors: ["#6b6b6d", "#363243"],
 };
 
+export enum SNAPSHOT_NAMES {
+  SERIAL_SNAPSHOT = "SERIAL_SNAPSHOT",
+}
+
 export enum MESSAGE_CONTACT_NAME {
   ARIAL = "Arial",
   ALICE = "Alice",
   BASE = "",
+  CAT_FACTS = "KTHXBYE",
   CHRIS = "Chris",
   CLAY = "Clay",
   CUSTOMER_SERVICE = "401112",
@@ -46,6 +51,7 @@ export const MESSAGE_CONTACT_INFO: {
   [key in MESSAGE_CONTACT_NAME]: InfoType;
 } = {
   "": defaults,
+  [MESSAGE_CONTACT_NAME.CAT_FACTS]: defaults,
   [MESSAGE_CONTACT_NAME.SPAM1]: defaults,
   //   Arial: { avatar: arialAvatar, colors: ["#dbaf48", "#cdc8bb"] },
   //   Alice: { avatar: aliceAvatar, colors: ["#d0bd28", "#cdc8bb"] },

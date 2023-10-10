@@ -12,36 +12,37 @@ import { resolveSnapshots } from "./snapshotResolver";
 import { BaseConfigType } from "./types";
 import { findStartableRoute } from "../../routes/available";
 import { removeMessagesThatConditionsHaveNotBeenMet } from "../../routes/conditionals";
-import { isStarted } from "../../routes/guards";
+import { isActiveChoosableRoute, isStarted } from "../../routes/guards";
 import { ConversationType } from "../../useConversations/types";
 
 export const digestConversation = async (
   config: BaseConfigType,
   conversation: ConversationType,
-  events: AppEventsType,
+  events: AppEventsType
 ) => {
   const [available, seen, startedRoute] = convertRoutesToDigestedRoutes(
     conversation,
-    events.Messages,
+    events.Messages
   );
   if (startedRoute) {
     startedRoute.pending = removeMessagesThatConditionsHaveNotBeenMet(
       events,
-      startedRoute.pending,
+      startedRoute.pending
     );
   }
   const { exchanges, ...conversationProps } = conversation;
   const activeRoute =
     startedRoute ||
-    findStartableRoute(
+    (await findStartableRoute(
+      config.width,
       conversation.name,
       Object.entries(available).map(([id, route]) => route),
-      events,
-    );
+      events
+    ));
   const digestedExchanges = digestExchanges(
     config,
     exchanges,
-    conversationProps.group,
+    conversationProps.group
   );
 
   const digested = {
@@ -59,7 +60,7 @@ export const digestConversation = async (
       digested.exchanges,
       digested.activeRoute,
       digested.group,
-      config,
+      config
     );
   }
 
@@ -68,7 +69,7 @@ export const digestConversation = async (
     digested.exchanges,
     config.width,
     digested.exchanges.slice(-1)[0].timestamp,
-    digested.leaveAsDelivered,
+    digested.leaveAsDelivered
   );
   return digested;
 };

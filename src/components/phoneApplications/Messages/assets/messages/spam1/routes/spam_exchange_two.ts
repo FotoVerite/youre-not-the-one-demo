@@ -22,7 +22,7 @@ export const spam1_exchange_two: ChoosableRouteType = {
   conditions: {
     [SPAM1]: {
       routes: {
-        [SPAM1_IDS.EXCHANGE_ONE]: {},
+        [SPAM1_IDS.EXCHANGE_ONE]: { finished: true },
       },
     },
   },

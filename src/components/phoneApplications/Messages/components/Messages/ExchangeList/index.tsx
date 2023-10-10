@@ -1,6 +1,7 @@
 import { DigestedConversationType } from "@Components/phoneApplications/Messages/hooks/useConversation/digestion/types";
 import { ConversationDispatchType } from "@Components/phoneApplications/Messages/hooks/useConversation/types";
 import React, { FC } from "react";
+import { View } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
 
 import List from "./List";
@@ -14,7 +15,7 @@ const ExchangeList: FC<
 > = ({ conversation, dispatch }) => {
   const translateX = useSharedValue(0);
   return (
-    <>
+    <View key={conversation.name} style={{ flex: 1 }}>
       <TimeStampPan translateX={translateX}>
         <List
           blockable={conversation.blockable === true}
@@ -24,7 +25,7 @@ const ExchangeList: FC<
         />
       </TimeStampPan>
       <RouteChooser conversation={conversation} dispatch={dispatch} />
-    </>
+    </View>
   );
 };
 

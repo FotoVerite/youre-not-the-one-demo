@@ -7,7 +7,6 @@ import { Canvas, Group, Image as SkiaImage } from "@shopify/react-native-skia";
 import React, { FC, useEffect } from "react";
 import { TouchableWithoutFeedback, View } from "react-native";
 
-import { useSnapshotResolver } from "./useResolveSnapshot";
 import { SkBubbleType } from "../types";
 import { useBubbleClip } from "../useBubbleClip";
 

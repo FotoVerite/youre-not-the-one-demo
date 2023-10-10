@@ -32,7 +32,7 @@ export const spam1_exchange_one: ChoosableRouteType = {
   conditions: {
     [SPAM1]: {
       routes: {
-        [SPAM1_IDS.SPAM_INTRODUCTION]: {},
+        [SPAM1_IDS.SPAM_INTRODUCTION]: {finished: true},
       },
     },
   },

@@ -1,6 +1,7 @@
 import ConversationEmitter, {
   CONVERSATION_EMITTER_EVENTS,
 } from "@Components/phoneApplications/Messages/emitters";
+import { formatConversationTime } from "@Components/phoneApplications/Messages/hooks/useConversations/determineLogLine";
 import { ConversationListType } from "@Components/phoneApplications/Messages/hooks/useConversations/types";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import React, { FC, memo } from "react";
@@ -40,7 +41,7 @@ const ConversationListItem: FC<Omit<ConversationListType, "tags">> = ({
               {name}
             </Text>
             <Row style={styles.dateRow}>
-              <Text>{logline_timestamp}</Text>
+              <Text>{formatConversationTime(logline_timestamp)}</Text>
               <FontAwesome
                 name="chevron-right"
                 color="gray"

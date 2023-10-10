@@ -1,7 +1,14 @@
-import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
+import {
+  MESSAGE_CONTACT_NAME,
+  SNAPSHOT_NAMES,
+} from "@Components/phoneApplications/Messages/constants";
 import { ChoosableRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
 
 import { SPAM1_IDS } from "./routes";
+import {
+  EFFECT_TYPE,
+  MESSAGE_CONTENT,
+} from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
 
 export enum SPAM1_WHAT_IS_WITH_THIS_SERIAL_STALKER_BULLSHIT_OPTIONS {
   A = "What the fuck are you on?",
@@ -37,7 +44,16 @@ export const what_is_with_this_serial_killer_bullshit: ChoosableRouteType = {
       },
       {
         name: SELF,
-        messages: ["What is with this serial stalker bullshit?!"],
+        messages: [
+          {
+            type: MESSAGE_CONTENT.STRING,
+            content: "What is with this serial stalker bullshit?!",
+            effect: {
+              type: EFFECT_TYPE.BACKGROUND_SNAPSHOT,
+              data: { filename: SNAPSHOT_NAMES.SERIAL_SNAPSHOT },
+            },
+          },
+        ],
       },
       {
         name: SPAM1,

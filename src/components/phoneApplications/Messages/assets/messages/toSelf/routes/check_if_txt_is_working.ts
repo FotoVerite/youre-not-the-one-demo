@@ -1,4 +1,7 @@
-import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
+import {
+  MESSAGE_CONTACT_NAME,
+  SNAPSHOT_NAMES,
+} from "@Components/phoneApplications/Messages/constants";
 import {
   EFFECT_TYPE,
   MESSAGE_CONTENT,

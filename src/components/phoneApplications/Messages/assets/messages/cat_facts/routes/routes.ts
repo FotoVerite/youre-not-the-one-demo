@@ -1,0 +1,3 @@
+export enum CAT_FACT_IDS {
+  FIRST_NOTIFICATION,
+}

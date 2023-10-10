@@ -27,12 +27,12 @@ import {
 
 export const useConversationNotifier = (
   conversations: ConversationFileType[],
-  activeConversations: MESSAGE_CONTACT_NAME[],
+  activeConversations: MESSAGE_CONTACT_NAME[]
 ) => {
   const eventsContext = useAppEventsContext();
   const { state: events, dispatch } = eventsContext;
   const [routes, setRoutes] = useState(
-    convertConversationsRoutes(conversations, events),
+    convertConversationsRoutes(conversations, events)
   );
 
   const [queue, setQueue] = useState<GenericRouteType>();
@@ -41,10 +41,10 @@ export const useConversationNotifier = (
     (route: GenericRouteType) => {
       const conditionalPayloads = removeMessagesThatConditionsHaveNotBeenMet(
         events,
-        convertBlockToMessagePayloadType(route.exchanges),
+        convertBlockToMessagePayloadType(route.exchanges)
       );
       const message = convertMessageToString(
-        conditionalPayloads.slice(-1)[0].messageContent,
+        conditionalPayloads.slice(-1)[0].messageContent
       );
       const notification = {
         ID: `${route.name}-${route.id}`,
@@ -61,6 +61,9 @@ export const useConversationNotifier = (
         payload: {
           name: route.name,
           routeId: route.id.toString(),
+          messageTimestamps: new Array(conditionalPayloads.length).fill(
+            new Date().toISOString()
+          ),
           logline: message,
           finished: !activeConversations.includes(route.name),
           notification: activeConversations.includes(route.name)
@@ -69,12 +72,12 @@ export const useConversationNotifier = (
         },
       });
     },
-    [activeConversations, dispatch, events],
+    [activeConversations, dispatch, events]
   );
 
   const toNotify = useMemo(() => {
     return Object.values(routes).filter((route) =>
-      messageAppConditionsMet(events.Messages, route.conditions),
+      messageAppConditionsMet(events.Messages, route.conditions)
     );
   }, [events.Messages, routes]);
 
@@ -88,7 +91,7 @@ export const useConversationNotifier = (
         },
       });
     },
-    [dispatch],
+    [dispatch]
   );
 
   const notify = useCallback(
@@ -99,7 +102,7 @@ export const useConversationNotifier = (
       }
       dispatchNotification(route);
     },
-    [dispatchChoosable, dispatchNotification],
+    [dispatchChoosable, dispatchNotification]
   );
 
   useEffect(() => {
@@ -108,14 +111,14 @@ export const useConversationNotifier = (
         toNotify.map(async (route) => {
           await delayFor(route.delay || 0);
           return setQueue(route);
-        }),
+        })
       );
     };
     setRoutes(
       produce((draft) => {
         toNotify.forEach((route) => delete draft[`${route.name}-${route.id}`]);
         return draft;
-      }),
+      })
     );
     sendToQueue();
   }, [toNotify]);
@@ -133,7 +136,7 @@ type GenericRouteType = {
   name: MESSAGE_CONTACT_NAME;
   id: string;
   type: ROUTE_TYPE;
-  conditions?: RouteConditionsType;
+  conditions?: RouteConditionsType | RouteConditionsType[];
   delay?: number;
   exchanges: ExchangeBlockType[];
 };
@@ -143,7 +146,7 @@ type GenericRoutesType = {
 
 const convertConversationsRoutes = (
   conversations: ConversationFileType[],
-  events: AppEventsType,
+  events: AppEventsType
 ) => {
   return conversations.reduce((ret, conversation) => {
     const routes = [
@@ -153,7 +156,7 @@ const convertConversationsRoutes = (
     const convertedRoutes = findAvailableRoutes(
       conversation.name,
       routes,
-      events,
+      events
     );
     convertedRoutes.reduce((ret, route) => {
       const routeID = `${conversation.name}-${route.id.toString()}`;

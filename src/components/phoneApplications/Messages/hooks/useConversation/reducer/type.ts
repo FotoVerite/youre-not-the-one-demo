@@ -5,6 +5,11 @@ import {
   DigestedConversationType,
   DigestedMessageProps,
 } from "../digestion/types";
+import {
+  ActiveChoosableRoute,
+  ActiveNotificationRoute,
+  RouteConditionsType,
+} from "../../routes/types";
 
 export enum CONVERSATION_REDUCER_ACTIONS {
   ADD_CONVERSATION,
@@ -40,7 +45,15 @@ export type DigestConversationActionType = {
   };
 };
 
-export type RefreshAvailablePayloadType = AppEventsType;
+export type RefreshAvailablePayloadType = {
+  activeRoute: undefined | ActiveChoosableRoute | ActiveNotificationRoute;
+  blockable:
+    | boolean
+    | {
+        conditions: RouteConditionsType;
+      }
+    | undefined;
+};
 type RefreshAvailableRouteActionType = {
   type: CONVERSATION_REDUCER_ACTIONS.REFRESH;
   payload: RefreshAvailablePayloadType;

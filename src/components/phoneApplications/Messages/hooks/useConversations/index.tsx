@@ -1,6 +1,7 @@
 import { useAppEventsContext } from "@Components/appEvents/context";
 import { AppEventsType } from "@Components/appEvents/reducer/types";
 import { produce } from "immer";
+import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 
 import {
@@ -12,6 +13,7 @@ import {
   ConversationListType,
   ConversationRecords,
 } from "./types";
+import { cat_facts } from "../../assets/messages/cat_facts";
 import { lenny } from "../../assets/messages/lenny";
 import { michael } from "../../assets/messages/michael";
 import { spam1 } from "../../assets/messages/spam1";
@@ -23,6 +25,7 @@ import { messageAppConditionsMet } from "../routes/conditionals";
 
 const _conversations: ConversationFileType[] = [
   toSelf,
+  cat_facts,
   zara,
   spam1,
   michael,
@@ -37,7 +40,7 @@ const viewableConversationsFilter =
 
 const conversationHasExchange = (
   conversation: ConversationFileType,
-  events: AppEventsType,
+  events: AppEventsType
 ) => {
   const routes = events.Messages[conversation.name].routes;
   const hasViewableRoute = Object.values(routes).filter((r) => r.logline);
@@ -46,20 +49,14 @@ const conversationHasExchange = (
 
 export const sortConversations =
   () => (c1: ConversationListType, c2: ConversationListType) => {
-    const date1 = c1.logline_timestamp;
-    const date2 = c2.logline_timestamp;
-    if (date1 < date2) {
-      return 1;
-    }
-    if (date1 > date2) {
-      return -1;
-    }
-    return 0;
+    const date1 = moment(c1.logline_timestamp);
+    const date2 = moment(c2.logline_timestamp);
+    return date1 < date2 ? 1 : -1;
   };
 
 const convertFromConversationFromFileToListType = (
   conversation: ConversationFileType,
-  events: AppEventsType,
+  events: AppEventsType
 ): ConversationListType => {
   const {
     blockable,
@@ -74,15 +71,14 @@ const convertFromConversationFromFileToListType = (
   const hasAvailableRoute = hasStartableRoute(props.name, routes || [], events);
   const { time, logline } = determineLoglineAndTimeOfLastMessage(
     conversation,
-    events,
+    events
   );
-
   return {
     ...props,
     ...{
       hasAvailableRoute,
       logline_content: logline,
-      logline_timestamp: formatConversationTime(time),
+      logline_timestamp: time,
     },
   };
 };
@@ -91,7 +87,7 @@ export const useConversations = (override?: ConversationFileType[]) => {
   const eventsContext = useAppEventsContext();
   const events = eventsContext.state;
   const [conversations, setConversations] = useState(
-    override || _conversations,
+    override || _conversations
   );
   const viewableConversations = useMemo(() => {
     return produce(conversations, (draft) => {
@@ -118,12 +114,12 @@ export const useConversations = (override?: ConversationFileType[]) => {
         produce(conversations, (draft) => {
           determinedBlockedConversations.forEach((name) => {
             const index = draft.findIndex(
-              (_conversation) => _conversation.name === name,
+              (_conversation) => _conversation.name === name
             );
             draft[index].blocked = true;
           });
           return draft;
-        }),
+        })
       );
     }
   }, [conversations, determinedBlockedConversations]);
@@ -133,7 +129,6 @@ export const useConversations = (override?: ConversationFileType[]) => {
       return { ...result, [conversation.name]: conversation };
     }, {} as ConversationRecords);
   }, [viewableConversations]);
-
   return [
     viewableConversations,
     displayedConversations,

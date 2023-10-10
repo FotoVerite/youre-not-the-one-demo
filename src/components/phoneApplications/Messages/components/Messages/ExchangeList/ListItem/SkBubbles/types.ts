@@ -17,6 +17,7 @@ export type SkBubbleType = Pick<
   | "effect"
   | "ID"
   | "isLastInExchange"
+  | "type"
 > & {
   setAsResolved: (isResolved: boolean) => void;
 } & ConversationDispatchType;

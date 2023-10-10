@@ -4,6 +4,7 @@ import { NotificationRouteType } from "@Components/phoneApplications/Messages/ho
 import { MICHAEL_IDS } from "../../../michael/routes/routes";
 import { SPAM1_IDS } from "../routes";
 import { SPAM1_SECOND_EXCHANGE_OPTIONS } from "../spam_exchange_two";
+import { ZARA_ROUTE_IDS } from "../../../zara/routes/routes";
 
 export const sent_images: NotificationRouteType = {
   id: SPAM1_IDS.DID_SEND_IMAGES_NOTIFICATION,
@@ -37,6 +38,9 @@ export const did_not_send_images: NotificationRouteType = {
     },
     [MESSAGE_CONTACT_NAME.MICHAEL]: {
       routes: { [MICHAEL_IDS.ABOUT_TONIGHT_REPLY]: { finished: true } },
+    },
+    [MESSAGE_CONTACT_NAME.ZARA]: {
+      routes: { [ZARA_ROUTE_IDS.I_DONT_FEEL_SECURE]: { finished: true } },
     },
   },
   exchanges: [

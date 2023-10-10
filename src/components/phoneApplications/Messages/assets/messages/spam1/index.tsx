@@ -22,13 +22,6 @@ const NAME = MESSAGE_CONTACT_NAME.SPAM1;
 export const spam1: ConversationFileType = {
   name: NAME,
   tags: [NAME],
-  conditions: {
-    [MESSAGE_CONTACT_NAME.ZARA]: {
-      routes: {
-        [ZARA_ROUTE_IDS.YOUR_NEW_VIDEO]: {},
-      },
-    },
-  },
   // effects: [
   //   {
   //     type: EFFECT_TYPE.LOGLINE_REPLACEMENT,

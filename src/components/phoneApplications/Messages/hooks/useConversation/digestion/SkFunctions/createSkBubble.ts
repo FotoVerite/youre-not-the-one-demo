@@ -14,7 +14,7 @@ import { SkItemConfigurationType, MessagePayloadType } from "../types";
 export const createSkBubbleFromExchange = (
   itemConfiguration: SkItemConfigurationType,
   exchange: ExchangeBlockType,
-  index: number,
+  index: number
 ) => {
   const message = exchange.messages[index];
   const lastInExchange = index === exchange.messages.length - 1;
@@ -22,7 +22,7 @@ export const createSkBubbleFromExchange = (
     itemConfiguration,
     message,
     exchange.name,
-    lastInExchange,
+    lastInExchange
   );
 };
 
@@ -30,7 +30,7 @@ export const createSkBubbleFromMessage = (
   itemConfiguration: SkItemConfigurationType,
   message: MessageContentType,
   name: MESSAGE_CONTACT_NAME,
-  lastInExchange: boolean,
+  lastInExchange: boolean
 ) => {
   if (!isContentWithMeta(message)) {
     message = { type: MESSAGE_CONTENT.STRING, content: message };
@@ -40,7 +40,7 @@ export const createSkBubbleFromMessage = (
 
 export const createSkBubbleFromPayload = (
   itemConfiguration: SkItemConfigurationType,
-  payload: MessagePayloadType,
+  payload: MessagePayloadType
 ) => {
   const { name, isLastInExchange, timestamp } = payload;
   let message = payload.messageContent;
@@ -55,6 +55,6 @@ export const createSkBubbleFromPayload = (
     message,
     name,
     isLastInExchange,
-    timestamp,
+    timestamp
   );
 };

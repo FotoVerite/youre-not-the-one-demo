@@ -1,10 +1,12 @@
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
+import { EFFECT_TYPE } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
 import {
   isDigestedBubble,
   isDigestedLabel,
 } from "@Components/phoneApplications/Messages/hooks/useConversation/digestion/types";
-import { FC, memo, useCallback, useState } from "react";
+import { FC, memo, useCallback, useEffect, useState } from "react";
 
+import { useEffectsResolver } from "./EffectsResolver/useBackgroundSnapshot";
 import { ExchangeWrapper } from "./ExchangeWrapper";
 import SentMessageContainer from "./SentMessageContainer";
 import { TypingContainer } from "./TypingContainer";
@@ -18,7 +20,7 @@ const ListItem: FC<ExchangeListItemType> = (props) => {
     (isResolved: boolean) => {
       _setAsResolved(isResolved);
     },
-    [_setAsResolved],
+    [_setAsResolved]
   );
   const item = useBubbleResolver({ ...props, setAsResolved });
   let bubble: React.JSX.Element;
@@ -49,6 +51,7 @@ const ListItem: FC<ExchangeListItemType> = (props) => {
       </ExchangeWrapper>
     );
   }
+  useEffectsResolver(props, resolved);
   if (isDigestedBubble(props)) {
     if (props.name === MESSAGE_CONTACT_NAME.SELF) {
       return (

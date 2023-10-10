@@ -16,11 +16,14 @@ import {
 import ConversationEmitter, {
   CONVERSATION_EMITTER_EVENTS,
 } from "../../emitters";
+import { findStartableRoute } from "../routes/available";
 import { ConversationType } from "../useConversations/types";
+import { createActiveRoute } from "../routes/resolver";
+import { blockableConditionsMet } from "./digestion/blockable";
 
 export const useConversation = (
   width: number,
-  conversation?: ConversationType,
+  conversation?: ConversationType
 ) => {
   const { state: events, dispatch: eventsDispatch } = useAppEventsContext();
   const fontsContext = useFontsContext();
@@ -36,14 +39,14 @@ export const useConversation = (
 
   const [state, dispatch] = useReducer(
     createConversationReducer(config),
-    undefined,
+    undefined
   );
 
   const reducerResolver = useCallback(
     (action: ConversationReducerActionsType) => {
       dispatch(action);
     },
-    [dispatch],
+    [dispatch]
   );
 
   const _digestConversation = useCallback(
@@ -58,7 +61,7 @@ export const useConversation = (
         payload: digested,
       });
     },
-    [config, events],
+    [config, events]
   );
 
   useEffect(() => {
@@ -75,17 +78,38 @@ export const useConversation = (
     }
   }, [state?.eventAction, state?.name, eventsDispatch]);
 
+  // useEffect(() => {
+  //   const refreshConversation = () => {
+  //     if (!state) return;
+  //     if (state.activeRoute) return;
+  //     dispatch({
+  //       type: CONVERSATION_REDUCER_ACTIONS.REFRESH,
+  //       payload: events,
+  //     });
+  //   };
+  //   refreshConversation();
+  // }, [state, events]);
+
   useEffect(() => {
-    const refreshConversation = () => {
+    const refreshConversation = async () => {
       if (!state) return;
-      if (state.activeRoute) return;
+      const blockable = blockableConditionsMet(state, events);
+      let activeRoute;
+      if (!state.activeRoute) {
+        activeRoute = await findStartableRoute(
+          width,
+          state.name,
+          Object.values(state.availableRoutes),
+          events
+        );
+      }
       dispatch({
         type: CONVERSATION_REDUCER_ACTIONS.REFRESH,
-        payload: events,
+        payload: { blockable, activeRoute },
       });
     };
     refreshConversation();
-  }, [state, events]);
+  }, [state, events, width]);
 
   useEffect(() => {
     if (!state && cleanupAction.current) {

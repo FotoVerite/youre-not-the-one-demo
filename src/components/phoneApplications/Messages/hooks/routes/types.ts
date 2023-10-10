@@ -47,7 +47,7 @@ export type RouteConditionsType = {
 
 interface AbstractRouteType {
   id: number;
-  conditions?: RouteConditionsType;
+  conditions?: RouteConditionsType | RouteConditionsType[];
   delay?: number;
   effects?: MessageEffectType[];
 }
@@ -60,8 +60,18 @@ export interface AbstractDigestedRouteType
   type: ROUTE_TYPE;
 }
 
-export interface ChoosableRouteType extends AbstractRouteType {
+export interface DigestedRouteWithMultipleMeetableConditionsType
+  extends Omit<AbstractDigestedRouteType, "conditions"> {
+  conditions: RouteConditionsType[];
+}
+
+export type OptionsWithConditionals = {
+  conditions: RouteConditionsType;
   options: string[];
+};
+
+export interface ChoosableRouteType extends AbstractRouteType {
+  options: string[] | OptionsWithConditionals[];
   routes: { [key: string]: ExchangeBlockType[] };
 }
 
@@ -73,16 +83,25 @@ export interface NotificationRouteType extends AbstractRouteType {
 export type DigestedChoosableRouteType = AbstractDigestedRouteType & {
   type: ROUTE_TYPE.CHOOSE;
   order: number;
-  options: string[];
+  options: string[] | OptionsWithConditionals[];
+  routes: { [choice: string]: MessagePayloadType[] };
+  finished: ROUTE_STATE_TYPE.NOT_STARTED;
+};
+
+export type DigestedWithConditionalOptions = AbstractDigestedRouteType & {
+  type: ROUTE_TYPE.CHOOSE;
+  order: number;
+  options: OptionsWithConditionals[];
   routes: { [choice: string]: MessagePayloadType[] };
   finished: ROUTE_STATE_TYPE.NOT_STARTED;
 };
 
 export type ActiveChoosableRoute = Omit<
   DigestedChoosableRouteType,
-  "finished"
+  "finished" | "options"
 > & {
   finished: ROUTE_STATE_TYPE.ACTIVE;
+  options: string[];
 };
 
 export type DigestedNotificationRouteType = AbstractDigestedRouteType & {

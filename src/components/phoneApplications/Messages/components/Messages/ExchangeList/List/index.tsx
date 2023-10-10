@@ -12,16 +12,16 @@ import { theme } from "src/theme";
 
 import Footer from "../Footer";
 import ListItem from "../ListItem";
-import { ConversationShowListItem } from "../ListItem/types";
+import { ExchangeListItemType } from "../ListItem/types";
 import ListOffsetEmitter, { LIST_EMITTER_EVENTS } from "../emitters";
 
-const renderItem: ListRenderItem<ConversationShowListItem> = ({ item }) => (
+const renderItem: ListRenderItem<ExchangeListItemType> = ({ item }) => (
   <ListItem {...item} />
 );
 
 const getItemLayout = (
-  data: ArrayLike<ConversationShowListItem> | null | undefined,
-  index: number,
+  data: ArrayLike<ExchangeListItemType> | null | undefined,
+  index: number
 ) => ({
   length: data ? data[index].height + data[index].paddingBottom : 0,
   offset: data ? data[index].offset : 0,
@@ -46,7 +46,7 @@ const List: FC<{
       return {
         ...item,
         ...{ scrollRef, scrollHandler, dispatch, translateX },
-      } as ConversationShowListItem;
+      } as ExchangeListItemType;
     });
   }, [exchanges, scrollRef, scrollHandler, dispatch, translateX]);
 

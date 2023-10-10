@@ -92,6 +92,13 @@ const exchanges: ExchangeBlockType[] = [
 export const michael_about_tonight_reply: ChoosableRouteType = {
   id: MICHAEL_IDS.ABOUT_TONIGHT_REPLY,
   options: Object.values(OPTIONS),
+  conditions: {
+    [MESSAGE_CONTACT_NAME.MICHAEL]: {
+      routes: {
+        [MICHAEL_IDS.FIRST_TEXT]: { finished: true },
+      },
+    },
+  },
   routes: {
     [OPTIONS.A]: [
       {
