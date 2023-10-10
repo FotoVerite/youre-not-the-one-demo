@@ -4,6 +4,7 @@ import moment, { Moment } from "moment";
 
 import { createSkBubbleFromPayload } from "./SkFunctions/createSkBubble";
 import { createTimeStampLabel } from "./SkFunctions/createTimeStampLabel";
+import { resolveSnapshotPayload } from "./snapshotResolver";
 import {
   BaseConfigType,
   DigestedConversationListItem,
@@ -31,27 +32,59 @@ import {
   ExchangeBlockType,
 } from "../../useConversations/types";
 
-export const appendSeenRoutes = (
+export const appendSeenRoutes = async (
   digested: DigestedConversationType,
   seenRoutes: FinishedRouteType[],
   config: BaseConfigType
 ) => {
-  return seenRoutes.reduce((digestedExchanges, route) => {
-    return appendFromDigestedRoute(
-      digestedExchanges,
+  const resolver = new Promise<DigestedConversationListItem[]>(
+    (resolve, reject) => {
+      resolve(digested.exchanges as DigestedConversationListItem[]);
+    }
+  );
+  return seenRoutes.reduce(async (digestedExchanges, route) => {
+    return await appendFromDigestedRoute(
+      await digestedExchanges,
       route,
       digested.group,
       config
     );
-  }, digested.exchanges);
+  }, resolver);
 };
 
-export const appendFromDigestedRoute = (
+export const appendSeenRoute = async (
+  digested: DigestedConversationType,
+  seenRoutes: FinishedRouteType[],
+  config: BaseConfigType
+) => {
+  const resolver = new Promise<DigestedConversationListItem[]>(
+    (resolve, reject) => {
+      resolve(digested.exchanges as DigestedConversationListItem[]);
+    }
+  );
+  return seenRoutes.reduce(async (digestedExchanges, route) => {
+    return await appendFromDigestedRoute(
+      await digestedExchanges,
+      route,
+      digested.group,
+      config
+    );
+  }, resolver);
+};
+
+export const appendFromDigestedRoute = async (
   exchanges: DigestedConversationListItem[],
   route: FinishedRouteType | StartedRouteType,
   group: boolean = false,
   config: BaseConfigType
 ) => {
+  const resolver = new Promise<MessagePayloadType[]>((resolve, reject) => {
+    resolve([] as MessagePayloadType[]);
+  });
+  const resolvedPayloads = await route.exchanges.reduce(
+    resolveSnapshotPayload(config.width),
+    resolver
+  );
   const offset = getListHeight(exchanges);
   const itemConfiguration: SkItemConfigurationType = {
     font: config.font,
@@ -63,7 +96,7 @@ export const appendFromDigestedRoute = (
   return exchanges.concat(
     convertFromPayloadsToSkItems(
       itemConfiguration,
-      route.exchanges,
+      resolvedPayloads,
       route.createdAt
     )
   );

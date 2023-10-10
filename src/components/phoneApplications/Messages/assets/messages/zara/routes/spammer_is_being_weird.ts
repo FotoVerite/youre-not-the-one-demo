@@ -63,14 +63,22 @@ export const spammer_is_being_weird: ChoosableRouteType = {
       },
       {
         name: ZARA,
-        messages: ["Like spammers?"],
+        messages: ["???, why haven't you blocked them yet?"],
       },
       {
         name: SELF,
         messages: [
-          "No, it's much more directed",
-          "Much nastier shit",
-          "I've blocked them twice already",
+          {
+            type: MESSAGE_CONTENT.STRING,
+            content: "I have, doesn't change how creepy it is?",
+            conditions: { [MESSAGE_CONTACT_NAME.SPAM1]: { blocked: true } },
+          },
+          {
+            type: MESSAGE_CONTENT.STRING,
+            content:
+              "I don't know, something about it makes me worried that will escalate?",
+            conditions: { [MESSAGE_CONTACT_NAME.SPAM1]: { blocked: false } },
+          },
         ],
       },
       {

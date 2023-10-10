@@ -14,6 +14,7 @@ import Footer from "../Footer";
 import ListItem from "../ListItem";
 import { ExchangeListItemType } from "../ListItem/types";
 import ListOffsetEmitter, { LIST_EMITTER_EVENTS } from "../emitters";
+import { useInsetDimensions } from "src/utility/useInsetDimensions";
 
 const renderItem: ListRenderItem<ExchangeListItemType> = ({ item }) => (
   <ListItem {...item} />
@@ -40,6 +41,7 @@ const List: FC<{
 }> = ({ blockable, dispatch, height, exchanges, translateX }) => {
   const scrollRef = useAnimatedRef<Animated.FlatList<any>>();
   const scrollHandler = useScrollViewOffset(scrollRef as any);
+  const windowHeight = useInsetDimensions().height;
 
   const data = useMemo(() => {
     return exchanges.map((item) => {
@@ -49,6 +51,19 @@ const List: FC<{
       } as ExchangeListItemType;
     });
   }, [exchanges, scrollRef, scrollHandler, dispatch, translateX]);
+
+  const initialIndex = useMemo(() => {
+    return exchanges.reduceRight(
+      (acc, payload) => {
+        if (acc.height > 0) {
+          acc.index -= 1;
+          acc.height -= payload.height + payload.paddingBottom;
+        }
+        return acc;
+      },
+      { index: exchanges.length - 1, height: windowHeight - 500 }
+    ).index;
+  }, [exchanges, windowHeight]);
 
   const footerHeight = useSharedValue(0);
 
@@ -102,6 +117,7 @@ const List: FC<{
       scrollEventThrottle={16}
       keyExtractor={keyExtractor}
       getItemLayout={getItemLayout}
+      initialScrollIndex={Math.max(initialIndex, 0)}
     />
   );
 };

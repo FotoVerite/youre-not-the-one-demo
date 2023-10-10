@@ -74,7 +74,7 @@ export interface NumberContentWithMeta extends AbstractContentWithMetaType {
 
 export interface SnapshotContentWithMeta extends AbstractContentWithMetaType {
   type: MESSAGE_CONTENT.SNAPSHOT;
-  content: { backup: string; filename: string };
+  content: { backup: string; filename: string; image?: SkImage };
 }
 
 export interface BackgroundSnapshotContentWithMeta

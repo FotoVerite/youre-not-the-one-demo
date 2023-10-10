@@ -48,6 +48,7 @@ const resolveSnapshotAndUpdateOffset = async (
     return acc;
   } else {
     const base64String = await getImageFromFs(item.content.filename);
+
     if (!base64String) {
       acc.arr.push(item);
       return acc;
@@ -73,7 +74,7 @@ export const resolveSnapshotPayload =
   (width: number) =>
   async (memo: Promise<MessagePayloadType[]>, item: MessagePayloadType) => {
     const acc = await memo;
-    if (!isBackgroundSnapshot(item.messageContent)) {
+    if (!isSnapshot(item.messageContent)) {
       acc.push(item);
       return acc;
     }

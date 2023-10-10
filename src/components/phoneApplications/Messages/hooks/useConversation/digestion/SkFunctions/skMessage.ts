@@ -95,13 +95,25 @@ const calculateWidthHeightAndContent = (
         content: message.content,
         cursorVector: { x: itemWidth + 2, y: 0 },
       };
-    case MESSAGE_CONTENT.SNAPSHOT:
+    case MESSAGE_CONTENT.SNAPSHOT: {
+      const image = message.content.image;
+      if (!image) {
+        return {
+          width: itemWidth,
+          height: 0,
+          content: message.content,
+          cursorVector: { x: itemWidth + 2, y: 0 },
+        };
+      }
+      const aspectRation = image.height() / image.width();
+      const imageHeight = itemWidth * aspectRation;
       return {
         width: itemWidth,
-        height: 0,
+        height: imageHeight,
         content: message.content,
         cursorVector: { x: itemWidth + 2, y: 0 },
       };
+    }
     case MESSAGE_CONTENT.BACKGROUND_SNAPSHOT: {
       const image = message.content.image;
       if (!image) {

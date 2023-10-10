@@ -1,4 +1,6 @@
 import { NotificationDataType } from "@Components/notifications/reducer/types";
+import { SkImage } from "@shopify/react-native-skia";
+import { Image } from "react-native-svg";
 import { PHONE_APPLICATION_NAMES } from "src/constants/phoneApplicationNames";
 
 type MESSAGE_CONTACT_NAME = string;
@@ -41,6 +43,11 @@ export type MessageAppEventsContainerType = {
 export type AppEventsType = {
   [PHONE_APPLICATION_NAMES.MESSAGES]: MessageAppEventsContainerType;
   ["NOTIFICATIONS"]: NotificationDataType[];
+  ["CACHE"]: {
+    [index in keyof typeof PHONE_APPLICATION_NAMES]: {
+      [id: string]: SkImage | Image;
+    };
+  };
 };
 
 export type AddMessageAppConversationSeenEventAction = {

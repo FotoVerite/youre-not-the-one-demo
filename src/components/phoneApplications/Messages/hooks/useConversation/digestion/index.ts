@@ -8,11 +8,10 @@ import {
   digestExchanges,
 } from "./digestRoute";
 import { appendReadLabel } from "./readLabel";
-import { resolveSnapshots } from "./snapshotResolver";
 import { BaseConfigType } from "./types";
 import { findStartableRoute } from "../../routes/available";
-import { removeMessagesThatConditionsHaveNotBeenMet } from "../../routes/conditionals";
-import { isActiveChoosableRoute, isStarted } from "../../routes/guards";
+import { isStarted } from "../../routes/guards";
+import { resolveRoutePath } from "../../routes/resolver";
 import { ConversationType } from "../../useConversations/types";
 
 export const digestConversation = async (
@@ -25,7 +24,8 @@ export const digestConversation = async (
     events.Messages
   );
   if (startedRoute) {
-    startedRoute.pending = removeMessagesThatConditionsHaveNotBeenMet(
+    startedRoute.pending = await resolveRoutePath(
+      config.width,
       events,
       startedRoute.pending
     );
@@ -54,9 +54,9 @@ export const digestConversation = async (
     },
   };
   digested.blockable = blockableConditionsMet(digested, events);
-  digested.exchanges = appendSeenRoutes(digested, seen, config);
+  digested.exchanges = await appendSeenRoutes(digested, seen, config);
   if (isStarted(digested.activeRoute)) {
-    digested.exchanges = appendFromDigestedRoute(
+    digested.exchanges = await appendFromDigestedRoute(
       digested.exchanges,
       digested.activeRoute,
       digested.group,
@@ -64,7 +64,7 @@ export const digestConversation = async (
     );
   }
 
-  digested.exchanges = await resolveSnapshots(digested.exchanges);
+  //digested.exchanges = await resolveSnapshots(digested.exchanges);
   digested.exchanges = appendReadLabel(
     digested.exchanges,
     config.width,
