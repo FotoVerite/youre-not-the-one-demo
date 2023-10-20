@@ -3,16 +3,19 @@ import Constants from "expo-constants";
 import { FC, useState, useEffect, PropsWithChildren } from "react";
 import { ImageSourcePropType, StyleSheet, View } from "react-native";
 import Animated, { SharedValue } from "react-native-reanimated";
+import { LOG, LOG_COLORS } from "src/utility/logger";
 
-export const AppLoader: FC<
+import UseSplashScreen from "./useSplashScreen";
+
+export const SplashScreen: FC<
   PropsWithChildren & {
-    animationFinished: boolean;
-    image: { uri: string };
-    opacity: SharedValue<number>;
+    resolved: boolean;
   }
-> = ({ children, opacity }) => {
+> = ({ children, resolved }) => {
+  const uri = Constants.expoConfig?.splash?.image;
   const [isSplashReady, setSplashReady] = useState(false);
   const [assets] = useAssets([require("assets/splash.jpeg")]);
+  const [kickoff, opacity] = UseSplashScreen();
 
   useEffect(() => {
     async function prepare(asset: Asset) {
@@ -22,9 +25,20 @@ export const AppLoader: FC<
     if (assets && assets[0]) prepare(assets[0]);
   }, [assets]);
 
+  useEffect(() => {
+    if (isSplashReady && resolved) {
+      kickoff();
+    }
+  }, [isSplashReady, kickoff, resolved]);
+
+  if (uri == null) {
+    LOG(LOG_COLORS.FgRed, "SPLASH SCREEN NOT SET UP");
+  }
+
   if (!isSplashReady || !assets) {
     return null;
   }
+
   const image = assets[0];
 
   return (

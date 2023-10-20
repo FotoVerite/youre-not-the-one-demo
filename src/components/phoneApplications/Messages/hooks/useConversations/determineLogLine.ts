@@ -73,6 +73,5 @@ export const determineLoglineAndTimeOfLastMessage = (
   const [, event] = routes.sort(([, a], [, b]) =>
     new Date(a.updatedAt) > new Date(b.updatedAt) ? -1 : 1
   )[0];
-
-  return { time: event.updatedAt, logline: event.logline };
+  return { time: event.updatedAt, logline: event.logline! };
 };

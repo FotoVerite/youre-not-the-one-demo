@@ -8,16 +8,17 @@ import ChevronButton, { MESSAGE_SEND_BUTTON_STATE } from "../ChevronButton";
 import DisplayedText, { DISPLAYED_TEXT_STATES } from "../DisplayedText";
 
 const MessageTextInput: FC<{
+  chevronColor?: string;
   openOptionList: React.Dispatch<React.SetStateAction<boolean>>;
   text?: string;
   cb: () => void;
-}> = ({ cb, openOptionList, text }) => {
+}> = ({ cb, chevronColor, openOptionList, text }) => {
   const sent = useRef(true);
   const [textState, setTextState] = useState(DISPLAYED_TEXT_STATES.DISPLAYED);
   const [buttonState, setButtonState] = useState(
     text != null
       ? MESSAGE_SEND_BUTTON_STATE.SENDABLE
-      : MESSAGE_SEND_BUTTON_STATE.INACTIVE,
+      : MESSAGE_SEND_BUTTON_STATE.INACTIVE
   );
 
   useEffect(() => {
@@ -48,7 +49,7 @@ const MessageTextInput: FC<{
               setButtonState(
                 isOpen
                   ? MESSAGE_SEND_BUTTON_STATE.HAS_CONTENT
-                  : MESSAGE_SEND_BUTTON_STATE.OPEN,
+                  : MESSAGE_SEND_BUTTON_STATE.OPEN
               );
               return !isOpen;
             });
@@ -63,7 +64,7 @@ const MessageTextInput: FC<{
               <View style={{ flexGrow: 1, minHeight: 35 }} />
             )}
             <View>
-              <ChevronButton state={buttonState} />
+              <ChevronButton chevronColor={chevronColor} state={buttonState} />
             </View>
           </Row>
         </View>

@@ -3,76 +3,31 @@ import {
   APP_EVENTS_ACTIONS,
   AppEventsType,
 } from "@Components/appEvents/reducer/types";
-import { produce } from "immer";
-import { useMemo, useEffect, useCallback, useState } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
+
+import { MESSAGE_CONTACT_NAME } from "../../constants";
+import { messageAppConditionsMet } from "../routes/conditionals";
+import {
+  isDigestedChoosableRoute,
+  isDigestedNotificationRoute,
+} from "../routes/guards";
+import {
+  ROUTE_STATUS_TYPE,
+  AbstractDigestedRouteType,
+  DigestedNotificationRouteType,
+} from "../routes/types";
+import { reduceAndSortRoutes } from "../useConversation/digestion/routeReducers";
+import { convertMessageToString } from "../useConversations/determineLogLine";
+import { ConversationFileType } from "../useConversations/types";
 import { delayFor } from "src/utility/async";
 
-import { MESSAGE_CONTACT_INFO, MESSAGE_CONTACT_NAME } from "../../constants";
-import ConversationEmitter, {
-  CONVERSATION_EMITTER_EVENTS,
-} from "../../emitters";
-import { findAvailableRoutes } from "../routes/available";
-import {
-  messageAppConditionsMet,
-  removeMessagesThatConditionsHaveNotBeenMet,
-} from "../routes/conditionals";
-import { isChoosableRoute } from "../routes/guards";
-import { ROUTE_TYPE, RouteConditionsType } from "../routes/types";
-import { convertBlockToMessagePayloadType } from "../useConversation/digestion/digestRoute";
-import { convertMessageToString } from "../useConversations/determineLogLine";
-import {
-  ConversationFileType,
-  ExchangeBlockType,
-} from "../useConversations/types";
-
 export const useConversationNotifier = (
-  conversations: ConversationFileType[],
-  activeConversations: MESSAGE_CONTACT_NAME[]
+  conversations: ConversationFileType[]
 ) => {
   const eventsContext = useAppEventsContext();
   const { state: events, dispatch } = eventsContext;
   const [routes, setRoutes] = useState(
-    convertConversationsRoutes(conversations, events)
-  );
-
-  const [queue, setQueue] = useState<GenericRouteType>();
-
-  const dispatchNotification = useCallback(
-    (route: GenericRouteType) => {
-      const conditionalPayloads = removeMessagesThatConditionsHaveNotBeenMet(
-        events,
-        convertBlockToMessagePayloadType(route.exchanges)
-      );
-      const message = convertMessageToString(
-        conditionalPayloads.slice(-1)[0].messageContent
-      );
-      const notification = {
-        ID: `${route.name}-${route.id}`,
-        title: `Message from ${route.name}`,
-        content: message,
-        image: MESSAGE_CONTACT_INFO[route.name].avatar,
-        onPress: () =>
-          ConversationEmitter.emit(CONVERSATION_EMITTER_EVENTS.SHOW, {
-            name: route.name,
-          }),
-      };
-      dispatch({
-        type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_CREATE,
-        payload: {
-          name: route.name,
-          routeId: route.id.toString(),
-          messageTimestamps: new Array(conditionalPayloads.length).fill(
-            new Date().toISOString()
-          ),
-          logline: message,
-          finished: !activeConversations.includes(route.name),
-          notification: activeConversations.includes(route.name)
-            ? undefined
-            : notification,
-        },
-      });
-    },
-    [activeConversations, dispatch, events]
+    reduceConversations(conversations, events)
   );
 
   const toNotify = useMemo(() => {
@@ -81,97 +36,73 @@ export const useConversationNotifier = (
     );
   }, [events.Messages, routes]);
 
-  const dispatchChoosable = useCallback(
-    (route: GenericRouteType) => {
+  const dispatchNotification = useCallback(
+    (route: DigestedNotificationRouteType) => {
+      const message = convertMessageToString(
+        route.exchanges.slice(-1)[0].messageContent
+      );
       dispatch({
         type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_CREATE,
         payload: {
           name: route.name,
           routeId: route.id.toString(),
+          messageTimestamps: new Array(route.exchanges.length).fill(
+            new Date().toISOString()
+          ),
+          logline: message,
+          status: ROUTE_STATUS_TYPE.AVAILABLE,
         },
       });
     },
     [dispatch]
   );
 
-  const notify = useCallback(
-    (route: GenericRouteType) => {
-      if (route.type === ROUTE_TYPE.CHOOSE) {
-        dispatchChoosable(route);
-        return;
-      }
-      dispatchNotification(route);
+  const dispatchChoosable = useCallback(
+    (route: AbstractDigestedRouteType) => {
+      dispatch({
+        type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_CREATE,
+        payload: {
+          name: route.name,
+          routeId: route.id.toString(),
+          status: ROUTE_STATUS_TYPE.AVAILABLE,
+        },
+      });
     },
-    [dispatchChoosable, dispatchNotification]
+    [dispatch]
   );
 
   useEffect(() => {
-    const sendToQueue = async () => {
-      await Promise.all(
-        toNotify.map(async (route) => {
-          await delayFor(route.delay || 0);
-          return setQueue(route);
-        })
-      );
+    const cb = async () => {
+      const internalRoutes = { ...routes };
+      for (const route of toNotify) {
+        await delayFor(route.delay || 0);
+        if (isDigestedChoosableRoute(route)) dispatchChoosable(route);
+        if (isDigestedNotificationRoute(route)) dispatchNotification(route);
+        delete internalRoutes[`${route.id}-${route.name}`];
+      }
+      setRoutes(internalRoutes);
     };
-    setRoutes(
-      produce((draft) => {
-        toNotify.forEach((route) => delete draft[`${route.name}-${route.id}`]);
-        return draft;
-      })
-    );
-    sendToQueue();
-  }, [toNotify]);
-
-  useEffect(() => {
-    if (queue) {
-      notify(queue);
-      setQueue(undefined);
-    }
-  }, [queue, notify]);
-  return [] as const;
+    cb();
+  }, [dispatchChoosable, dispatchNotification, routes, toNotify]);
 };
 
-type GenericRouteType = {
-  name: MESSAGE_CONTACT_NAME;
-  id: string;
-  type: ROUTE_TYPE;
-  conditions?: RouteConditionsType | RouteConditionsType[];
-  delay?: number;
-  exchanges: ExchangeBlockType[];
-};
-type GenericRoutesType = {
-  [id: string]: GenericRouteType;
-};
-
-const convertConversationsRoutes = (
+const reduceConversations = (
   conversations: ConversationFileType[],
   events: AppEventsType
 ) => {
-  return conversations.reduce((ret, conversation) => {
-    const routes = [
-      ...conversation.routes,
-      ...(conversation.notificationRoutes || []),
-    ];
-    const convertedRoutes = findAvailableRoutes(
-      conversation.name,
-      routes,
-      events
-    );
-    convertedRoutes.reduce((ret, route) => {
-      const routeID = `${conversation.name}-${route.id.toString()}`;
-      ret[routeID] = {
-        delay: route.delay,
-        name: conversation.name,
-        id: route.id.toString(),
-        type: isChoosableRoute(route)
-          ? ROUTE_TYPE.CHOOSE
-          : ROUTE_TYPE.NOTIFICATION,
-        conditions: route.conditions,
-        exchanges: isChoosableRoute(route) ? [] : route.exchanges,
-      };
+  return conversations.reduce(
+    (ret, conversation) => {
+      const [untriggered] = reduceAndSortRoutes(
+        conversation,
+        events.Messages,
+        {}
+      );
+      Object.keys(untriggered).reduce((acc, key) => {
+        acc[`${conversation.name}-${key}`] = untriggered[key];
+        return acc;
+      }, ret);
       return ret;
-    }, ret);
-    return ret;
-  }, {} as GenericRoutesType);
+    },
+    {} as { [index: string]: AbstractDigestedRouteType }
+  );
 };

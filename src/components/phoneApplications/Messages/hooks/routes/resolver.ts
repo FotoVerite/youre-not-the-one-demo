@@ -1,58 +1,66 @@
 import { AppEventsType } from "@Components/appEvents/reducer/types";
+import { isSkImage } from "src/contexts/imageCache/guards";
+import { ImageCacheType } from "src/contexts/imageCache/types";
 
 import { removeMessagesThatConditionsHaveNotBeenMet } from "./conditionals";
-import { isDigestedChoosableRoute } from "./guards";
 import {
-  DigestedChoosableRouteType,
-  DigestedNotificationRouteType,
-} from "./types";
-import { resolveSnapshotPayload } from "../useConversation/digestion/snapshotResolver";
+  isDigestedChoosableRoute,
+  isDigestedNotificationRoute,
+} from "./guards";
+import { AbstractDigestedRouteType, DigestedChoosableRouteType } from "./types";
+import { isSnapshot } from "../contentWithMetaTypes";
 import { MessagePayloadType } from "../useConversation/digestion/types";
 
 type PathsType = { [id: string]: MessagePayloadType[] };
 
-export const resolveRoutePath = async (
-  width: number,
+export const resolveRoutePath = (
   events: AppEventsType,
+  cache: ImageCacheType,
   payloads: MessagePayloadType[]
 ) => {
-  const resolver = new Promise<MessagePayloadType[]>((resolve, reject) => {
-    resolve([] as MessagePayloadType[]);
-  });
-  return removeMessagesThatConditionsHaveNotBeenMet(events, payloads).reduce(
-    resolveSnapshotPayload(width),
-    resolver
+  const mapper = resolveSnapshotPayload(cache);
+  return removeMessagesThatConditionsHaveNotBeenMet(events, payloads).map(
+    mapper
   );
 };
 
-export const asyncResolveRoutes = async (
-  width: number,
+export const resolveSnapshotPayload =
+  (cache: ImageCacheType) => (payload: MessagePayloadType) => {
+    if (isSnapshot(payload.messageContent)) {
+      const image = cache[payload.messageContent.content.filename];
+      if (image && isSkImage(image)) {
+        payload.messageContent.content = {
+          ...payload.messageContent.content,
+          ...{ image },
+        };
+      }
+    }
+    return payload;
+  };
+
+export const resolveRoutes = (
   events: AppEventsType,
+  cache: ImageCacheType,
+
   route: DigestedChoosableRouteType
 ) => {
-  return await Object.entries(route.routes).reduce(
-    async (memo, [id, route]) => {
-      const acc = await memo;
-      const payload = await resolveRoutePath(width, events, route);
-      acc[id] = payload;
-      return acc;
-    },
-    Promise.resolve({} as PathsType)
-  );
+  return Object.entries(route.routes).reduce((acc, [id, route]) => {
+    const payload = resolveRoutePath(events, cache, route);
+    acc[id] = payload;
+    return acc;
+  }, {} as PathsType);
 };
 
-export const resolveRoutesPath = async <
-  AvailableRouteType extends
-    | DigestedChoosableRouteType
-    | DigestedNotificationRouteType,
->(
-  width: number,
+export const resolveRoutesPath = (
   events: AppEventsType,
-  route: AvailableRouteType
+  cache: ImageCacheType,
+  route: AbstractDigestedRouteType
 ) => {
   if (isDigestedChoosableRoute(route)) {
-    return await asyncResolveRoutes(width, events, route);
-  } else {
-    return await resolveRoutePath(width, events, route.exchanges);
+    route.routes = resolveRoutes(events, cache, route);
   }
+  if (isDigestedNotificationRoute(route)) {
+    route.exchanges = resolveRoutePath(events, cache, route.exchanges);
+  }
+  return route;
 };

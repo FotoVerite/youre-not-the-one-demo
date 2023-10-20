@@ -6,7 +6,10 @@ import {
   EFFECT_TYPE,
   MESSAGE_CONTENT,
 } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
-import { ChoosableRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
+import {
+  ChoosableRouteType,
+  ROUTE_STATUS_TYPE,
+} from "@Components/phoneApplications/Messages/hooks/routes/types";
 
 import { leo_monologue_replacement_one } from "./monologue_replacement";
 import { TO_SELF_IDS } from "./routes";
@@ -47,7 +50,9 @@ export const check_if_txt_is_working: ChoosableRouteType = {
             conditions: {
               [MESSAGE_CONTACT_NAME.ZARA]: {
                 routes: {
-                  [ZARA_ROUTE_IDS.I_AM_BEING_HARASSED]: { finished: true },
+                  [ZARA_ROUTE_IDS.I_AM_BEING_HARASSED]: {
+                    status: ROUTE_STATUS_TYPE.FINISHED,
+                  },
                 },
               },
             },

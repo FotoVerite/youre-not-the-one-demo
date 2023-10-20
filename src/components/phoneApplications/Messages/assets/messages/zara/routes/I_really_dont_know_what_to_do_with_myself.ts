@@ -3,7 +3,10 @@
 
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
 import { MESSAGE_CONTENT } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
-import { ChoosableRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
+import {
+  ChoosableRouteType,
+  ROUTE_STATUS_TYPE,
+} from "@Components/phoneApplications/Messages/hooks/routes/types";
 import { ExchangeBlockType } from "@Components/phoneApplications/Messages/hooks/useConversations/types";
 
 import { ZARA_ROUTE_IDS } from "./routes";
@@ -65,7 +68,11 @@ export const i_dont_know_what_to_do_with_myself: ChoosableRouteType = {
   options: Object.values(OPTIONS),
   conditions: {
     [MESSAGE_CONTACT_NAME.ZARA]: {
-      routes: { [ZARA_ROUTE_IDS.YOUR_DAY_WORSE_THEN_MINE]: { finished: true } },
+      routes: {
+        [ZARA_ROUTE_IDS.YOUR_DAY_WORSE_THEN_MINE]: {
+          status: ROUTE_STATUS_TYPE.FINISHED,
+        },
+      },
     },
   },
   routes: {

@@ -3,7 +3,10 @@
 
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
 import { MESSAGE_CONTENT } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
-import { ChoosableRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
+import {
+  ChoosableRouteType,
+  ROUTE_STATUS_TYPE,
+} from "@Components/phoneApplications/Messages/hooks/routes/types";
 
 import { ZARA_ROUTE_IDS } from "./routes";
 
@@ -55,7 +58,11 @@ export const your_new_video: ChoosableRouteType = {
   options: Object.values(OPTIONS),
   conditions: {
     [MESSAGE_CONTACT_NAME.ZARA]: {
-      routes: { [ZARA_ROUTE_IDS.YOUR_DAY_WORSE_THEN_MINE]: { finished: true } },
+      routes: {
+        [ZARA_ROUTE_IDS.YOUR_DAY_WORSE_THEN_MINE]: {
+          status: ROUTE_STATUS_TYPE.FINISHED,
+        },
+      },
     },
   },
   routes: {

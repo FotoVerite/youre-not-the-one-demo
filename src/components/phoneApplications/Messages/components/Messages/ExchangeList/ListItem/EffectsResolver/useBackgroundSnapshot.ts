@@ -11,7 +11,7 @@ import { ExchangeListItemType } from "../types";
 
 export const useEffectsResolver = (
   props: ExchangeListItemType,
-  resolved: boolean
+  resolved: boolean,
 ) => {
   const setTakeSnapShot = useSnapshotContext().setTakeSnapShot;
 

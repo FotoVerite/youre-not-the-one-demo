@@ -21,8 +21,9 @@ export enum MESSAGE_SEND_BUTTON_STATE {
 }
 
 export const ChevronButton: FC<{
+  chevronColor?: string;
   state: MESSAGE_SEND_BUTTON_STATE;
-}> = ({ state }) => {
+}> = ({ chevronColor, state }) => {
   const startingValues = {
     [MESSAGE_SEND_BUTTON_STATE.INACTIVE]: {
       active: 0,
@@ -88,7 +89,7 @@ export const ChevronButton: FC<{
       backgroundColor: interpolateColor(
         buttonSendable.value,
         [0, 1, 2],
-        ["transparent", "purple", "black"],
+        ["transparent", chevronColor ? chevronColor : "purple", "black"],
       ),
       transform: [
         {

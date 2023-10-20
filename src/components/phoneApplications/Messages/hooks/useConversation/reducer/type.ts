@@ -1,15 +1,14 @@
 import { AppEventsType } from "@Components/appEvents/reducer/types";
 
+import {
+  AbstractDigestedRouteType,
+  RouteConditionsType,
+} from "../../routes/types";
 import { ConversationType } from "../../useConversations/types";
 import {
   DigestedConversationType,
   DigestedMessageProps,
 } from "../digestion/types";
-import {
-  ActiveChoosableRoute,
-  ActiveNotificationRoute,
-  RouteConditionsType,
-} from "../../routes/types";
 
 export enum CONVERSATION_REDUCER_ACTIONS {
   ADD_CONVERSATION,
@@ -46,7 +45,7 @@ export type DigestConversationActionType = {
 };
 
 export type RefreshAvailablePayloadType = {
-  activeRoute: undefined | ActiveChoosableRoute | ActiveNotificationRoute;
+  activeRoute: undefined | AbstractDigestedRouteType;
   blockable:
     | boolean
     | {

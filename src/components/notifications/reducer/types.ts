@@ -1,3 +1,4 @@
+import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
 import { ImageSourcePropType } from "react-native";
 
 export enum NOTIFICATIONS_REDUCER_ACTIONS {
@@ -6,6 +7,16 @@ export enum NOTIFICATIONS_REDUCER_ACTIONS {
   RESET,
   UPDATE,
 }
+
+export enum NOTIFICATION_ON_PRESS {
+  CONVERSATION = "CONVERSATION",
+}
+
+export type OnPressType = {
+  type: NOTIFICATION_ON_PRESS.CONVERSATION;
+  payload: { name: MESSAGE_CONTACT_NAME };
+};
+
 export type NotificationDataType = {
   ID: string;
   active?: boolean;
@@ -13,7 +24,7 @@ export type NotificationDataType = {
   title: string;
   content: string;
   image?: ImageSourcePropType;
-  onPress?: () => void;
+  onPress?: OnPressType;
 };
 
 export type NotificationType = NotificationDataType & {

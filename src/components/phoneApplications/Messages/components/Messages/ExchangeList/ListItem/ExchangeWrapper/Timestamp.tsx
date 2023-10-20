@@ -27,7 +27,7 @@ export const Timestamp: FC<{
     const translate = interpolate(
       translateX.value,
       [0, 1],
-      [timeWidth, addressee ? -100 : -35]
+      [timeWidth, addressee ? -100 : -35],
     );
     return { transform: [{ translateX: translate }] };
   });

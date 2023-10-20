@@ -7,15 +7,15 @@ import { Draft, produce } from "immer";
 import moment, { Moment } from "moment";
 
 import {
-  isChoosableRoute,
+  areResolvedOptions,
   isDigestedChoosableRoute,
-  isOptionsWithConditions,
+  isDigestedNotificationRoute,
 } from "./guards";
 import {
   RouteConditionsType,
-  DigestedChoosableRouteType,
-  DigestedNotificationRouteType,
   OptionsWithConditionals,
+  ROUTE_STATUS_TYPE,
+  AbstractDigestedRouteType,
 } from "./types";
 import { MESSAGE_CONTACT_NAME } from "../../constants";
 import { EFFECT_TYPE, isContentWithMeta } from "../contentWithMetaTypes";
@@ -84,17 +84,17 @@ const routeNotChosenSelected = (
 };
 
 const routeFinished = (
-  finished?: boolean,
+  status?: ROUTE_STATUS_TYPE,
   viewed?: MessageRouteEventDataType
 ) => {
   if (!viewed) {
     return false;
   }
 
-  if (finished == null) {
+  if (status == null) {
     return true;
   }
-  return finished === viewed.finished;
+  return status === viewed.status;
 };
 
 const routeHasBeenBlockedCheck = (
@@ -129,7 +129,7 @@ const routeHasBeenChosenCheck = (
     return (
       acc &&
       viewedRoutes[key] != null &&
-      routeFinished(routeCondition.finished, viewedRoutes[key]) &&
+      routeFinished(routeCondition.status, viewedRoutes[key]) &&
       routeChosenSelected(routeCondition.chosen, viewedRoutes[key]) &&
       routeNotChosenSelected(routeCondition.not_chosen, viewedRoutes[key])
     );
@@ -173,7 +173,7 @@ export const messageAppConditionsMet = (
 
 export const mergeConditionalExchanges = (
   events: AppEventsType,
-  draft: Draft<DigestedChoosableRouteType | DigestedNotificationRouteType>
+  draft: Draft<AbstractDigestedRouteType>
 ) => {
   if (!isDigestedChoosableRoute(draft)) return;
   const effect = draft.effects?.filter(
@@ -201,7 +201,7 @@ export const removeOptionsThatConditionsHaveNotBeenMet = (
   events: AppEventsType,
   options: string[] | OptionsWithConditionals[]
 ) => {
-  if (!isOptionsWithConditions(options)) {
+  if (areResolvedOptions(options)) {
     return options;
   }
   return options
@@ -214,14 +214,10 @@ export const removeOptionsThatConditionsHaveNotBeenMet = (
     );
 };
 
-export const messagesConditionalCheck = <
-  AvailableRouteType extends
-    | DigestedChoosableRouteType
-    | DigestedNotificationRouteType,
->(
+export const messagesConditionalCheck = (
   events: AppEventsType,
-  route: AvailableRouteType
-): AvailableRouteType => {
+  route: AbstractDigestedRouteType
+) => {
   return produce(route, (draft) => {
     mergeConditionalExchanges(events, draft);
     if (isDigestedChoosableRoute(draft)) {
@@ -231,7 +227,8 @@ export const messagesConditionalCheck = <
           draft.routes[option]
         );
       }
-    } else {
+    }
+    if (isDigestedNotificationRoute(draft)) {
       draft.exchanges = removeMessagesThatConditionsHaveNotBeenMet(
         events,
         draft.exchanges

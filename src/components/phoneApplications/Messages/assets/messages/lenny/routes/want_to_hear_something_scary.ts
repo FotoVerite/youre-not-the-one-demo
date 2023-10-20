@@ -1,5 +1,8 @@
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
-import { NotificationRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
+import {
+  NotificationRouteType,
+  ROUTE_STATUS_TYPE,
+} from "@Components/phoneApplications/Messages/hooks/routes/types";
 
 import { LENNY_ROUTE_IDS } from "./routes";
 import { ZARA_ROUTE_IDS } from "../../zara/routes/routes";
@@ -9,7 +12,9 @@ export const lenny_want_to_hear_something_scary: NotificationRouteType = {
   delay: 12000,
   conditions: {
     [MESSAGE_CONTACT_NAME.ZARA]: {
-      routes: { [ZARA_ROUTE_IDS.BORKED_PHONE]: { finished: true } },
+      routes: {
+        [ZARA_ROUTE_IDS.BORKED_PHONE]: { status: ROUTE_STATUS_TYPE.FINISHED },
+      },
     },
   },
   exchanges: [

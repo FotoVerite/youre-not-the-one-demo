@@ -5,6 +5,7 @@ import {
 import { Vector, SkFont } from "@shopify/react-native-skia";
 import * as Crypto from "expo-crypto";
 import { Image, ImageSourcePropType } from "react-native";
+import { LOG, LOG_COLORS } from "src/utility/logger";
 
 import {
   calculatedItemWidth,
@@ -16,7 +17,6 @@ import {
 } from "../../../contentWithMetaTypes";
 import { SkItemConfigurationType, BubbleItemType } from "../types";
 import { BUBBLE_PADDING } from "../utility";
-import { LOG, LOG_COLORS } from "src/utility/logger";
 
 type CalculationsType = {
   height: number;
@@ -34,7 +34,7 @@ export const SkMessage = (
   message: ContentWithMetaType,
   name: MESSAGE_CONTACT_NAME,
   isLastInExchange: boolean,
-  timeStamp?: string
+  timeStamp?: string,
 ) => {
   const DEFAULT_BOTTOM_PADDING = 4;
   const BOTTOM_PADDING_FOR_LAST_IN_BLOCK = 8;
@@ -46,7 +46,7 @@ export const SkMessage = (
     message,
     width,
     addressee,
-    font
+    font,
   );
   const skItem = {
     ID: Crypto.randomUUID(),
@@ -84,7 +84,7 @@ const calculateWidthHeightAndContent = (
   message: ContentWithMetaType,
   width: number,
   addressee: boolean,
-  font: SkFont
+  font: SkFont,
 ): CalculationsType => {
   const itemWidth = addressee ? width * 0.7 - 30 : width * 0.7;
   switch (message.type) {
@@ -119,7 +119,7 @@ const calculateWidthHeightAndContent = (
       if (!image) {
         LOG(
           LOG_COLORS.BgRed,
-          `IMAGE NOT FOUND FOR THIS BACKGROUND SNAP ${message.content.filename}`
+          `IMAGE NOT FOUND FOR THIS BACKGROUND SNAP ${message.content.filename}`,
         );
         return {
           width: 0,
@@ -139,7 +139,7 @@ const calculateWidthHeightAndContent = (
     }
     case MESSAGE_CONTENT.IMAGE: {
       const imageDimensions = Image.resolveAssetSource(
-        message.content as ImageSourcePropType
+        message.content as ImageSourcePropType,
       );
       const aspectRation = imageDimensions.height / imageDimensions.width;
       const imageHeight = itemWidth * aspectRation;
@@ -164,7 +164,7 @@ const calculateWidthHeightAndContent = (
           font,
           message.content,
           width,
-          addressee
+          addressee,
         );
       return {
         width: boxWidth,
@@ -179,7 +179,7 @@ const calculateWidthHeightAndContent = (
         font,
         message.content,
         width,
-        addressee
+        addressee,
       );
       return {
         width: glyphWidth,

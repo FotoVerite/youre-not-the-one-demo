@@ -1,5 +1,8 @@
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
-import { ChoosableRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
+import {
+  ChoosableRouteType,
+  ROUTE_STATUS_TYPE,
+} from "@Components/phoneApplications/Messages/hooks/routes/types";
 
 import { ZARA_ROUTE_IDS } from "./routes";
 import { MICHAEL_IDS } from "../../michael/routes/routes";
@@ -18,7 +21,9 @@ export const i_dont_feel_secure: ChoosableRouteType = {
   conditions: {
     [MESSAGE_CONTACT_NAME.MICHAEL]: {
       routes: {
-        [MICHAEL_IDS.ABOUT_TONIGHT_REPLY]: { finished: true },
+        [MICHAEL_IDS.ABOUT_TONIGHT_REPLY]: {
+          status: ROUTE_STATUS_TYPE.FINISHED,
+        },
       },
     },
   },

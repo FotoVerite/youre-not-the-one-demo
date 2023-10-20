@@ -1,26 +1,28 @@
 import { AppEventsReducerActionsType } from "@Components/appEvents/reducer/types";
-import { Glyph, SkFont, SkImage, SkPoint } from "@shopify/react-native-skia";
+import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
+import { SkFont, Glyph, SkImage, SkPoint } from "@shopify/react-native-skia";
 import { FlexAlignType, ImageSourcePropType } from "react-native";
 
-import { MESSAGE_CONTACT_NAME } from "../../../constants";
 import {
-  FontAwesomeGlyphs,
   MESSAGE_CONTENT,
   MessageEffectType,
+  FontAwesomeGlyphs,
 } from "../../contentWithMetaTypes";
-import { isStarted } from "../../routes/guards";
 import {
-  ActiveChoosableRoute,
-  ActiveNotificationRoute,
   StartedRouteType,
-  DigestedRouteType,
   RouteConditionsType,
-  ROUTE_STATE_TYPE,
+  ROUTE_STATUS_TYPE,
+  AbstractDigestedRouteType,
+  AvailableRouteType,
+  UntriggeredRouteType,
+  DigestedChoosableRouteType,
+  DigestedNotificationRouteType,
 } from "../../routes/types";
 import {
-  ConversationType,
   MessageContentType,
+  ConversationType,
 } from "../../useConversations/types";
+import { isStartedRoute } from "../../routes/guards";
 
 const SELF_NAMES_CONST = [
   MESSAGE_CONTACT_NAME.SELF,
@@ -182,11 +184,8 @@ export type DigestedConversationType = Omit<
   ConversationType,
   "exchanges" | "blocked" | "hasAvailableRoute"
 > & {
-  activeRoute?:
-    | ActiveChoosableRoute
-    | ActiveNotificationRoute
-    | StartedRouteType;
-  availableRoutes: { [id: string]: DigestedRouteType };
+  activeRoute?: AbstractDigestedRouteType;
+  availableRoutes: { [id: string]: UntriggeredRouteType };
   cleanupAction?: AppEventsReducerActionsType;
   exchanges: DigestedConversationListItem[];
   eventAction?: AppEventsReducerActionsType;
@@ -204,7 +203,7 @@ export type DigestedConversationWithActiveRoute = Omit<
   DigestedConversationType,
   "activeRoute"
 > & {
-  activeRoute: ActiveChoosableRoute | ActiveNotificationRoute;
+  activeRoute: AvailableRouteType;
 };
 
 export type DigestedConversationWithStartedRoute = Omit<
@@ -220,19 +219,19 @@ export type DigestedConversationWithConditionalBlockability = Omit<
 > & { blockable: { conditions: RouteConditionsType } };
 
 export const hasActiveRoute = (
-  draft: DigestedConversationType,
-): draft is DigestedConversationWithActiveRoute => {
-  return draft.activeRoute?.finished === ROUTE_STATE_TYPE.ACTIVE;
+  draft: DigestedConversationType
+): draft is DigestedConversationType & { activeRoute: AvailableRouteType } => {
+  return draft.activeRoute?.status === ROUTE_STATUS_TYPE.AVAILABLE;
 };
 
 export const hasStartedRoute = (
-  draft: DigestedConversationType,
-): draft is DigestedConversationWithStartedRoute => {
-  return isStarted(draft.activeRoute);
+  draft: DigestedConversationType
+): draft is DigestedConversationType & { activeRoute: StartedRouteType } => {
+  return isStartedRoute(draft.activeRoute);
 };
 
 export const isSentMessage = (
-  exchange: DigestedConversationListItem,
+  exchange: DigestedConversationListItem
 ): exchange is BubbleItemType => {
   if (isDigestedLabel(exchange)) {
     return false;
@@ -241,13 +240,13 @@ export const isSentMessage = (
 };
 
 export const isSentMessagePayload = (
-  payload: MessagePayloadType,
+  payload: MessagePayloadType
 ): payload is SentMessagePayloadType => {
   return SELF_NAMES_CONST.includes(payload.name);
 };
 
 export const isReceivedMessage = (
-  exchange: DigestedConversationListItem,
+  exchange: DigestedConversationListItem
 ): exchange is BubbleItemType => {
   if (isDigestedLabel(exchange)) {
     return false;
@@ -256,21 +255,21 @@ export const isReceivedMessage = (
 };
 
 export const isDigestedBubble = (
-  exchange: DigestedConversationListItem,
+  exchange: DigestedConversationListItem
 ): exchange is BubbleItemType => {
   return ![MESSAGE_CONTENT.TIME, MESSAGE_CONTENT.READ_LABEL].includes(
-    exchange.type,
+    exchange.type
   );
 };
 
 export const isDigestedLabel = (
-  exchange: DigestedConversationListItem,
+  exchange: DigestedConversationListItem
 ): exchange is DigestedLabelType => {
   return !isDigestedBubble(exchange);
 };
 
 export const hasBlockableConditions = (
-  draft: DigestedConversationType,
+  draft: DigestedConversationType
 ): draft is DigestedConversationWithConditionalBlockability => {
   return (
     draft.blockable != null && draft.blockable.hasOwnProperty("conditions")

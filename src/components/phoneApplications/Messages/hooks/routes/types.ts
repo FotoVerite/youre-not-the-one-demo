@@ -11,18 +11,18 @@ export enum ROUTE_TYPE {
   NOTIFICATION,
 }
 
-export enum ROUTE_STATE_TYPE {
-  ACTIVE,
-  NOT_STARTED,
-  STARTED,
-  FINISHED,
+export enum ROUTE_STATUS_TYPE {
+  AVAILABLE = "available",
+  CONDITIONS_NOT_MET = "untriggered",
+  STARTED = "started",
+  FINISHED = "finished",
 }
 
 export type RouteChosenConditionType = {
   [key: string]: {
     chosen?: string[];
     not_chosen?: string[];
-    finished?: boolean;
+    status?: ROUTE_STATUS_TYPE;
   };
 };
 
@@ -45,106 +45,121 @@ export type RouteConditionsType = {
   };
 };
 
-interface AbstractRouteType {
+export interface AbstractRouteType {
   id: number;
   conditions?: RouteConditionsType | RouteConditionsType[];
   delay?: number;
   effects?: MessageEffectType[];
 }
 
-export interface AbstractDigestedRouteType
-  extends Omit<AbstractRouteType, "id"> {
-  id: string;
-  name: MESSAGE_CONTACT_NAME;
-  finished: ROUTE_STATE_TYPE;
-  type: ROUTE_TYPE;
-}
-
-export interface DigestedRouteWithMultipleMeetableConditionsType
-  extends Omit<AbstractDigestedRouteType, "conditions"> {
-  conditions: RouteConditionsType[];
-}
-
 export type OptionsWithConditionals = {
   conditions: RouteConditionsType;
   options: string[];
 };
-
 export interface ChoosableRouteType extends AbstractRouteType {
   options: string[] | OptionsWithConditionals[];
   routes: { [key: string]: ExchangeBlockType[] };
 }
-
 export interface NotificationRouteType extends AbstractRouteType {
   backgroundColor?: string;
   exchanges: ExchangeBlockType[];
+  status: ROUTE_STATUS_TYPE.CONDITIONS_NOT_MET;
 }
+
+export interface AbstractDigestedRouteType
+  extends Omit<AbstractRouteType, "id"> {
+  id: string;
+  name: MESSAGE_CONTACT_NAME;
+  status: ROUTE_STATUS_TYPE;
+  type: ROUTE_TYPE;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+// export interface DigestedRouteWithMultipleMeetableConditionsType
+//   extends Omit<AbstractDigestedRouteType, "conditions"> {
+//   conditions: RouteConditionsType[];
+// }
 
 export type DigestedChoosableRouteType = AbstractDigestedRouteType & {
   type: ROUTE_TYPE.CHOOSE;
-  order: number;
   options: string[] | OptionsWithConditionals[];
   routes: { [choice: string]: MessagePayloadType[] };
-  finished: ROUTE_STATE_TYPE.NOT_STARTED;
-};
-
-export type DigestedWithConditionalOptions = AbstractDigestedRouteType & {
-  type: ROUTE_TYPE.CHOOSE;
-  order: number;
-  options: OptionsWithConditionals[];
-  routes: { [choice: string]: MessagePayloadType[] };
-  finished: ROUTE_STATE_TYPE.NOT_STARTED;
-};
-
-export type ActiveChoosableRoute = Omit<
-  DigestedChoosableRouteType,
-  "finished" | "options"
-> & {
-  finished: ROUTE_STATE_TYPE.ACTIVE;
-  options: string[];
 };
 
 export type DigestedNotificationRouteType = AbstractDigestedRouteType & {
   type: ROUTE_TYPE.NOTIFICATION;
-  order: number;
   exchanges: MessagePayloadType[];
-  finished: ROUTE_STATE_TYPE.NOT_STARTED;
 };
 
-export type ActiveNotificationRoute = Omit<
-  DigestedNotificationRouteType,
-  "finished"
-> & {
-  finished: ROUTE_STATE_TYPE.ACTIVE;
-};
-
-export type StartedRouteType = AbstractDigestedRouteType & {
-  type: ROUTE_TYPE.CHOOSE;
+export type KickedOffRouteType = AbstractDigestedRouteType & {
+  exchanges: MessagePayloadType[];
+  status:
+    | ROUTE_STATUS_TYPE.AVAILABLE
+    | ROUTE_STATUS_TYPE.STARTED
+    | ROUTE_STATUS_TYPE.FINISHED;
   createdAt: string;
-  chosen?: string;
-  finished: ROUTE_STATE_TYPE.STARTED;
-  exchanges: MessagePayloadType[];
+  updatedAt: string;
+  position: number;
+};
+
+export type UntriggeredRouteType = AbstractDigestedRouteType & {
+  status: ROUTE_STATUS_TYPE.CONDITIONS_NOT_MET;
+};
+export type AvailableRouteType = KickedOffRouteType & {
+  status: ROUTE_STATUS_TYPE.AVAILABLE;
+};
+
+export type ProcessedRouteType = KickedOffRouteType & {
+  status: ROUTE_STATUS_TYPE.STARTED | ROUTE_STATUS_TYPE.FINISHED;
+};
+
+export type StartedRouteType = ProcessedRouteType & {
+  status: ROUTE_STATUS_TYPE.STARTED;
   indexAt: number;
   nextMessageInQueue?: string;
   pending: MessagePayloadType[];
   previousExchangeProps?: Omit<DigestedBubbleProps, "ID"> & { ID: string };
-  updatedAt: string;
 };
-
-export type FinishedRouteType = AbstractDigestedRouteType & {
-  createdAt: string;
-  finished: ROUTE_STATE_TYPE.FINISHED;
-  exchanges: MessagePayloadType[];
-  position: number;
-  updatedAt: string;
+export type FinishedRouteType = ProcessedRouteType & {
+  status: ROUTE_STATUS_TYPE.FINISHED;
 };
+// export type AvailableChoosableRoute = Omit<
+//   DigestedChoosableRouteType,
+//   "status" | "options"
+// > & {
+//   status: ROUTE_STATUS_TYPE.AVAILABLE;
+//   options: string[];
+// };
 
-export type DigestedRouteType =
-  | DigestedChoosableRouteType
-  | DigestedNotificationRouteType;
+// export type DigestedNotificationRouteType = AbstractDigestedRouteType & {
+//   type: ROUTE_TYPE.NOTIFICATION;
+//   order: number;
+//   exchanges: MessagePayloadType[];
+//   status: ROUTE_STATUS_TYPE.CONDITIONS_NOT_MET;
+// };
 
-export type DigestedRoutesType = {
-  available: { [id: string]: DigestedRouteType };
-  seen: FinishedRouteType[];
-  started?: StartedRouteType;
-};
+// export type AvailableNotificationRoute = Omit<
+//   DigestedNotificationRouteType,
+//   "status"
+// > & {
+//   status: ROUTE_STATUS_TYPE.AVAILABLE;
+// };
+
+// export type FinishedRouteType = AbstractDigestedRouteType & {
+//   createdAt: string;
+//   status: ROUTE_STATUS_TYPE.FINISHED;
+//   exchanges: MessagePayloadType[];
+//   position: number;
+//   updatedAt: string;
+// };
+
+// export type DigestedRouteType =
+//   | DigestedChoosableRouteType
+//   | DigestedNotificationRouteType;
+
+// export type DigestedRoutesType = {
+//   available: { [id: string]: DigestedRouteType };
+//   seen: FinishedRouteType[];
+//   started?: StartedRouteType;
+// };

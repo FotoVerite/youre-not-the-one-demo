@@ -1,70 +1,58 @@
 import { AppEventsType } from "@Components/appEvents/reducer/types";
 
-import { blockableConditionsMet } from "./blockable";
+import { StorageType } from "src/contexts/asyncStorage/types";
 import {
-  appendFromDigestedRoute,
+  appendExchanges,
   appendSeenRoutes,
-  convertRoutesToDigestedRoutes,
-  digestExchanges,
-} from "./digestRoute";
+  appendFromDigestedRoute,
+} from "./append";
+import { blockableConditionsMet } from "./blockable";
 import { appendReadLabel } from "./readLabel";
+import { reduceAndSortRoutes } from "./routeReducers";
 import { BaseConfigType } from "./types";
-import { findStartableRoute } from "../../routes/available";
-import { isStarted } from "../../routes/guards";
 import { resolveRoutePath } from "../../routes/resolver";
 import { ConversationType } from "../../useConversations/types";
 
-export const digestConversation = async (
+export const digestConversation = (
   config: BaseConfigType,
   conversation: ConversationType,
-  events: AppEventsType
+  events: AppEventsType,
+  cache: StorageType
 ) => {
-  const [available, seen, startedRoute] = convertRoutesToDigestedRoutes(
+  const [untriggered, seen, startedRoute] = reduceAndSortRoutes(
     conversation,
-    events.Messages
+    events.Messages,
+    cache
   );
-  if (startedRoute) {
-    startedRoute.pending = await resolveRoutePath(
-      config.width,
-      events,
-      startedRoute.pending
-    );
-  }
+
   const { exchanges, ...conversationProps } = conversation;
-  const activeRoute =
-    startedRoute ||
-    (await findStartableRoute(
-      config.width,
-      conversation.name,
-      Object.entries(available).map(([id, route]) => route),
-      events
-    ));
-  const digestedExchanges = digestExchanges(
-    config,
-    exchanges,
-    conversationProps.group
-  );
 
   const digested = {
     ...conversationProps,
     ...{
-      exchanges: digestedExchanges,
-      availableRoutes: available,
-      activeRoute,
+      exchanges: appendExchanges(exchanges, {
+        ...config,
+        ...{ group: conversationProps.group || false, offset: 50 },
+      }),
+      availableRoutes: untriggered,
     },
   };
   digested.blockable = blockableConditionsMet(digested, events);
-  digested.exchanges = await appendSeenRoutes(digested, seen, config);
-  if (isStarted(digested.activeRoute)) {
-    digested.exchanges = await appendFromDigestedRoute(
+  digested.exchanges = appendSeenRoutes(digested, seen, config);
+
+  if (startedRoute) {
+    startedRoute.pending = resolveRoutePath(
+      events,
+      cache,
+      startedRoute.pending
+    );
+    digested.exchanges = appendFromDigestedRoute(
       digested.exchanges,
-      digested.activeRoute,
+      startedRoute,
       digested.group,
       config
     );
   }
-
-  //digested.exchanges = await resolveSnapshots(digested.exchanges);
   digested.exchanges = appendReadLabel(
     digested.exchanges,
     config.width,

@@ -1,5 +1,8 @@
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
-import { NotificationRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
+import {
+  NotificationRouteType,
+  ROUTE_STATUS_TYPE,
+} from "@Components/phoneApplications/Messages/hooks/routes/types";
 
 import { ZARA_ROUTE_IDS } from "./routes";
 import { TO_SELF_IDS } from "../../toSelf/routes/routes";
@@ -9,7 +12,11 @@ export const how_is_the_phone_coming: NotificationRouteType = {
   delay: 1000,
   conditions: {
     [MESSAGE_CONTACT_NAME.MY_SELF]: {
-      routes: { [TO_SELF_IDS.CHECK_IF_TEXT_IS_WORKING]: { finished: true } },
+      routes: {
+        [TO_SELF_IDS.CHECK_IF_TEXT_IS_WORKING]: {
+          status: ROUTE_STATUS_TYPE.FINISHED,
+        },
+      },
     },
   },
   exchanges: [

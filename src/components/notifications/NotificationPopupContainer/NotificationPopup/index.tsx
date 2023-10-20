@@ -3,7 +3,11 @@ import {
   NOTIFICATIONS_REDUCER_ACTIONS,
   NotificationType,
   NotificationsReducerActionsType,
+  OnPressType,
 } from "@Components/notifications/reducer/types";
+import ConversationEmitter, {
+  CONVERSATION_EMITTER_EVENTS,
+} from "@Components/phoneApplications/Messages/emitters";
 import React, { FC, useCallback, useEffect, useRef } from "react";
 import {
   LayoutChangeEvent,
@@ -27,6 +31,15 @@ import NotificationSwipe from "../NotificationSwipe";
 type PropType = NotificationType & {
   displayIndex: number;
   dispatch: (args: NotificationsReducerActionsType) => void;
+};
+
+const runFunction = (onPressData: OnPressType) => {
+  if (onPressData.type === "CONVERSATION") {
+    ConversationEmitter.emit(
+      CONVERSATION_EMITTER_EVENTS.SHOW,
+      onPressData.payload
+    );
+  }
 };
 
 const NotificationPopup: FC<PropType> = ({
@@ -78,7 +91,7 @@ const NotificationPopup: FC<PropType> = ({
           translateY: interpolate(
             translateY.value,
             [0, 1],
-            [-500, 500 + height.current],
+            [-500, 500 + height.current]
           ),
         },
       ],
@@ -107,7 +120,7 @@ const NotificationPopup: FC<PropType> = ({
         <TouchableWithoutFeedback
           onPress={() => {
             if (onPress) {
-              onPress();
+              runFunction(onPress);
               runOnUI(fadeOut)();
             }
           }}

@@ -1,4 +1,4 @@
-import { SkImage } from "@shopify/react-native-skia";
+import { SkImage, Skia } from "@shopify/react-native-skia";
 import * as FileSystem from "expo-file-system";
 
 import { LOG, LOG_COLORS } from "./logger";
@@ -50,7 +50,7 @@ export const writeImageToFs = async (file: SkImage, filename: string) => {
   writeToFile(dir, file, filename);
 };
 
-export const getImageFromFs = async (filename: string) => {
+export const getBase64StringFromFs = async (filename: string) => {
   const dir = FileSystem.documentDirectory + DIRECTORIES.IMAGE_DIR;
   const path = getPath(dir, filename);
   const file = await FileSystem.getInfoAsync(path);
@@ -61,5 +61,15 @@ export const getImageFromFs = async (filename: string) => {
     return FileSystem.readAsStringAsync(path, {
       encoding: FileSystem.EncodingType.Base64,
     });
+  }
+};
+
+export const getSkImageFromFs = async (filename: string) => {
+  const base64String = await getBase64StringFromFs(filename);
+  if (base64String) {
+    return (
+      Skia.Image.MakeImageFromEncoded(Skia.Data.fromBase64(base64String)) ||
+      undefined
+    );
   }
 };

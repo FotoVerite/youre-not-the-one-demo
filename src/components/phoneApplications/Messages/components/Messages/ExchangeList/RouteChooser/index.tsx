@@ -2,10 +2,6 @@ import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/con
 import ConversationEmitter, {
   CONVERSATION_EMITTER_EVENTS,
 } from "@Components/phoneApplications/Messages/emitters";
-import {
-  isActiveChoosableRoute,
-  isStarted,
-} from "@Components/phoneApplications/Messages/hooks/routes/guards";
 import { DigestedConversationType } from "@Components/phoneApplications/Messages/hooks/useConversation/digestion/types";
 import { CONVERSATION_REDUCER_ACTIONS } from "@Components/phoneApplications/Messages/hooks/useConversation/reducer/type";
 import { ConversationDispatchType } from "@Components/phoneApplications/Messages/hooks/useConversation/types";
@@ -18,6 +14,12 @@ import { useInsetDimensions } from "src/utility/useInsetDimensions";
 import MessageTextInput from "./MessageTextInput";
 import OptionList from "./OptionList";
 import Option from "./OptionList/Option";
+import {
+  hasResolvedOptions,
+  isAvailableRoute,
+  isChoosableRoute,
+  isStartedRoute,
+} from "@Components/phoneApplications/Messages/hooks/routes/guards";
 
 const RootChooser: FC<
   {
@@ -36,10 +38,10 @@ const RootChooser: FC<
   }, [conversation.exchanges, setChosenOption]);
 
   const displayedText = useMemo(() => {
-    if (isStarted(activeRoute) && activeRoute.nextMessageInQueue) {
+    if (isStartedRoute(activeRoute) && activeRoute.nextMessageInQueue) {
       return activeRoute.nextMessageInQueue;
     }
-    if (isActiveChoosableRoute(activeRoute)) {
+    if (isAvailableRoute(activeRoute) && hasResolvedOptions(activeRoute)) {
       const options = activeRoute.options;
       if (options.length === 1) {
         return options[0];
@@ -51,11 +53,11 @@ const RootChooser: FC<
   }, [activeRoute, chosenOption]);
 
   const callback = useCallback(() => {
-    if (isStarted(activeRoute)) {
+    if (isStartedRoute(activeRoute)) {
       dispatch({ type: CONVERSATION_REDUCER_ACTIONS.CONTINUE_ROUTE });
       return;
     }
-    if (isActiveChoosableRoute(activeRoute)) {
+    if (hasResolvedOptions(activeRoute)) {
       const options = activeRoute.options;
       if (options.length === 1) {
         dispatch({
@@ -73,7 +75,7 @@ const RootChooser: FC<
   }, [activeRoute, dispatch, chosenOption]);
 
   const Options = useMemo(() => {
-    if (isActiveChoosableRoute(activeRoute)) {
+    if (hasResolvedOptions(activeRoute)) {
       const nodes = activeRoute.options.map((option) => (
         <Option
           key={`${activeRoute.routes.id}-${option}`}
@@ -107,6 +109,7 @@ const RootChooser: FC<
     <Animated.View style={[{ width }, styles.container]}>
       {Platform.OS === "ios" && <BlurView style={styles.blur} intensity={5} />}
       <MessageTextInput
+        chevronColor={conversation.interfaceColor}
         text={displayedText}
         cb={callback}
         openOptionList={openOptionList}

@@ -2,13 +2,16 @@ import {
   MESSAGE_CONTACT_NAME,
   SNAPSHOT_NAMES,
 } from "@Components/phoneApplications/Messages/constants";
-import { ChoosableRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
-
-import { SPAM1_IDS } from "./routes";
 import {
   EFFECT_TYPE,
   MESSAGE_CONTENT,
 } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
+import {
+  ChoosableRouteType,
+  ROUTE_STATUS_TYPE,
+} from "@Components/phoneApplications/Messages/hooks/routes/types";
+
+import { SPAM1_IDS } from "./routes";
 
 export enum SPAM1_WHAT_IS_WITH_THIS_SERIAL_STALKER_BULLSHIT_OPTIONS {
   A = "What the fuck are you on?",
@@ -24,7 +27,9 @@ export const what_is_with_this_serial_killer_bullshit: ChoosableRouteType = {
   conditions: {
     [MESSAGE_CONTACT_NAME.SPAM1]: {
       routes: {
-        [SPAM1_IDS.DID_NOT_SEND_IMAGES_NOTIFICATION]: { finished: true },
+        [SPAM1_IDS.DID_NOT_SEND_IMAGES_NOTIFICATION]: {
+          status: ROUTE_STATUS_TYPE.FINISHED,
+        },
       },
     },
   },

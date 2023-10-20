@@ -1,10 +1,13 @@
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
-import { NotificationRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
+import {
+  NotificationRouteType,
+  ROUTE_STATUS_TYPE,
+} from "@Components/phoneApplications/Messages/hooks/routes/types";
 
 import { MICHAEL_IDS } from "../../../michael/routes/routes";
+import { ZARA_ROUTE_IDS } from "../../../zara/routes/routes";
 import { SPAM1_IDS } from "../routes";
 import { SPAM1_SECOND_EXCHANGE_OPTIONS } from "../spam_exchange_two";
-import { ZARA_ROUTE_IDS } from "../../../zara/routes/routes";
 
 export const sent_images: NotificationRouteType = {
   id: SPAM1_IDS.DID_SEND_IMAGES_NOTIFICATION,
@@ -16,7 +19,11 @@ export const sent_images: NotificationRouteType = {
       },
     },
     [MESSAGE_CONTACT_NAME.MICHAEL]: {
-      routes: { [MICHAEL_IDS.ABOUT_TONIGHT_REPLY]: { finished: true } },
+      routes: {
+        [MICHAEL_IDS.ABOUT_TONIGHT_REPLY]: {
+          status: ROUTE_STATUS_TYPE.FINISHED,
+        },
+      },
     },
   },
   exchanges: [
@@ -37,10 +44,18 @@ export const did_not_send_images: NotificationRouteType = {
       },
     },
     [MESSAGE_CONTACT_NAME.MICHAEL]: {
-      routes: { [MICHAEL_IDS.ABOUT_TONIGHT_REPLY]: { finished: true } },
+      routes: {
+        [MICHAEL_IDS.ABOUT_TONIGHT_REPLY]: {
+          status: ROUTE_STATUS_TYPE.FINISHED,
+        },
+      },
     },
     [MESSAGE_CONTACT_NAME.ZARA]: {
-      routes: { [ZARA_ROUTE_IDS.I_DONT_FEEL_SECURE]: { finished: true } },
+      routes: {
+        [ZARA_ROUTE_IDS.I_DONT_FEEL_SECURE]: {
+          status: ROUTE_STATUS_TYPE.FINISHED,
+        },
+      },
     },
   },
   exchanges: [

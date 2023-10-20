@@ -1,4 +1,5 @@
 import { NotificationDataType } from "@Components/notifications/reducer/types";
+import { ROUTE_STATUS_TYPE } from "@Components/phoneApplications/Messages/hooks/routes/types";
 import { SkImage } from "@shopify/react-native-skia";
 import { Image } from "react-native-svg";
 import { PHONE_APPLICATION_NAMES } from "src/constants/phoneApplicationNames";
@@ -18,7 +19,7 @@ export type MessageRouteEventDataType = {
   atIndex?: number;
   chosen?: string;
   createdAt: string;
-  finished?: boolean;
+  status: ROUTE_STATUS_TYPE;
   logline?: string;
   messageTimestamps: string[];
   position: number;
@@ -42,12 +43,6 @@ export type MessageAppEventsContainerType = {
 
 export type AppEventsType = {
   [PHONE_APPLICATION_NAMES.MESSAGES]: MessageAppEventsContainerType;
-  ["NOTIFICATIONS"]: NotificationDataType[];
-  ["CACHE"]: {
-    [index in keyof typeof PHONE_APPLICATION_NAMES]: {
-      [id: string]: SkImage | Image;
-    };
-  };
 };
 
 export type AddMessageAppConversationSeenEventAction = {
@@ -62,7 +57,7 @@ export type BlockMessageAppConversationEventAction = {
 export type EventPropsPayloadType = {
   atIndex?: number;
   chosen?: string;
-  finished?: boolean;
+  status?: ROUTE_STATUS_TYPE;
   logline?: string;
   messageTimestamps?: string[];
   notification?: NotificationDataType;
@@ -70,9 +65,13 @@ export type EventPropsPayloadType = {
   routeId: string;
 };
 
+export type CreateMessageEventPayloadType = EventPropsPayloadType & {
+  status: ROUTE_STATUS_TYPE;
+};
+
 export type CreateMessageAppRouteEventAction = {
   type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_CREATE;
-  payload: EventPropsPayloadType;
+  payload: CreateMessageEventPayloadType;
 };
 
 export type UpdateMessageAppRouteEventAction = {

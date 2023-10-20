@@ -1,3 +1,4 @@
+import { ROUTE_STATUS_TYPE } from "@Components/phoneApplications/Messages/hooks/routes/types";
 import { produce } from "immer";
 
 import eventsReducer from "..";
@@ -66,7 +67,11 @@ describe("eventsReducer", () => {
     it(`with minimal props`, () => {
       const minimalProps: CreateMessageAppRouteEventAction = {
         type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_CREATE,
-        payload: { routeId: 1, name: "name", finished: true },
+        payload: {
+          routeId: 1,
+          name: "name",
+          status: ROUTE_STATUS_TYPE.FINISHED,
+        },
       };
 
       const returnValue = produce(AppEvent, (draft) => {
@@ -75,7 +80,7 @@ describe("eventsReducer", () => {
             createdAt: dateTime,
             updatedAt: dateTime,
             position: 1,
-            finished: true,
+            status: ROUTE_STATUS_TYPE.FINISHED,
           },
         };
         return draft;

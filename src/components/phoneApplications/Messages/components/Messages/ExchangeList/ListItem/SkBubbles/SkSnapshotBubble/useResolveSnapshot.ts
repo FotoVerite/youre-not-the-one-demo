@@ -12,7 +12,7 @@ export const useSnapshotResolver = (
   content: ImageDigestionPropsType,
   dispatch: (action: ConversationReducerActionsType) => void,
   ID: string,
-  width: number
+  width: number,
 ) => {
   const context = useSnapshotContext();
   const { image, setTakeSnapShot } = context;

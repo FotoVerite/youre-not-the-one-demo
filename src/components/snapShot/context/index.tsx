@@ -8,6 +8,7 @@ import React, {
   useState,
 } from "react";
 import { View } from "react-native";
+import { useImageCacheContext } from "src/contexts/imageCache";
 import { writeImageToFs } from "src/utility/filesystem";
 import { LOG, LOG_COLORS } from "src/utility/logger";
 
@@ -57,6 +58,7 @@ const SnapShotContextProvider: FC<SnapShotContextDigestType> = (props) => {
   useEffect(() => {
     const processImage = async () => {
       if (image != null) {
+        cache.set((cache) => (cache[image.filename] = image.uri));
         switch (image.type) {
           case SNAPSHOT_TYPES.SILENT:
             writeImageToFs(image.uri, image.filename);
@@ -86,7 +88,7 @@ const SnapShotContextProvider: FC<SnapShotContextDigestType> = (props) => {
     (args: TakeSnapshotType) => {
       _setTakeSnapShot(args);
     },
-    [_setTakeSnapShot],
+    [_setTakeSnapShot]
   );
 
   const setImage = useCallback((args: SnapShotImageType) => {

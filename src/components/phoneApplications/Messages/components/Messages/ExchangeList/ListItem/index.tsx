@@ -20,7 +20,7 @@ const ListItem: FC<ExchangeListItemType> = (props) => {
     (isResolved: boolean) => {
       _setAsResolved(isResolved);
     },
-    [_setAsResolved]
+    [_setAsResolved],
   );
   const item = useBubbleResolver({ ...props, setAsResolved });
   let bubble: React.JSX.Element;

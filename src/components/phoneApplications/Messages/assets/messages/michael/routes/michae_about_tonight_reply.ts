@@ -1,6 +1,9 @@
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
 import { MESSAGE_CONTENT } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
-import { ChoosableRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
+import {
+  ChoosableRouteType,
+  ROUTE_STATUS_TYPE,
+} from "@Components/phoneApplications/Messages/hooks/routes/types";
 import { ExchangeBlockType } from "@Components/phoneApplications/Messages/hooks/useConversations/types";
 
 import { MICHAEL_IDS } from "./routes";
@@ -95,7 +98,7 @@ export const michael_about_tonight_reply: ChoosableRouteType = {
   conditions: {
     [MESSAGE_CONTACT_NAME.MICHAEL]: {
       routes: {
-        [MICHAEL_IDS.FIRST_TEXT]: { finished: true },
+        [MICHAEL_IDS.FIRST_TEXT]: { status: ROUTE_STATUS_TYPE.FINISHED },
       },
     },
   },

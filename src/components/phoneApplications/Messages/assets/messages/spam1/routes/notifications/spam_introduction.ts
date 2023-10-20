@@ -1,5 +1,8 @@
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
-import { NotificationRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
+import {
+  NotificationRouteType,
+  ROUTE_STATUS_TYPE,
+} from "@Components/phoneApplications/Messages/hooks/routes/types";
 
 import { ZARA_ROUTE_IDS } from "../../../zara/routes/routes";
 import { SPAM1_IDS } from "../routes";
@@ -10,7 +13,9 @@ export const spam1_introduction: NotificationRouteType = {
   conditions: {
     [MESSAGE_CONTACT_NAME.ZARA]: {
       routes: {
-        [ZARA_ROUTE_IDS.YOUR_NEW_VIDEO]: { finished: true },
+        [ZARA_ROUTE_IDS.YOUR_NEW_VIDEO]: {
+          status: ROUTE_STATUS_TYPE.FINISHED,
+        },
       },
     },
   },

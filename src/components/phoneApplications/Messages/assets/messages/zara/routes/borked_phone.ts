@@ -1,6 +1,9 @@
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
 import { MESSAGE_CONTENT } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
-import { ChoosableRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
+import {
+  ChoosableRouteType,
+  ROUTE_STATUS_TYPE,
+} from "@Components/phoneApplications/Messages/hooks/routes/types";
 
 import { ZARA_ROUTE_IDS } from "./routes";
 
@@ -19,7 +22,11 @@ export const borked_phone: ChoosableRouteType = {
   options: Object.values(BORKED_PHONE_OPTIONS),
   conditions: {
     [MESSAGE_CONTACT_NAME.ZARA]: {
-      routes: { [ZARA_ROUTE_IDS.HOW_IS_THE_PHONE_COMING]: { finished: true } },
+      routes: {
+        [ZARA_ROUTE_IDS.HOW_IS_THE_PHONE_COMING]: {
+          status: ROUTE_STATUS_TYPE.FINISHED,
+        },
+      },
     },
   },
   routes: {

@@ -3,7 +3,7 @@ import {
   EventPropsPayloadType,
 } from "@Components/appEvents/reducer/types";
 
-import { StartedRouteType } from "../../routes/types";
+import { ROUTE_STATUS_TYPE, StartedRouteType } from "../../routes/types";
 import {
   DigestedConversationType,
   DigestedConversationWithStartedRoute,
@@ -12,14 +12,14 @@ import {
 export const createCleanupPayload = (
   draft: DigestedConversationWithStartedRoute,
   forewordToIndex: number,
-  finished: boolean,
+  status: ROUTE_STATUS_TYPE,
   logline?: string
 ) => {
   const payload = {
     routeId: draft.activeRoute.id,
     name: draft.name,
     atIndex: forewordToIndex,
-    finished,
+    status,
     messageTimestamps: new Array(
       forewordToIndex - draft.activeRoute.indexAt
     ).fill(new Date().toISOString()),
@@ -45,7 +45,7 @@ export const routeStartedPayload = (
     chosen: route.chosen,
     routeId: route.id,
     atIndex: 1,
-    finished: false,
+    status: ROUTE_STATUS_TYPE.STARTED,
   },
 });
 
@@ -74,7 +74,7 @@ export const routeFinishedPayload = (
   const payload = {
     routeId: draft.activeRoute.id,
     name: draft.name,
-    finished: true,
+    status: ROUTE_STATUS_TYPE.FINISHED,
   } as EventPropsPayloadType;
   return {
     type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_UPDATE,

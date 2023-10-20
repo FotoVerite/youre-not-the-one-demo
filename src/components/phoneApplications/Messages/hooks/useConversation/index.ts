@@ -8,6 +8,7 @@ import { useFontsContext } from "src/contexts/fonts";
 import { LOG, LOG_COLORS } from "src/utility/logger";
 
 import { digestConversation } from "./digestion";
+import { blockableConditionsMet } from "./digestion/blockable";
 import createConversationReducer from "./reducer";
 import {
   CONVERSATION_REDUCER_ACTIONS,
@@ -16,10 +17,11 @@ import {
 import ConversationEmitter, {
   CONVERSATION_EMITTER_EVENTS,
 } from "../../emitters";
-import { findStartableRoute } from "../routes/available";
+import { findRouteEventIdsByStatus } from "../routes/filter";
+import { resolveRoutesPath } from "../routes/resolver";
+import { AbstractDigestedRouteType, ROUTE_STATUS_TYPE } from "../routes/types";
 import { ConversationType } from "../useConversations/types";
-import { createActiveRoute } from "../routes/resolver";
-import { blockableConditionsMet } from "./digestion/blockable";
+import { useImageCacheContext } from "src/contexts/imageCache";
 
 export const useConversation = (
   width: number,
@@ -27,6 +29,7 @@ export const useConversation = (
 ) => {
   const { state: events, dispatch: eventsDispatch } = useAppEventsContext();
   const fontsContext = useFontsContext();
+  const cache = useImageCacheContext().images;
   const cleanupAction = useRef<AppEventsReducerActionsType>();
 
   const config = useMemo(() => {
@@ -54,14 +57,14 @@ export const useConversation = (
       if (!_conversation) {
         return;
       }
-      const digested = await digestConversation(config, _conversation, events);
+      const digested = digestConversation(config, _conversation, events, cache);
       cleanupAction.current = undefined;
       dispatch({
         type: CONVERSATION_REDUCER_ACTIONS.ADD_CONVERSATION,
         payload: digested,
       });
     },
-    [config, events]
+    [config, events, cache]
   );
 
   useEffect(() => {
@@ -78,38 +81,32 @@ export const useConversation = (
     }
   }, [state?.eventAction, state?.name, eventsDispatch]);
 
-  // useEffect(() => {
-  //   const refreshConversation = () => {
-  //     if (!state) return;
-  //     if (state.activeRoute) return;
-  //     dispatch({
-  //       type: CONVERSATION_REDUCER_ACTIONS.REFRESH,
-  //       payload: events,
-  //     });
-  //   };
-  //   refreshConversation();
-  // }, [state, events]);
-
   useEffect(() => {
     const refreshConversation = async () => {
       if (!state) return;
       const blockable = blockableConditionsMet(state, events);
-      let activeRoute;
+      let activeRoute: undefined | AbstractDigestedRouteType;
       if (!state.activeRoute) {
-        activeRoute = await findStartableRoute(
-          width,
-          state.name,
-          Object.values(state.availableRoutes),
-          events
-        );
+        const triggerableRouteId = findRouteEventIdsByStatus(
+          events.Messages[state.name],
+          ROUTE_STATUS_TYPE.AVAILABLE
+        )[0];
+        activeRoute = {
+          ...state.availableRoutes[triggerableRouteId],
+          status: ROUTE_STATUS_TYPE.AVAILABLE,
+        };
+        activeRoute = resolveRoutesPath(events, cache, activeRoute);
       }
       dispatch({
         type: CONVERSATION_REDUCER_ACTIONS.REFRESH,
-        payload: { blockable, activeRoute },
+        payload: {
+          blockable,
+          activeRoute,
+        },
       });
     };
     refreshConversation();
-  }, [state, events, width]);
+  }, [state, events, cache, width]);
 
   useEffect(() => {
     if (!state && cleanupAction.current) {

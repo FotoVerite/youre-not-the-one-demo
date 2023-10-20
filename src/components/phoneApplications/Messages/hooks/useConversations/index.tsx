@@ -4,10 +4,7 @@ import { produce } from "immer";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 
-import {
-  determineLoglineAndTimeOfLastMessage,
-  formatConversationTime,
-} from "./determineLogLine";
+import { determineLoglineAndTimeOfLastMessage } from "./determineLogLine";
 import {
   ConversationFileType,
   ConversationListType,
@@ -68,7 +65,7 @@ const convertFromConversationFromFileToListType = (
     routes,
     ...props
   } = conversation;
-  const hasAvailableRoute = hasStartableRoute(props.name, routes || [], events);
+  const hasAvailableRoute = hasStartableRoute(props.name, events);
   const { time, logline } = determineLoglineAndTimeOfLastMessage(
     conversation,
     events

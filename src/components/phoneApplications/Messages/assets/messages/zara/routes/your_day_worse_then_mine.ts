@@ -1,5 +1,8 @@
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
-import { NotificationRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
+import {
+  NotificationRouteType,
+  ROUTE_STATUS_TYPE,
+} from "@Components/phoneApplications/Messages/hooks/routes/types";
 
 import { ZARA_ROUTE_IDS } from "./routes";
 
@@ -8,7 +11,9 @@ export const your_day_worse_then_mine: NotificationRouteType = {
   delay: 3000,
   conditions: {
     [MESSAGE_CONTACT_NAME.ZARA]: {
-      routes: { [ZARA_ROUTE_IDS.BORKED_PHONE]: { finished: true } },
+      routes: {
+        [ZARA_ROUTE_IDS.BORKED_PHONE]: { status: ROUTE_STATUS_TYPE.FINISHED },
+      },
     },
   },
   exchanges: [

@@ -9,12 +9,12 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 import { theme } from "src/theme";
+import { useInsetDimensions } from "src/utility/useInsetDimensions";
 
 import Footer from "../Footer";
 import ListItem from "../ListItem";
 import { ExchangeListItemType } from "../ListItem/types";
 import ListOffsetEmitter, { LIST_EMITTER_EVENTS } from "../emitters";
-import { useInsetDimensions } from "src/utility/useInsetDimensions";
 
 const renderItem: ListRenderItem<ExchangeListItemType> = ({ item }) => (
   <ListItem {...item} />
@@ -22,7 +22,7 @@ const renderItem: ListRenderItem<ExchangeListItemType> = ({ item }) => (
 
 const getItemLayout = (
   data: ArrayLike<ExchangeListItemType> | null | undefined,
-  index: number
+  index: number,
 ) => ({
   length: data ? data[index].height + data[index].paddingBottom : 0,
   offset: data ? data[index].offset : 0,
@@ -61,7 +61,7 @@ const List: FC<{
         }
         return acc;
       },
-      { index: exchanges.length - 1, height: windowHeight - 500 }
+      { index: exchanges.length - 1, height: windowHeight - 500 },
     ).index;
   }, [exchanges, windowHeight]);
 

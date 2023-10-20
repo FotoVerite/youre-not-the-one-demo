@@ -3,6 +3,7 @@ import { MESSAGE_CONTENT } from "@Components/phoneApplications/Messages/hooks/co
 import {
   ChoosableRouteType,
   OptionsWithConditionals,
+  ROUTE_STATUS_TYPE,
 } from "@Components/phoneApplications/Messages/hooks/routes/types";
 import { ExchangeBlockType } from "@Components/phoneApplications/Messages/hooks/useConversations/types";
 
@@ -134,7 +135,7 @@ export const i_fell_for_spam: ChoosableRouteType = {
   conditions: {
     [MESSAGE_CONTACT_NAME.SPAM1]: {
       routes: {
-        [SPAM1_IDS.EXCHANGE_TWO]: { finished: true },
+        [SPAM1_IDS.EXCHANGE_TWO]: { status: ROUTE_STATUS_TYPE.FINISHED },
       },
     },
   },

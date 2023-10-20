@@ -1,3 +1,4 @@
+import { CACHED_KEYS } from "@Components/Main/CacheLoader/types";
 import { useNotificationContext } from "@Components/notifications/context";
 import {
   NOTIFICATIONS_REDUCER_ACTIONS,
@@ -13,7 +14,6 @@ import React, {
   useRef,
 } from "react";
 import { PHONE_APPLICATION_NAMES } from "src/constants/phoneApplicationNames";
-import { useStorageContext } from "src/contexts/storage";
 import { LOG, LOG_COLORS } from "src/utility/logger";
 
 import {
@@ -23,7 +23,6 @@ import {
 import eventsReducer from "../reducer";
 import {
   AppEventsReducerActionsType,
-  AppEventsType,
   MessageAppEventsContainerType,
 } from "../reducer/types";
 
@@ -32,13 +31,12 @@ const AppEventsContext = React.createContext<
   AppEventsContextTypeDigested | undefined
 >(undefined);
 
-const setInitialState = (state: AppEventsType | false) => {
+const setInitialState = (state: string | undefined) => {
   if (state) {
-    return state;
+    return JSON.parse(state);
   }
   const defaultState = {
     [PHONE_APPLICATION_NAMES.MESSAGES]: {} as MessageAppEventsContainerType,
-    NOTIFICATIONS: [],
   };
   const messageState = defaultState.Messages;
   for (const name of Object.values(MESSAGE_CONTACT_NAME)) {
@@ -49,42 +47,46 @@ const setInitialState = (state: AppEventsType | false) => {
   return defaultState;
 };
 
-const AppEventsContextProvider: FC<AppEventsContextTypeDigest> = (props) => {
+const AppEventsContextProvider: FC<AppEventsContextTypeDigest> = ({
+  children,
+  resolver,
+  data,
+}) => {
   const sentNotifications = useRef<NotificationDataType[]>([]);
   const { dispatch: notificationDispatch } = useNotificationContext();
-  const storage = useStorageContext();
 
-  const [events, dispatch] = useReducer(
-    eventsReducer,
-    setInitialState(storage.events),
-  );
+  const [events, dispatch] = useReducer(eventsReducer, setInitialState(data));
 
   const memoizedDispatch = useCallback(
     (action: AppEventsReducerActionsType) => {
       dispatch(action);
     },
-    [],
+    []
   );
 
-  useEffect(() => {
-    sentNotifications.current = storage.events
-      ? storage.events.NOTIFICATIONS
-      : [];
-  }, [storage.events]);
+  // useEffect(() => {
+  //   if (events) {
+  //     storeData(CACHED_KEYS.EVENTS, JSON.stringify(events));
+  //   }
+  // }, [events]);
+
+  // useEffect(() => {
+  //   const newNotifications = events.NOTIFICATIONS.filter(
+  //     (notification) => !sentNotifications.current.includes(notification)
+  //   );
+  //   newNotifications.forEach((notification) =>
+  //     notificationDispatch({
+  //       type: NOTIFICATIONS_REDUCER_ACTIONS.ADD,
+  //       payload: notification,
+  //     })
+  //   );
+  //   sentNotifications.current =
+  //     sentNotifications.current.concat(newNotifications);
+  // }, [events.NOTIFICATIONS, notificationDispatch]);
 
   useEffect(() => {
-    const newNotifications = events.NOTIFICATIONS.filter(
-      (notification) => !sentNotifications.current.includes(notification),
-    );
-    newNotifications.forEach((notification) =>
-      notificationDispatch({
-        type: NOTIFICATIONS_REDUCER_ACTIONS.ADD,
-        payload: notification,
-      }),
-    );
-    sentNotifications.current =
-      sentNotifications.current.concat(newNotifications);
-  }, [events.NOTIFICATIONS, notificationDispatch]);
+    if (events != null) resolver(CACHED_KEYS.EVENTS, true);
+  }, [events, resolver]);
 
   return (
     <AppEventsContext.Provider
@@ -93,7 +95,7 @@ const AppEventsContextProvider: FC<AppEventsContextTypeDigest> = (props) => {
         dispatch: memoizedDispatch,
       }}
     >
-      {props.children}
+      {children}
     </AppEventsContext.Provider>
   );
 };

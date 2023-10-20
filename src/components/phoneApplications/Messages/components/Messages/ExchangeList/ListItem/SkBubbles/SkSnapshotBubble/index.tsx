@@ -32,7 +32,7 @@ export const SkSnapshotBubble: FC<
     height,
     16,
     addressee,
-    isLastInExchange ? 0 : 1
+    isLastInExchange ? 0 : 1,
   );
 
   useEffect(() => {
@@ -54,7 +54,7 @@ export const SkSnapshotBubble: FC<
               uri: "data:image/png;base64," + image.encodeToBase64(),
             }}
             aspectRatio={width / height}
-          />
+          />,
         );
       }}
     >

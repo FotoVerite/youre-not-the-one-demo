@@ -1,5 +1,8 @@
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
-import { NotificationRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
+import {
+  NotificationRouteType,
+  ROUTE_STATUS_TYPE,
+} from "@Components/phoneApplications/Messages/hooks/routes/types";
 
 import { ZARA_ROUTE_IDS } from "./routes";
 import { MICHAEL_IDS } from "../../michael/routes/routes";
@@ -10,12 +13,16 @@ export const zara_do_you_want_any_contacts: NotificationRouteType = {
   conditions: {
     [MESSAGE_CONTACT_NAME.MICHAEL]: {
       routes: {
-        [MICHAEL_IDS.ABOUT_TONIGHT_REPLY]: { finished: true },
+        [MICHAEL_IDS.ABOUT_TONIGHT_REPLY]: {
+          status: ROUTE_STATUS_TYPE.FINISHED,
+        },
       },
     },
     [MESSAGE_CONTACT_NAME.ZARA]: {
       routes: {
-        [ZARA_ROUTE_IDS.I_AM_BEING_HARASSED]: { finished: true },
+        [ZARA_ROUTE_IDS.I_AM_BEING_HARASSED]: {
+          status: ROUTE_STATUS_TYPE.FINISHED,
+        },
       },
     },
   },
