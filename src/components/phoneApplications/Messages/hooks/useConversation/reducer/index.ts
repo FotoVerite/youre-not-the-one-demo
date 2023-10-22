@@ -20,6 +20,14 @@ import {
   RefreshAvailablePayloadType,
 } from "./type";
 import { MESSAGE_CONTENT } from "../../contentWithMetaTypes";
+import { messagesConditionalCheck } from "../../routes/conditionals";
+import {
+  isChoosableRoute,
+  isDigestedChoosableRoute,
+  isDigestedNotificationRoute,
+  isNotificationRoute,
+  isStartedRoute,
+} from "../../routes/guards";
 import { ROUTE_STATUS_TYPE, ROUTE_TYPE } from "../../routes/types";
 import { convertMessageToString } from "../../useConversations/determineLogLine";
 import { createSkBubbleFromPayload } from "../digestion/SkFunctions/createSkBubble";
@@ -37,14 +45,6 @@ import {
   DigestedMessageProps,
 } from "../digestion/types";
 import { getListHeight } from "../digestion/utility";
-import {
-  isChoosableRoute,
-  isDigestedChoosableRoute,
-  isDigestedNotificationRoute,
-  isNotificationRoute,
-  isStartedRoute,
-} from "../../routes/guards";
-import { messagesConditionalCheck } from "../../routes/conditionals";
 
 const createConversationReducer =
   (config: BaseConfigType) =>
@@ -97,7 +97,6 @@ const refreshConversation = (
   payload: RefreshAvailablePayloadType
 ) => {
   draft.blockable = payload.blockable;
-  console.log(draft.activeRoute != null, draft.name, draft.activeRoute?.id);
   if (draft.activeRoute != null || !payload.activeRoute) return;
   draft.activeRoute = payload.activeRoute;
   return _createMessageAndUpdateDraft(config, draft);
@@ -165,8 +164,9 @@ const _createMessageAndUpdateDraft = (
   }
 
   draft.eventAction = routeStartedPayload(
-    draft,
+    draft.name,
     draft.activeRoute,
+    chosenOption,
     convertMessageToString(payload.messageContent)
   );
   delete draft.availableRoutes[draft.activeRoute.id];
@@ -266,6 +266,7 @@ const finishRoute = (
   draft.eventAction = routeFinishedPayload(draft, options);
   const newDraft = draft as DigestedConversationType;
   newDraft.activeRoute = undefined;
+  newDraft.cleanupAction = undefined;
   return newDraft;
 };
 
@@ -366,7 +367,7 @@ const _createCleanupAction = (draft: DigestedConversationType) => {
   draft.cleanupAction = createCleanupPayload(
     draft,
     forwardTo.index + 1,
-    nextSent == null ? ROUTE_STATUS_TYPE.FINISHED : ROUTE_STATUS_TYPE.ACTIVE,
+    nextSent == null ? ROUTE_STATUS_TYPE.FINISHED : ROUTE_STATUS_TYPE.STARTED,
     convertMessageToString(forwardTo.messageContent)
   );
 };

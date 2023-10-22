@@ -30,7 +30,9 @@ export const isChoosableRoute = (
 export const areResolvedOptions = (
   options?: string[] | OptionsWithConditionals[]
 ): options is string[] => {
-  return options != null && Array.isArray(options);
+  return (
+    options != null && options.every((option) => typeof option === "string")
+  );
 };
 
 export const hasResolvedOptions = (
@@ -94,28 +96,3 @@ export const isFinishedRoute = (
 ): route is FinishedRouteType => {
   return route != null && route.status === ROUTE_STATUS_TYPE.FINISHED;
 };
-// export const isActiveNotificationRoute = (
-//   route: AbstractDigestedRouteType | undefined
-// ): route is AvailableNotificationRoute => {
-//   return (
-//     route != null &&
-//     route.status === ROUTE_STATUS_TYPE.AVAILABLE &&
-//     route.type === ROUTE_TYPE.NOTIFICATION
-//   );
-// };
-
-// export const isAvailableChoosableRoute = (
-//   route: AbstractDigestedRouteType | undefined
-// ): route is AvailableChoosableRoute => {
-//   return (
-//     route != null &&
-//     route.status === ROUTE_STATUS_TYPE.AVAILABLE &&
-//     route.type === ROUTE_TYPE.CHOOSE
-//   );
-// };
-
-// export const hasMultipleMeetableConditions = (
-//   route: AbstractDigestedRouteType | undefined
-// ): route is DigestedRouteWithMultipleMeetableConditionsType => {
-//   return route != null && typeof route.conditions === "object";
-// };

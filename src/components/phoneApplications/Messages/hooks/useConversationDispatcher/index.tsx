@@ -3,9 +3,10 @@ import {
   APP_EVENTS_ACTIONS,
   AppEventsType,
 } from "@Components/appEvents/reducer/types";
+import { produce } from "immer";
 import { useState, useCallback, useMemo, useEffect } from "react";
+import { delayFor } from "src/utility/async";
 
-import { MESSAGE_CONTACT_NAME } from "../../constants";
 import { messageAppConditionsMet } from "../routes/conditionals";
 import {
   isDigestedChoosableRoute,
@@ -15,13 +16,14 @@ import {
   ROUTE_STATUS_TYPE,
   AbstractDigestedRouteType,
   DigestedNotificationRouteType,
+  ROUTE_TYPE,
 } from "../routes/types";
+import { createRouteKey } from "../routes/utility";
 import { reduceAndSortRoutes } from "../useConversation/digestion/routeReducers";
 import { convertMessageToString } from "../useConversations/determineLogLine";
 import { ConversationFileType } from "../useConversations/types";
-import { delayFor } from "src/utility/async";
 
-export const useConversationNotifier = (
+export const useConversationDispatcher = (
   conversations: ConversationFileType[]
 ) => {
   const eventsContext = useAppEventsContext();
@@ -31,9 +33,9 @@ export const useConversationNotifier = (
   );
 
   const toNotify = useMemo(() => {
-    return Object.values(routes).filter((route) =>
-      messageAppConditionsMet(events.Messages, route.conditions)
-    );
+    return Object.values(routes).filter((route) => {
+      return messageAppConditionsMet(events.Messages, route.conditions);
+    });
   }, [events.Messages, routes]);
 
   const dispatchNotification = useCallback(
@@ -44,6 +46,7 @@ export const useConversationNotifier = (
       dispatch({
         type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_CREATE,
         payload: {
+          type: ROUTE_TYPE.NOTIFICATION,
           name: route.name,
           routeId: route.id.toString(),
           messageTimestamps: new Array(route.exchanges.length).fill(
@@ -62,6 +65,7 @@ export const useConversationNotifier = (
       dispatch({
         type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_CREATE,
         payload: {
+          type: ROUTE_TYPE.CHOOSE,
           name: route.name,
           routeId: route.id.toString(),
           status: ROUTE_STATUS_TYPE.AVAILABLE,
@@ -73,17 +77,23 @@ export const useConversationNotifier = (
 
   useEffect(() => {
     const cb = async () => {
-      const internalRoutes = { ...routes };
+      const ids = toNotify.map((route) => createRouteKey(route));
+      setRoutes((internRoutes) =>
+        produce(internRoutes, (draft) => {
+          for (const id of ids) {
+            delete draft[id];
+          }
+          return draft;
+        })
+      );
       for (const route of toNotify) {
         await delayFor(route.delay || 0);
         if (isDigestedChoosableRoute(route)) dispatchChoosable(route);
         if (isDigestedNotificationRoute(route)) dispatchNotification(route);
-        delete internalRoutes[`${route.id}-${route.name}`];
       }
-      setRoutes(internalRoutes);
     };
     cb();
-  }, [dispatchChoosable, dispatchNotification, routes, toNotify]);
+  }, [dispatchChoosable, dispatchNotification, toNotify]);
 };
 
 const reduceConversations = (

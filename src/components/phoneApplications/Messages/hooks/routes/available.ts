@@ -1,33 +1,12 @@
-import {
-  AppEventsType,
-  MessageAppEventsContainerType,
-  MessageAppEventsType,
-} from "@Components/appEvents/reducer/types";
+import { AppEventsType } from "@Components/appEvents/reducer/types";
 
+import { findRouteEventIdsByStatus } from "./filter";
 import {
-  messageAppConditionsMet,
-  messagesConditionalCheck,
-  removeOptionsThatConditionsHaveNotBeenMet,
-} from "./conditionals";
-import { isDigestedChoosableRoute } from "./guards";
-import { asyncResolveRoutes, resolveRoutePath } from "./resolver";
-import {
-  ActiveChoosableRoute,
-  ActiveNotificationRoute,
   ChoosableRouteType,
-  DigestedChoosableRouteType,
-  DigestedNotificationRouteType,
   NotificationRouteType,
   ROUTE_STATUS_TYPE,
 } from "./types";
 import { MESSAGE_CONTACT_NAME } from "../../constants";
-import { filterRouteEventsByStatus, findRouteEventIdsByStatus } from "./filter";
-
-type GenericRouteType =
-  | NotificationRouteType
-  | ChoosableRouteType
-  | DigestedChoosableRouteType
-  | DigestedNotificationRouteType;
 
 export const filterSeenRoutes = (
   name: MESSAGE_CONTACT_NAME,

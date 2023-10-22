@@ -1,3 +1,9 @@
+import { NOTIFICATION_ON_PRESS } from "@Components/notifications/reducer/types";
+import {
+  MESSAGE_CONTACT_INFO,
+  MESSAGE_CONTACT_NAME,
+} from "@Components/phoneApplications/Messages/constants";
+import { ROUTE_STATUS_TYPE } from "@Components/phoneApplications/Messages/hooks/routes/types";
 import { produce } from "immer";
 import { LOG, LOG_COLORS } from "src/utility/logger";
 
@@ -73,9 +79,13 @@ const CreateRouteEvent = (
 
 const UpdateRouteEvent = (
   draft: AppEventsType,
-  payload: Omit<EventPropsPayloadType, "logline"> & { logline?: string }
+  payload: Omit<EventPropsPayloadType, "logline"> & {
+    logline?: string;
+    notify?: boolean;
+  }
 ) => {
-  const { routeId, name, ...props } = payload;
+  const { routeId, notify, ...props } = payload;
+  const name = payload.name as MESSAGE_CONTACT_NAME;
   const stringRouteID = routeId.toString();
   const route = draft.Messages[name].routes[stringRouteID];
 
@@ -96,6 +106,20 @@ const UpdateRouteEvent = (
     ...restOfProps,
     ...{ updatedAt: new Date().toISOString() },
   };
+  if (notify && props.status === ROUTE_STATUS_TYPE.FINISHED) {
+    const route = draft.Messages[name].routes[stringRouteID];
+    const notification = {
+      ID: `${stringRouteID}-${name}`,
+      title: `Message from ${name}`,
+      content: route.logline || "",
+      image: MESSAGE_CONTACT_INFO[name].avatar,
+      onPress: {
+        type: NOTIFICATION_ON_PRESS.CONVERSATION,
+        payload: { name },
+      },
+    };
+    draft.notificationPayload = notification;
+  }
   return draft;
 };
 

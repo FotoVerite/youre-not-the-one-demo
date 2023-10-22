@@ -14,7 +14,8 @@ import MediaContextProvider from "../../context/Media";
 import ConversationEmitter, {
   CONVERSATION_EMITTER_EVENTS,
 } from "../../emitters";
-import { useConversationNotifier } from "../../hooks/useConversationNotifier";
+import { useConversationDispatcher } from "../../hooks/useConversationDispatcher";
+import { useConversationNotifier } from "../../hooks/useConversationNotifications";
 import { useConversations } from "../../hooks/useConversations";
 import { ConversationType } from "../../hooks/useConversations/types";
 
@@ -26,10 +27,11 @@ const Messages: FC = () => {
   const [indexCovered, setIndexCovered] = useState(false);
   const activeConversations = useMemo(() => {
     return [conversation?.name, newMessageConversation?.name].filter(
-      (n) => n !== null,
+      (n) => n !== null
     ) as MESSAGE_CONTACT_NAME[];
   }, [conversation, newMessageConversation]);
 
+  useConversationDispatcher(viewable);
   useConversationNotifier(viewable, activeConversations);
 
   useEffect(() => {
@@ -60,7 +62,7 @@ const Messages: FC = () => {
         } else {
           setNewMessageConversation(undefined);
         }
-      },
+      }
     );
     return () => {
       ConversationEmitter.off(CONVERSATION_EMITTER_EVENTS.RESET, () => {});
@@ -79,7 +81,7 @@ const Messages: FC = () => {
         runOnJS(setIndexCovered)(result);
       }
     },
-    [],
+    []
   );
 
   return (

@@ -5,6 +5,7 @@ import {
 } from "@Components/appEvents/reducer/types";
 import { useRef, useMemo, useReducer, useCallback, useEffect } from "react";
 import { useFontsContext } from "src/contexts/fonts";
+import { useImageCacheContext } from "src/contexts/imageCache";
 import { LOG, LOG_COLORS } from "src/utility/logger";
 
 import { digestConversation } from "./digestion";
@@ -21,7 +22,6 @@ import { findRouteEventIdsByStatus } from "../routes/filter";
 import { resolveRoutesPath } from "../routes/resolver";
 import { AbstractDigestedRouteType, ROUTE_STATUS_TYPE } from "../routes/types";
 import { ConversationType } from "../useConversations/types";
-import { useImageCacheContext } from "src/contexts/imageCache";
 
 export const useConversation = (
   width: number,
@@ -29,7 +29,7 @@ export const useConversation = (
 ) => {
   const { state: events, dispatch: eventsDispatch } = useAppEventsContext();
   const fontsContext = useFontsContext();
-  const cache = useImageCacheContext().images;
+  const cache = useImageCacheContext().cache;
   const cleanupAction = useRef<AppEventsReducerActionsType>();
 
   const config = useMemo(() => {
@@ -91,11 +91,13 @@ export const useConversation = (
           events.Messages[state.name],
           ROUTE_STATUS_TYPE.AVAILABLE
         )[0];
-        activeRoute = {
-          ...state.availableRoutes[triggerableRouteId],
-          status: ROUTE_STATUS_TYPE.AVAILABLE,
-        };
-        activeRoute = resolveRoutesPath(events, cache, activeRoute);
+        if (triggerableRouteId) {
+          activeRoute = {
+            ...state.availableRoutes[triggerableRouteId],
+            status: ROUTE_STATUS_TYPE.AVAILABLE,
+          };
+          activeRoute = resolveRoutesPath(events, cache, activeRoute);
+        }
       }
       dispatch({
         type: CONVERSATION_REDUCER_ACTIONS.REFRESH,

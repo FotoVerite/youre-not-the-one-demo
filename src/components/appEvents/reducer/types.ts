@@ -1,5 +1,8 @@
 import { NotificationDataType } from "@Components/notifications/reducer/types";
-import { ROUTE_STATUS_TYPE } from "@Components/phoneApplications/Messages/hooks/routes/types";
+import {
+  ROUTE_STATUS_TYPE,
+  ROUTE_TYPE,
+} from "@Components/phoneApplications/Messages/hooks/routes/types";
 import { SkImage } from "@shopify/react-native-skia";
 import { Image } from "react-native-svg";
 import { PHONE_APPLICATION_NAMES } from "src/constants/phoneApplicationNames";
@@ -16,6 +19,7 @@ export enum APP_EVENTS_ACTIONS {
 }
 
 export type MessageRouteEventDataType = {
+  type?: ROUTE_TYPE;
   atIndex?: number;
   chosen?: string;
   createdAt: string;
@@ -43,6 +47,7 @@ export type MessageAppEventsContainerType = {
 
 export type AppEventsType = {
   [PHONE_APPLICATION_NAMES.MESSAGES]: MessageAppEventsContainerType;
+  notificationPayload: NotificationDataType | undefined;
 };
 
 export type AddMessageAppConversationSeenEventAction = {
@@ -66,6 +71,7 @@ export type EventPropsPayloadType = {
 };
 
 export type CreateMessageEventPayloadType = EventPropsPayloadType & {
+  type: ROUTE_TYPE;
   status: ROUTE_STATUS_TYPE;
 };
 
@@ -76,7 +82,7 @@ export type CreateMessageAppRouteEventAction = {
 
 export type UpdateMessageAppRouteEventAction = {
   type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_UPDATE;
-  payload: EventPropsPayloadType;
+  payload: EventPropsPayloadType & { notify?: boolean };
 };
 export type AppEventsReducerActionsType =
   | AddMessageAppConversationSeenEventAction

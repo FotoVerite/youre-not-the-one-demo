@@ -43,7 +43,9 @@ export const borked_phone: ChoosableRouteType = {
         name: SELF,
         messages: [
           "I'm loosing my mind, my sanity!",
-          "I kinda sorta did, froze my account and lost all my contacts.",
+          "I kinda sorta...",
+          "froze my account and lost all my contacts...",
+          "and now I don't know what to do",
           { type: MESSAGE_CONTENT.EMOJI, content: "💀" },
         ],
       },

@@ -2,7 +2,10 @@ import { AppEventsType } from "@Components/appEvents/reducer/types";
 import { isSkImage } from "src/contexts/imageCache/guards";
 import { ImageCacheType } from "src/contexts/imageCache/types";
 
-import { removeMessagesThatConditionsHaveNotBeenMet } from "./conditionals";
+import {
+  removeMessagesThatConditionsHaveNotBeenMet,
+  removeOptionsThatConditionsHaveNotBeenMet,
+} from "./conditionals";
 import {
   isDigestedChoosableRoute,
   isDigestedNotificationRoute,
@@ -10,6 +13,7 @@ import {
 import { AbstractDigestedRouteType, DigestedChoosableRouteType } from "./types";
 import { isSnapshot } from "../contentWithMetaTypes";
 import { MessagePayloadType } from "../useConversation/digestion/types";
+import { produce } from "immer";
 
 type PathsType = { [id: string]: MessagePayloadType[] };
 
@@ -29,10 +33,10 @@ export const resolveSnapshotPayload =
     if (isSnapshot(payload.messageContent)) {
       const image = cache[payload.messageContent.content.filename];
       if (image && isSkImage(image)) {
-        payload.messageContent.content = {
-          ...payload.messageContent.content,
-          ...{ image },
-        };
+        payload.messageContent = produce(payload.messageContent, (content) => {
+          content.content.image = image;
+          return content;
+        });
       }
     }
     return payload;
@@ -57,6 +61,10 @@ export const resolveRoutesPath = (
   route: AbstractDigestedRouteType
 ) => {
   if (isDigestedChoosableRoute(route)) {
+    route.options = removeOptionsThatConditionsHaveNotBeenMet(
+      events,
+      route.options
+    );
     route.routes = resolveRoutes(events, cache, route);
   }
   if (isDigestedNotificationRoute(route)) {

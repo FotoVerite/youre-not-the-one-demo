@@ -23,6 +23,7 @@ import {
 import eventsReducer from "../reducer";
 import {
   AppEventsReducerActionsType,
+  AppEventsType,
   MessageAppEventsContainerType,
 } from "../reducer/types";
 
@@ -33,10 +34,13 @@ const AppEventsContext = React.createContext<
 
 const setInitialState = (state: string | undefined) => {
   if (state) {
-    return JSON.parse(state);
+    const data = JSON.parse(state) as AppEventsType;
+    data.notificationPayload = undefined;
+    return data;
   }
   const defaultState = {
     [PHONE_APPLICATION_NAMES.MESSAGES]: {} as MessageAppEventsContainerType,
+    notificationPayload: undefined,
   };
   const messageState = defaultState.Messages;
   for (const name of Object.values(MESSAGE_CONTACT_NAME)) {
@@ -52,10 +56,10 @@ const AppEventsContextProvider: FC<AppEventsContextTypeDigest> = ({
   resolver,
   data,
 }) => {
-  const sentNotifications = useRef<NotificationDataType[]>([]);
   const { dispatch: notificationDispatch } = useNotificationContext();
 
   const [events, dispatch] = useReducer(eventsReducer, setInitialState(data));
+  const notificationPayload = events.notificationPayload;
 
   const memoizedDispatch = useCallback(
     (action: AppEventsReducerActionsType) => {
@@ -64,29 +68,18 @@ const AppEventsContextProvider: FC<AppEventsContextTypeDigest> = ({
     []
   );
 
-  // useEffect(() => {
-  //   if (events) {
-  //     storeData(CACHED_KEYS.EVENTS, JSON.stringify(events));
-  //   }
-  // }, [events]);
-
-  // useEffect(() => {
-  //   const newNotifications = events.NOTIFICATIONS.filter(
-  //     (notification) => !sentNotifications.current.includes(notification)
-  //   );
-  //   newNotifications.forEach((notification) =>
-  //     notificationDispatch({
-  //       type: NOTIFICATIONS_REDUCER_ACTIONS.ADD,
-  //       payload: notification,
-  //     })
-  //   );
-  //   sentNotifications.current =
-  //     sentNotifications.current.concat(newNotifications);
-  // }, [events.NOTIFICATIONS, notificationDispatch]);
-
   useEffect(() => {
     if (events != null) resolver(CACHED_KEYS.EVENTS, true);
   }, [events, resolver]);
+
+  useEffect(() => {
+    if (notificationPayload) {
+      notificationDispatch({
+        type: NOTIFICATIONS_REDUCER_ACTIONS.ADD,
+        payload: notificationPayload,
+      });
+    }
+  }, [notificationDispatch, notificationPayload]);
 
   return (
     <AppEventsContext.Provider

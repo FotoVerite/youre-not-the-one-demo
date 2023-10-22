@@ -34,6 +34,8 @@ const SnapShotContextProvider: FC<SnapShotContextDigestType> = (props) => {
 
   const snapShotRef = useRef<View>(null);
 
+  const { addImage } = useImageCacheContext();
+
   useEffect(() => {
     const snapShot = async () => {
       if (snapShotRef.current && takeSnapShot) {
@@ -58,7 +60,7 @@ const SnapShotContextProvider: FC<SnapShotContextDigestType> = (props) => {
   useEffect(() => {
     const processImage = async () => {
       if (image != null) {
-        cache.set((cache) => (cache[image.filename] = image.uri));
+        addImage(image.filename, image.uri);
         switch (image.type) {
           case SNAPSHOT_TYPES.SILENT:
             writeImageToFs(image.uri, image.filename);

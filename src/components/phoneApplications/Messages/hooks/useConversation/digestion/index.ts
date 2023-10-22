@@ -1,6 +1,6 @@
 import { AppEventsType } from "@Components/appEvents/reducer/types";
+import { ImageCacheType } from "src/contexts/imageCache/types";
 
-import { StorageType } from "src/contexts/asyncStorage/types";
 import {
   appendExchanges,
   appendSeenRoutes,
@@ -9,7 +9,7 @@ import {
 import { blockableConditionsMet } from "./blockable";
 import { appendReadLabel } from "./readLabel";
 import { reduceAndSortRoutes } from "./routeReducers";
-import { BaseConfigType } from "./types";
+import { BaseConfigType, DigestedConversationType } from "./types";
 import { resolveRoutePath } from "../../routes/resolver";
 import { ConversationType } from "../../useConversations/types";
 
@@ -17,7 +17,7 @@ export const digestConversation = (
   config: BaseConfigType,
   conversation: ConversationType,
   events: AppEventsType,
-  cache: StorageType
+  cache: ImageCacheType
 ) => {
   const [untriggered, seen, startedRoute] = reduceAndSortRoutes(
     conversation,
@@ -27,7 +27,7 @@ export const digestConversation = (
 
   const { exchanges, ...conversationProps } = conversation;
 
-  const digested = {
+  const digested: DigestedConversationType = {
     ...conversationProps,
     ...{
       exchanges: appendExchanges(exchanges, {
@@ -39,7 +39,6 @@ export const digestConversation = (
   };
   digested.blockable = blockableConditionsMet(digested, events);
   digested.exchanges = appendSeenRoutes(digested, seen, config);
-
   if (startedRoute) {
     startedRoute.pending = resolveRoutePath(
       events,
@@ -52,6 +51,7 @@ export const digestConversation = (
       digested.group,
       config
     );
+    digested.activeRoute = startedRoute;
   }
   digested.exchanges = appendReadLabel(
     digested.exchanges,

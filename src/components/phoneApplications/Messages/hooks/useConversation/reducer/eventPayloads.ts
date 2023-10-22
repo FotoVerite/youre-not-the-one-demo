@@ -3,11 +3,18 @@ import {
   EventPropsPayloadType,
 } from "@Components/appEvents/reducer/types";
 
-import { ROUTE_STATUS_TYPE, StartedRouteType } from "../../routes/types";
+import {
+  AbstractDigestedRouteType,
+  ROUTE_STATUS_TYPE,
+  ROUTE_TYPE,
+  StartedRouteType,
+} from "../../routes/types";
 import {
   DigestedConversationType,
   DigestedConversationWithStartedRoute,
 } from "../digestion/types";
+import { isDigestedChoosableRoute } from "../../routes/guards";
+import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
 
 export const createCleanupPayload = (
   draft: DigestedConversationWithStartedRoute,
@@ -34,15 +41,19 @@ export const createCleanupPayload = (
 };
 
 export const routeStartedPayload = (
-  draft: DigestedConversationType,
-  route: StartedRouteType,
+  name: MESSAGE_CONTACT_NAME,
+  route: AbstractDigestedRouteType,
+  chosen: string | undefined,
   logline: string
 ) => ({
   type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_CREATE,
   payload: {
+    type: isDigestedChoosableRoute(route)
+      ? ROUTE_TYPE.CHOOSE
+      : ROUTE_TYPE.NOTIFICATION,
     logline,
-    name: draft.name,
-    chosen: route.chosen,
+    name,
+    chosen,
     routeId: route.id,
     atIndex: 1,
     status: ROUTE_STATUS_TYPE.STARTED,
@@ -77,7 +88,7 @@ export const routeFinishedPayload = (
     status: ROUTE_STATUS_TYPE.FINISHED,
   } as EventPropsPayloadType;
   return {
-    type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_UPDATE,
+    type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_UPDATE as const,
     payload: { ...payload, ...options },
   };
 };

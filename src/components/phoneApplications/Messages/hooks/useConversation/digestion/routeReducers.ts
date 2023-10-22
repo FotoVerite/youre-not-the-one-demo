@@ -109,7 +109,9 @@ const createStartedRoute = (
     }, [] as MessagePayloadType[]),
     status: ROUTE_STATUS_TYPE.STARTED as const,
     indexAt: atIndex,
-    nextMessageInQueue: convertMessageToString(payloads[0].messageContent),
+    nextMessageInQueue: payloads[0]
+      ? convertMessageToString(payloads[0].messageContent)
+      : undefined,
     pending: payloads,
     position: event.position,
     updatedAt: event.updatedAt,
@@ -121,15 +123,18 @@ const digestNotificationRoute = (
   events: MessageAppEventsType,
   cache: ImageCacheType
 ) => {
-  const { id, exchanges } = route;
+  const { id, exchanges, ...props } = route;
   const routeId = id.toString();
   const routeEvent = events.routes[routeId];
   const snapshotResolver = resolveSnapshotPayload(cache);
   if (!isProcessedEvent(routeEvent)) {
     return {
-      id: routeId,
-      exchanges: convertBlockToMessagePayloadType(exchanges),
-      status: ROUTE_STATUS_TYPE.CONDITIONS_NOT_MET as const,
+      ...{
+        id: routeId,
+        exchanges: convertBlockToMessagePayloadType(exchanges),
+        status: ROUTE_STATUS_TYPE.CONDITIONS_NOT_MET as const,
+      },
+      ...props,
     };
   }
   return {

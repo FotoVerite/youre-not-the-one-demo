@@ -60,9 +60,11 @@ export interface ChoosableRouteType extends AbstractRouteType {
   options: string[] | OptionsWithConditionals[];
   routes: { [key: string]: ExchangeBlockType[] };
 }
-export interface NotificationRouteType extends AbstractRouteType {
+export interface NotificationRouteFileType extends AbstractRouteType {
   backgroundColor?: string;
   exchanges: ExchangeBlockType[];
+}
+export interface NotificationRouteType extends NotificationRouteFileType {
   status: ROUTE_STATUS_TYPE.CONDITIONS_NOT_MET;
 }
 

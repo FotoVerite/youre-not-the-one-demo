@@ -1,25 +1,22 @@
 import { useAppEventsContext } from "@Components/appEvents/context";
 import { hasLogline } from "@Components/appEvents/reducer/guards";
 import {
+  APP_EVENTS_ACTIONS,
   MessageAppEventsContainerType,
   MessageRouteEventDataType,
 } from "@Components/appEvents/reducer/types";
-import { useNotificationContext } from "@Components/notifications/context";
-import {
-  NOTIFICATIONS_REDUCER_ACTIONS,
-  NOTIFICATION_ON_PRESS,
-} from "@Components/notifications/reducer/types";
 import { useMemo, useEffect, useState } from "react";
 
-import { MESSAGE_CONTACT_INFO, MESSAGE_CONTACT_NAME } from "../../constants";
+import { MESSAGE_CONTACT_NAME } from "../../constants";
 import { filterRouteEventsByStatus } from "../routes/filter";
-import { ROUTE_STATUS_TYPE } from "../routes/types";
+import { ROUTE_STATUS_TYPE, ROUTE_TYPE } from "../routes/types";
 import { ConversationFileType } from "../useConversations/types";
 
 type CacheType = {
   [index: string]: MessageRouteEventDataType & {
     name: MESSAGE_CONTACT_NAME;
     logline: string;
+    id: string;
   };
 };
 
@@ -31,13 +28,13 @@ const filterRoutesThatNeedNotification = (
   return names.reduce((acc, name) => {
     const routes = filterRouteEventsByStatus(
       messageEvents[name],
-      ROUTE_STATUS_TYPE.STARTED
+      ROUTE_STATUS_TYPE.AVAILABLE
     )
-      .filter(([, route]) => route.logline != null)
-      .filter(([id]) => cache[`${id}-${name}`] != null);
+      .filter(([, route]) => route.type === ROUTE_TYPE.NOTIFICATION)
+      .filter(([id]) => cache[`${id}-${name}`] == null);
     routes.reduce((acc, [id, route]) => {
       if (hasLogline(route)) {
-        acc[`${id}-${name}`] = { ...route, name };
+        acc[`${id}-${name}`] = { ...route, name, id };
       }
       return acc;
     }, acc);
@@ -49,8 +46,7 @@ export const useConversationNotifier = (
   conversations: ConversationFileType[],
   activeConversations: MESSAGE_CONTACT_NAME[]
 ) => {
-  const { state: events } = useAppEventsContext();
-  const { dispatch: notify } = useNotificationContext();
+  const { state: events, dispatch } = useAppEventsContext();
   const [cache, setCache] = useState<CacheType>(
     filterRoutesThatNeedNotification(
       conversations.map((conversation) => conversation.name),
@@ -66,22 +62,18 @@ export const useConversationNotifier = (
   }, [cache, conversations, messageEvents]);
 
   useEffect(() => {
+    if (Object.values(toNotify).length === 0) return;
     for (const id in toNotify) {
       const event = toNotify[id];
-      const notification = {
-        ID: id,
-        title: `Message from ${event.name}`,
-        content: event.logline || "",
-        image: MESSAGE_CONTACT_INFO[event.name].avatar,
-        onPress: {
-          type: NOTIFICATION_ON_PRESS.CONVERSATION,
-          payload: { name: event.name },
-        },
-      };
       if (!activeConversations.includes(event.name)) {
-        notify({
-          type: NOTIFICATIONS_REDUCER_ACTIONS.ADD,
-          payload: notification,
+        dispatch({
+          type: APP_EVENTS_ACTIONS.MESSAGE_APP_ROUTE_UPDATE,
+          payload: {
+            routeId: event.id,
+            name: event.name,
+            status: ROUTE_STATUS_TYPE.FINISHED,
+            notify: true,
+          },
         });
       }
     }
@@ -92,5 +84,5 @@ export const useConversationNotifier = (
     setCache((cache) => {
       return { ...cache, ...additions };
     });
-  }, [activeConversations, notify, toNotify]);
+  }, [activeConversations, dispatch, toNotify]);
 };
