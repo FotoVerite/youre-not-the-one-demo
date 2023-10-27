@@ -3,7 +3,10 @@ import {
   SNAPSHOT_NAMES,
 } from "@Components/phoneApplications/Messages/constants";
 import { MESSAGE_CONTENT } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
-import { ChoosableRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
+import {
+  ChoosableRouteType,
+  ROUTE_STATUS_TYPE,
+} from "@Components/phoneApplications/Messages/hooks/routes/types";
 
 import { ZARA_ROUTE_IDS } from "./routes";
 import { SPAM1_IDS } from "../../spam1/routes/routes";
@@ -23,7 +26,7 @@ export const spammer_is_being_weird: ChoosableRouteType = {
       [MESSAGE_CONTACT_NAME.SPAM1]: {
         routes: {
           [SPAM1_IDS.WHAT_IS_WITH_THIS_SERIAL_STALKER_BULLSHIT]: {
-            finished: true,
+            status: ROUTE_STATUS_TYPE.FINISHED,
           },
         },
       },
@@ -32,7 +35,7 @@ export const spammer_is_being_weird: ChoosableRouteType = {
       [MESSAGE_CONTACT_NAME.SPAM1]: {
         routes: {
           [SPAM1_IDS.BEAUTIFUL_IMAGES]: {
-            finished: true,
+            status: ROUTE_STATUS_TYPE.FINISHED,
           },
         },
       },
@@ -76,7 +79,7 @@ export const spammer_is_being_weird: ChoosableRouteType = {
           {
             type: MESSAGE_CONTENT.STRING,
             content:
-              "I don't know, something about it makes me worried that will escalate?",
+              "I don't know, I'm so unsettled. I'm worried that blocking it will somehow escalate it further.",
             conditions: { [MESSAGE_CONTACT_NAME.SPAM1]: { blocked: false } },
           },
         ],
@@ -87,48 +90,15 @@ export const spammer_is_being_weird: ChoosableRouteType = {
       },
       {
         name: SELF,
-        messages: [
-          "No... Why is that the first thing you ask?",
-          "There's more... I mean...",
-        ],
+        messages: ["No... Why is that the first thing you ask?"],
       },
       {
         name: ZARA,
-        messages: [
-          {
-            type: MESSAGE_CONTENT.STRING,
-            content: "What the fuck is this?",
-            typingDelay: 7500,
-          },
-        ],
+        messages: ["It's a pretty normal question when you're being harassed"],
       },
       {
         name: SELF,
-        messages: [
-          "I'm not exactly sure.",
-          "It sounds like something I'd write",
-          "But I don't remember writing it",
-          "Is it in your message history",
-        ],
-      },
-      {
-        name: ZARA,
-        messages: [
-          "He sent you a image of messages between us?",
-          "I'm so confused",
-          "Whats with the distortion with the last text",
-        ],
-      },
-      {
-        name: SELF,
-        messages: [
-          "No it's not an image, they're actual txts, and it's like a glitch.",
-          "I thought it could be a gif but it's not it's like a real sms message",
-        ],
-      },
-      {
-        name: ZARA,
-        messages: ["None of that is possible"],
+        messages: ["Yeah, you're right, I'm just on edge"],
       },
     ],
   },

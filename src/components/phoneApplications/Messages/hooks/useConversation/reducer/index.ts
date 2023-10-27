@@ -114,7 +114,7 @@ const _createMessageAndUpdateDraft = (
   if (isDigestedChoosableRoute(activeRoute) && chosenOption) {
     route = activeRoute.routes[chosenOption];
   }
-
+  //(route.map((r) => r.messageContent));
   if (isDigestedNotificationRoute(activeRoute)) {
     route = activeRoute.exchanges;
   }

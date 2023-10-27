@@ -1,12 +1,5 @@
-import { MessageAppEventsContainerType } from "@Components/appEvents/reducer/types";
 import { Moment } from "moment";
 
-import { reduceRoute } from "./routeReducers";
-import { FinishedRouteType } from "../../routes/types";
-import {
-  ExchangeBlockType,
-  ConversationType,
-} from "../../useConversations/types";
 import { createSkBubbleFromPayload } from "./SkFunctions/createSkBubble";
 import { createTimeStampLabel } from "./SkFunctions/createTimeStampLabel";
 import {
@@ -14,6 +7,7 @@ import {
   MessagePayloadType,
   DigestedConversationListItem,
 } from "./types";
+import { ExchangeBlockType } from "../../useConversations/types";
 
 export const convertFromPayloadsToSkItems = (
   configuration: SkItemConfigurationType,

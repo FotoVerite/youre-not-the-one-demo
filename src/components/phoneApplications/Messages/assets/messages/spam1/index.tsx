@@ -17,6 +17,7 @@ import {
 } from "./routes/spam_exchange_two";
 import { what_is_with_this_serial_killer_bullshit } from "./routes/what_is_with_this_serial_stalker_bullshit";
 import { ZARA_ROUTE_IDS } from "../zara/routes/routes";
+import { ROUTE_STATUS_TYPE } from "@Components/phoneApplications/Messages/hooks/routes/types";
 
 const NAME = MESSAGE_CONTACT_NAME.SPAM1;
 export const spam1: ConversationFileType = {
@@ -46,7 +47,7 @@ export const spam1: ConversationFileType = {
         routes: {
           [SPAM1_IDS.EXCHANGE_TWO]: {
             chosen: [SPAM1_SECOND_EXCHANGE_OPTIONS.B],
-            finished: true,
+            status: ROUTE_STATUS_TYPE.FINISHED,
           },
         },
       },

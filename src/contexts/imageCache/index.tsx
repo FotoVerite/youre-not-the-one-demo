@@ -26,10 +26,12 @@ const ImageCacheContextProvider: FC<ImageCacheContextDigestType> = ({
   const [images, setImages] = useState<ImageCacheType>();
   useEffect(() => {
     const cb = async () => {
+      console.log();
       if (data == null) {
         return setImages({});
       }
-      setImages(await imageResolver(JSON.parse(data)));
+      const ret = await imageResolver(JSON.parse(data));
+      setImages(ret);
     };
     cb();
   }, [data]);

@@ -98,7 +98,7 @@ export type ContentWithMetaType =
   | VCardContentWithMeta;
 
 export const isContentWithMeta = (
-  content: ContentWithMetaType | string,
+  content: ContentWithMetaType | string
 ): content is ContentWithMetaType => {
   return (content as ContentWithMetaType).type !== undefined;
 };
@@ -109,13 +109,13 @@ const SNAPSHOT_TYPES = [
 ];
 
 export const isSnapshot = (
-  content: ContentWithMetaType | string,
+  content: ContentWithMetaType | string
 ): content is BackgroundSnapshotContentWithMeta | SnapshotContentWithMeta => {
   return isContentWithMeta(content) && SNAPSHOT_TYPES.includes(content.type);
 };
 
 export const isBackgroundSnapshot = (
-  content: ContentWithMetaType | string,
+  content: ContentWithMetaType | string
 ): content is BackgroundSnapshotContentWithMeta | SnapshotContentWithMeta => {
   return (
     isContentWithMeta(content) &&

@@ -1,5 +1,8 @@
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
-import { ChoosableRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
+import {
+  ChoosableRouteType,
+  ROUTE_STATUS_TYPE,
+} from "@Components/phoneApplications/Messages/hooks/routes/types";
 
 import { ZARA_ROUTE_IDS } from "./routes";
 import { LENNY_ROUTE_IDS } from "../../lenny/routes/routes";
@@ -19,7 +22,7 @@ export const my_bro_is_being_annoying: ChoosableRouteType = {
     [MESSAGE_CONTACT_NAME.LENNY]: {
       routes: {
         [LENNY_ROUTE_IDS.MIDNIGHT_SOCIETY]: {
-          finished: true,
+          status: ROUTE_STATUS_TYPE.FINISHED,
         },
       },
     },

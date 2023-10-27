@@ -28,7 +28,7 @@ export const useConversationDispatcher = (
 ) => {
   const eventsContext = useAppEventsContext();
   const { state: events, dispatch } = eventsContext;
-  const [routes, setRoutes] = useState(
+  const [routes, setRoutes] = useState(() =>
     reduceConversations(conversations, events)
   );
 

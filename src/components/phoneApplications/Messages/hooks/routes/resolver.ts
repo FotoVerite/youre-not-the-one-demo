@@ -1,4 +1,5 @@
 import { AppEventsType } from "@Components/appEvents/reducer/types";
+import { produce } from "immer";
 import { isSkImage } from "src/contexts/imageCache/guards";
 import { ImageCacheType } from "src/contexts/imageCache/types";
 
@@ -13,7 +14,6 @@ import {
 import { AbstractDigestedRouteType, DigestedChoosableRouteType } from "./types";
 import { isSnapshot } from "../contentWithMetaTypes";
 import { MessagePayloadType } from "../useConversation/digestion/types";
-import { produce } from "immer";
 
 type PathsType = { [id: string]: MessagePayloadType[] };
 
@@ -33,9 +33,11 @@ export const resolveSnapshotPayload =
     if (isSnapshot(payload.messageContent)) {
       const image = cache[payload.messageContent.content.filename];
       if (image && isSkImage(image)) {
-        payload.messageContent = produce(payload.messageContent, (content) => {
-          content.content.image = image;
-          return content;
+        return produce(payload, (draft) => {
+          if (isSnapshot(draft.messageContent)) {
+            draft.messageContent.content.image = image;
+          }
+          return draft;
         });
       }
     }
