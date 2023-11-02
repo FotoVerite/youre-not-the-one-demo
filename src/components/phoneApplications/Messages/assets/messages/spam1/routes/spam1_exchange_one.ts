@@ -1,6 +1,9 @@
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
 import { MESSAGE_CONTENT } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
-import { ChoosableRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
+import {
+  ChoosableRouteType,
+  ROUTE_STATUS_TYPE,
+} from "@Components/phoneApplications/Messages/hooks/routes/types";
 import { ExchangeBlockType } from "@Components/phoneApplications/Messages/hooks/useConversations/types";
 
 import { SPAM1_IDS } from "./routes";
@@ -32,7 +35,7 @@ export const spam1_exchange_one: ChoosableRouteType = {
   conditions: {
     [SPAM1]: {
       routes: {
-        [SPAM1_IDS.SPAM_INTRODUCTION]: { finished: true },
+        [SPAM1_IDS.SPAM_INTRODUCTION]: { status: ROUTE_STATUS_TYPE.FINISHED },
       },
     },
   },

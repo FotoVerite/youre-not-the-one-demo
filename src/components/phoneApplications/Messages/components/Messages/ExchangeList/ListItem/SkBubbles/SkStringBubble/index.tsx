@@ -6,6 +6,7 @@ import { SkBubbleTypeWithGradient } from "../types";
 
 export const SkStringBubble: FC<SkBubbleTypeWithGradient> = (props) => {
   //const glitchEffect = useGlitchEffect(height, width, content, clip);
+
   return (
     <SkGradientBubbleWrapper {...props}>
       <Group color="white">{props.content as ReactNode[]}</Group>

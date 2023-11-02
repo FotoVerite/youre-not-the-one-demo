@@ -1,0 +1,3 @@
+export enum SPAM_FINAL_ROUTE_IDS {
+  PATHETIC,
+}

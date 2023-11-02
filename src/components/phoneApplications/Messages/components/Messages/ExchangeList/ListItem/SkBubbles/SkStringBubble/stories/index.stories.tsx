@@ -24,7 +24,8 @@ export const Default: {
   args: {
     addressee: true,
     isLastInExchange: false,
-    content: "We have a global",
+    content:
+      "Same API that's in React Native. The default origin of the transformation is, however, different. It is the center object in React Native and the top-left corner in Skia.",
     type: MESSAGE_CONTENT.STRING,
     alignItems: "center",
     colors: MESSAGE_CONTACT_INFO["1-222-666-1337"].colors,
@@ -34,6 +35,7 @@ export const Default: {
     paddingBottom: 0,
     scrollHandler: { value: 100 },
     scrollRef: null,
+    setAsResolved: () => {},
   },
   decorators: [
     (Story: ElementType) => (
