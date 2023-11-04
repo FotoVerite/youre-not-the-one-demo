@@ -1,6 +1,9 @@
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
 import { MESSAGE_CONTENT } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
-import { ChoosableRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
+import {
+  ChoosableRouteType,
+  ROUTE_STATUS_TYPE,
+} from "@Components/phoneApplications/Messages/hooks/routes/types";
 
 import { ZARA_ROUTE_IDS } from "./routes";
 
@@ -19,7 +22,9 @@ export const zara_contact_conversation: ChoosableRouteType = {
   conditions: {
     [ZARA]: {
       routes: {
-        [ZARA_ROUTE_IDS.DO_YOU_WANT_ANY_CONTACTS]: {},
+        [ZARA_ROUTE_IDS.DO_YOU_WANT_ANY_CONTACTS]: {
+          status: ROUTE_STATUS_TYPE.FINISHED,
+        },
       },
     },
   },

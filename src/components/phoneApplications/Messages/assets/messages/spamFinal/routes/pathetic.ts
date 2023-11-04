@@ -10,10 +10,6 @@ import { SPAM_FINAL_ROUTE_IDS } from "./routes";
 const SELF = MESSAGE_CONTACT_NAME.SELF;
 const SPAM = MESSAGE_CONTACT_NAME.SPAM4;
 
-enum OPTIONS {
-  A = "Okay, lets try it now without wifi",
-}
-
 export const pathetic: NotificationRouteType = {
   id: SPAM_FINAL_ROUTE_IDS.PATHETIC,
   status: ROUTE_STATUS_TYPE.CONDITIONS_NOT_MET,
@@ -32,7 +28,7 @@ export const pathetic: NotificationRouteType = {
     {
       name: SPAM,
       messages: [
-        "A empty job with no room for  growth. Friends you hate, if they talk to you at all. A boyfriend you don't even know why you're with. Probably comfort, probably fear",
+        "A empty job with no room for growth. Friends you hate, if they talk to you at all. A boyfriend you don't even know why you're with. Probably comfort, probably fear",
         "You don't self reflect very often",
         "You don't really think very often",
         "I mean your best friend is a scumbag",

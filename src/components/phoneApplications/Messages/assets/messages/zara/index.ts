@@ -16,7 +16,7 @@ import { i_am_being_harassed } from "./routes/i_am_being_harassed";
 import { i_dont_feel_secure } from "./routes/i_dont_feel_secure";
 import { i_fell_for_spam } from "./routes/i_fell_for_spam";
 import { my_bro_is_being_annoying } from "./routes/my_bro_is_being_annoying";
-import { spammer_is_being_weird } from "./routes/spammer_is_being_weird";
+import { spammer_is_being_weird } from "./routes/after_weirdness_starts/spammer_is_being_weird";
 import { update_on_the_phone } from "./routes/update_on_phone";
 import { your_day_worse_then_mine } from "./routes/your_day_worse_then_mine";
 

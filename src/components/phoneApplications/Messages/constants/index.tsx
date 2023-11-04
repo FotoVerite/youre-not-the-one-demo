@@ -15,6 +15,7 @@ const defaults = {
 
 export enum SNAPSHOT_NAMES {
   SERIAL_SNAPSHOT = "SERIAL_SNAPSHOT",
+  ZARA_FUCK_OFF = "ZARA_FUCK_OFF",
 }
 
 export enum MESSAGE_CONTACT_NAME {

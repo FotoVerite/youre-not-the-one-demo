@@ -1,5 +1,11 @@
-import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
-import { MESSAGE_CONTENT } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
+import {
+  MESSAGE_CONTACT_NAME,
+  SNAPSHOT_NAMES,
+} from "@Components/phoneApplications/Messages/constants";
+import {
+  EFFECT_TYPE,
+  MESSAGE_CONTENT,
+} from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
 import { ChoosableRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
 
 import { SPAM1_IDS } from "./routes";
@@ -46,6 +52,10 @@ export const beautiful_images: ChoosableRouteType = {
             type: MESSAGE_CONTENT.STRING,
             content: "How am I doing?",
             typingDelay: 5000,
+            effect: {
+              type: EFFECT_TYPE.BACKGROUND_SNAPSHOT,
+              data: { filename: SNAPSHOT_NAMES.SERIAL_SNAPSHOT },
+            },
           },
         ],
       },

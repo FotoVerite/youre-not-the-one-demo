@@ -12,7 +12,6 @@ import { View } from "react-native";
 import { SkBubbleTypeWithGradient } from "../types";
 import { useBubbleClip } from "../useBubbleClip";
 import { useHeightDeterminedGradient } from "../useHeightDeterminedGradient";
-import { useShader } from "../hooks/useShader";
 
 export const SkGradientBubbleWrapper: FC<
   SkBubbleTypeWithGradient & PropsWithChildren

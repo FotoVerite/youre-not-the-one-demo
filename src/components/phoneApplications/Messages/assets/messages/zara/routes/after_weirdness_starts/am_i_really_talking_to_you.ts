@@ -1,9 +1,8 @@
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
-import { MESSAGE_CONTENT } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
 import { ChoosableRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
 
-import { ZARA_CONTACT_CONVERSATIONS_OPTIONS } from "./contact_conversation";
-import { ZARA_ROUTE_IDS } from "./routes";
+import { ZARA_CONTACT_CONVERSATIONS_OPTIONS } from "../contact_conversation";
+import { ZARA_ROUTE_IDS } from "../routes";
 
 export enum ZARA_AM_I_REALLY_OPTIONS {
   A = "Am I really talking to you?",

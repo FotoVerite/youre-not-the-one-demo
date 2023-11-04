@@ -1,9 +1,9 @@
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
-import { NotificationRouteType } from "@Components/phoneApplications/Messages/hooks/routes/types";
+import { NotificationRouteFileType } from "@Components/phoneApplications/Messages/hooks/routes/types";
 
 import { ZARA_ROUTE_IDS } from "./routes";
 
-export const update_on_the_phone: NotificationRouteType = {
+export const update_on_the_phone: NotificationRouteFileType = {
   id: ZARA_ROUTE_IDS.UPDATE_ON_PHONE,
   delay: 1000,
   conditions: {

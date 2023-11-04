@@ -16,6 +16,7 @@ import { Skia } from "@shopify/react-native-skia";
 //     }`)!;
 export const osculatingLine = Skia.RuntimeEffect.Make(`
     uniform float t;
+	uniform float clipSize;
     uniform vec2 iResolution;
 	uniform float M_TWO_PI;
 	vec3 blackCol = vec3(0.0); // black
@@ -39,7 +40,10 @@ export const osculatingLine = Skia.RuntimeEffect.Make(`
 		// radius oscillates too
 		float radius = 0.15 + 0.05*sin(t*8.0);
 		//return mix(ret, blackCol, radius);
-		return mix(ret, whiteCol, r.y > y && r.y < y + 0.5 ? 1.0 : 0.0 );	
+		if(r.x > 0.5) {
+			ret = mix(ret, whiteCol, r.y > y && r.y < y + clipSize ? 1.0 : 0.0 );
+		}
+		return ret;	
     }
 
     vec4 main(vec2 fragCoord) {

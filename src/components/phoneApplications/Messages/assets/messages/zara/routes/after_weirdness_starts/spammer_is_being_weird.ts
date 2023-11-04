@@ -8,8 +8,8 @@ import {
   ROUTE_STATUS_TYPE,
 } from "@Components/phoneApplications/Messages/hooks/routes/types";
 
-import { ZARA_ROUTE_IDS } from "./routes";
-import { SPAM1_IDS } from "../../spam1/routes/routes";
+import { ZARA_ROUTE_IDS } from "../routes";
+import { SPAM1_IDS } from "../../../spam1/routes/routes";
 
 export enum SPAMMER_IS_BEING_WEIRD_OPTIONS {
   A = "That spammer is getting weird",
@@ -99,6 +99,28 @@ export const spammer_is_being_weird: ChoosableRouteType = {
       {
         name: SELF,
         messages: ["Yeah, you're right, I'm just on edge"],
+      },
+      {
+        name: ZARA,
+        messages: ["I'm sure they'll get bored if you just don't respond"],
+      },
+      {
+        name: SELF,
+        messages: ["Maybe..."],
+      },
+      {
+        name: ZARA,
+        messages: ["Have you talked to anyone else. Do you want any mutuals?"],
+      },
+      {
+        name: SELF,
+        messages: [
+          "I don't know, I don't know if I want to talk to anyone now.",
+        ],
+      },
+      {
+        name: ZARA,
+        messages: ["Don't let this asshole control what you do dude."],
       },
     ],
   },

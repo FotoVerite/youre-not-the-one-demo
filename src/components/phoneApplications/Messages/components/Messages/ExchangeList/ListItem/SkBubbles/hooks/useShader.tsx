@@ -28,6 +28,7 @@ export const useShader = (shaderName?: SHADER_TYPES, resolution?: SkPoint) => {
   const uniforms = useComputedValue(
     () => ({
       t: clock.current * 0.0008,
+      clipSize: 0.15,
       M_PI,
       M_TWO_PI,
       iResolution: resolution != null ? resolution : iResolution,
