@@ -7,7 +7,7 @@ import {
 } from "../contentWithMetaTypes";
 import {
   ChoosableRouteType,
-  NotificationRouteType,
+  NotificationRouteFileType,
   RouteConditionsType,
 } from "../routes/types";
 
@@ -29,7 +29,7 @@ export type ConversationType = {
   blocked?: boolean;
   conditions?: RouteConditionsType;
   effects?: MessageEffectType[];
-  notificationRoutes?: NotificationRouteType[];
+  notificationRoutes?: NotificationRouteFileType[];
   exchanges: ConversationExchangeType[];
   group?: boolean;
   hasAvailableRoute?: boolean;

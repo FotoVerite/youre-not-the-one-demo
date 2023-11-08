@@ -17,6 +17,7 @@ export const pathetic: NotificationRouteType = {
     {
       name: SPAM,
       messages: [
+        "Okay, I'll actually answer you",
         "Because, you're pathetic.",
         "God, to think of all the potential you wasted living this `life of yours!` What a life.",
       ],
