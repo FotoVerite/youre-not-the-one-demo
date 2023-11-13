@@ -11,7 +11,7 @@ import {
   UntriggeredRouteType,
   DigestedChoosableRouteType,
   DigestedNotificationRouteType,
-  OptionsWithConditionals,
+  OptionType,
 } from "./types";
 
 export const routeHasConditionals = (
@@ -27,19 +27,15 @@ export const isChoosableRoute = (
   return route != null && route.hasOwnProperty("options");
 };
 
-export const areResolvedOptions = (
-  options?: string[] | OptionsWithConditionals[]
+export const areSimpleOptions = (
+  options?: string[] | OptionType[]
 ): options is string[] => {
   return (
-    options != null && options.every((option) => typeof option === "string")
+    options != null &&
+    options.every((option) => !options.hasOwnProperty("label"))
   );
 };
 
-export const hasResolvedOptions = (
-  route?: AbstractDigestedRouteType
-): route is DigestedChoosableRouteType & { options: string[] } => {
-  return isDigestedChoosableRoute(route) && areResolvedOptions(route.options);
-};
 export const isNotificationRoute = (
   route?: AbstractRouteType
 ): route is NotificationRouteType => !isChoosableRoute(route);
@@ -53,27 +49,6 @@ export const isDigestedNotificationRoute = (
   route?: AbstractDigestedRouteType
 ): route is DigestedNotificationRouteType =>
   route != null && route.hasOwnProperty("exchanges");
-// export const isDigestedChoosableRoute = (
-//   route: DigestedChoosableRouteType | DigestedNotificationRouteType
-// ): route is DigestedChoosableRouteType => {
-//   return route != null && route.hasOwnProperty("options");
-// };
-
-// export const isOptionsWithConditions = (
-//   options: string[] | OptionsWithConditionals[]
-// ): options is OptionsWithConditionals[] => {
-//   return (
-//     options.filter(function (o) {
-//       return o.hasOwnProperty("conditions");
-//     }).length > 0
-//   );
-// };
-// export const isDigestedWithConditionalOptions = (
-//   route: DigestedChoosableRouteType | DigestedNotificationRouteType
-// ): route is DigestedWithConditionalOptions => {
-//   if (!isDigestedChoosableRoute(route)) return false;
-//   return isOptionsWithConditions(route.options);
-// };
 
 export const isUntriggeredRoute = (
   route: AbstractDigestedRouteType | undefined

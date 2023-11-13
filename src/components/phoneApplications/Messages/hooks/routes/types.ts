@@ -18,6 +18,12 @@ export enum ROUTE_STATUS_TYPE {
   FINISHED = "finished",
 }
 
+export enum OPTION_EFFECT_TYPE {
+  STATIC,
+  SAD,
+  GLITCH,
+}
+
 export type RouteChosenConditionType = {
   [key: string]: {
     chosen?: string[];
@@ -52,12 +58,17 @@ export interface AbstractRouteType {
   effects?: MessageEffectType[];
 }
 
-export type OptionsWithConditionals = {
-  conditions: RouteConditionsType;
-  options: string[];
+export type OptionType = {
+  label: string;
+  value: string;
+  conditions?: RouteConditionsType;
+  effect?: OPTION_EFFECT_TYPE;
+  data?: string;
 };
+
 export interface ChoosableRouteType extends AbstractRouteType {
-  options: string[] | OptionsWithConditionals[];
+  options: string[] | OptionType[];
+
   routes: { [key: string]: ExchangeBlockType[] };
 }
 export interface NotificationRouteFileType extends AbstractRouteType {
@@ -85,7 +96,7 @@ export interface AbstractDigestedRouteType
 
 export type DigestedChoosableRouteType = AbstractDigestedRouteType & {
   type: ROUTE_TYPE.CHOOSE;
-  options: string[] | OptionsWithConditionals[];
+  options: OptionType[];
   routes: { [choice: string]: MessagePayloadType[] };
 };
 
@@ -126,42 +137,3 @@ export type StartedRouteType = ProcessedRouteType & {
 export type FinishedRouteType = ProcessedRouteType & {
   status: ROUTE_STATUS_TYPE.FINISHED;
 };
-// export type AvailableChoosableRoute = Omit<
-//   DigestedChoosableRouteType,
-//   "status" | "options"
-// > & {
-//   status: ROUTE_STATUS_TYPE.AVAILABLE;
-//   options: string[];
-// };
-
-// export type DigestedNotificationRouteType = AbstractDigestedRouteType & {
-//   type: ROUTE_TYPE.NOTIFICATION;
-//   order: number;
-//   exchanges: MessagePayloadType[];
-//   status: ROUTE_STATUS_TYPE.CONDITIONS_NOT_MET;
-// };
-
-// export type AvailableNotificationRoute = Omit<
-//   DigestedNotificationRouteType,
-//   "status"
-// > & {
-//   status: ROUTE_STATUS_TYPE.AVAILABLE;
-// };
-
-// export type FinishedRouteType = AbstractDigestedRouteType & {
-//   createdAt: string;
-//   status: ROUTE_STATUS_TYPE.FINISHED;
-//   exchanges: MessagePayloadType[];
-//   position: number;
-//   updatedAt: string;
-// };
-
-// export type DigestedRouteType =
-//   | DigestedChoosableRouteType
-//   | DigestedNotificationRouteType;
-
-// export type DigestedRoutesType = {
-//   available: { [id: string]: DigestedRouteType };
-//   seen: FinishedRouteType[];
-//   started?: StartedRouteType;
-// };

@@ -2,6 +2,11 @@ import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/con
 import ConversationEmitter, {
   CONVERSATION_EMITTER_EVENTS,
 } from "@Components/phoneApplications/Messages/emitters";
+import {
+  isAvailableRoute,
+  isDigestedChoosableRoute,
+  isStartedRoute,
+} from "@Components/phoneApplications/Messages/hooks/routes/guards";
 import { DigestedConversationType } from "@Components/phoneApplications/Messages/hooks/useConversation/digestion/types";
 import { CONVERSATION_REDUCER_ACTIONS } from "@Components/phoneApplications/Messages/hooks/useConversation/reducer/type";
 import { ConversationDispatchType } from "@Components/phoneApplications/Messages/hooks/useConversation/types";
@@ -14,12 +19,6 @@ import { useInsetDimensions } from "src/utility/useInsetDimensions";
 import MessageTextInput from "./MessageTextInput";
 import OptionList from "./OptionList";
 import Option from "./OptionList/Option";
-import {
-  hasResolvedOptions,
-  isAvailableRoute,
-  isChoosableRoute,
-  isStartedRoute,
-} from "@Components/phoneApplications/Messages/hooks/routes/guards";
 
 const RootChooser: FC<
   {
@@ -41,10 +40,13 @@ const RootChooser: FC<
     if (isStartedRoute(activeRoute) && activeRoute.nextMessageInQueue) {
       return activeRoute.nextMessageInQueue;
     }
-    if (isAvailableRoute(activeRoute) && hasResolvedOptions(activeRoute)) {
+    if (
+      isAvailableRoute(activeRoute) &&
+      isDigestedChoosableRoute(activeRoute)
+    ) {
       const options = activeRoute.options;
       if (options.length === 1) {
-        return options[0];
+        return options[0].label;
       } else {
         return chosenOption;
       }
@@ -57,12 +59,12 @@ const RootChooser: FC<
       dispatch({ type: CONVERSATION_REDUCER_ACTIONS.CONTINUE_ROUTE });
       return;
     }
-    if (hasResolvedOptions(activeRoute)) {
+    if (isDigestedChoosableRoute(activeRoute)) {
       const options = activeRoute.options;
       if (options.length === 1) {
         dispatch({
           type: CONVERSATION_REDUCER_ACTIONS.START_ROUTE,
-          payload: { chosenOption: options[0] },
+          payload: { chosenOption: options[0].value },
         });
       } else if (chosenOption !== "...") {
         dispatch({
@@ -75,15 +77,15 @@ const RootChooser: FC<
   }, [activeRoute, dispatch, chosenOption]);
 
   const Options = useMemo(() => {
-    if (hasResolvedOptions(activeRoute)) {
+    if (isDigestedChoosableRoute(activeRoute)) {
       const nodes = activeRoute.options.map((option) => (
         <Option
-          key={`${activeRoute.routes.id}-${option}`}
+          key={`${activeRoute.routes.id}-${option.value}`}
           id={activeRoute.id}
-          option={option}
+          option={option.label}
           cb={() => {
             openOptionList(false);
-            setChosenOption(option);
+            setChosenOption(option.value);
           }}
         />
       ));

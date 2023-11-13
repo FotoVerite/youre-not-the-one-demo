@@ -6,7 +6,7 @@ import { Row } from "src/utility/layout";
 
 const Option: FC<{
   cb: () => void;
-  id: number;
+  id: string;
   option: string;
 }> = ({ cb, option }) => {
   return (

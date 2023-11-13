@@ -8,6 +8,7 @@ import {
   MessageEffectType,
   FontAwesomeGlyphs,
 } from "../../contentWithMetaTypes";
+import { isStartedRoute } from "../../routes/guards";
 import {
   StartedRouteType,
   RouteConditionsType,
@@ -15,14 +16,11 @@ import {
   AbstractDigestedRouteType,
   AvailableRouteType,
   UntriggeredRouteType,
-  DigestedChoosableRouteType,
-  DigestedNotificationRouteType,
 } from "../../routes/types";
 import {
   MessageContentType,
   ConversationType,
 } from "../../useConversations/types";
-import { isStartedRoute } from "../../routes/guards";
 
 const SELF_NAMES_CONST = [
   MESSAGE_CONTACT_NAME.SELF,

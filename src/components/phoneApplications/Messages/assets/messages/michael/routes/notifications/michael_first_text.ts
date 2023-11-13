@@ -1,8 +1,8 @@
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
 import { ROUTE_STATUS_TYPE } from "@Components/phoneApplications/Messages/hooks/routes/types";
 
-import { MICHAEL_IDS } from "./routes";
-import { ZARA_ROUTE_IDS } from "../../zara/routes/routes";
+import { ZARA_ROUTE_IDS } from "../../../zara/routes/routes";
+import { MICHAEL_IDS } from "../routes";
 
 export const michael_first_text = {
   id: MICHAEL_IDS.FIRST_TEXT,

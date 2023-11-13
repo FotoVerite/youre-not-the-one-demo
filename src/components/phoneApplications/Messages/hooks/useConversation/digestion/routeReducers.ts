@@ -15,6 +15,7 @@ import { convertBlockToMessagePayloadType } from "./convert";
 import { MessagePayloadType } from "./types";
 import { digestBlockAndFilterSkipped } from "./utility";
 import {
+  areSimpleOptions,
   isChoosableRoute,
   isFinishedRoute,
   isStartedRoute,
@@ -23,13 +24,13 @@ import {
 import { resolveSnapshotPayload } from "../../routes/resolver";
 import {
   ChoosableRouteType,
-  NotificationRouteType,
   ROUTE_TYPE,
   ROUTE_STATUS_TYPE,
   FinishedRouteType,
   AbstractDigestedRouteType,
   UntriggeredRouteType,
   StartedRouteType,
+  NotificationRouteFileType,
 } from "../../routes/types";
 import { convertMessageToString } from "../../useConversations/determineLogLine";
 import {
@@ -70,7 +71,7 @@ export const reduceRoute =
     events: MessageAppEventsContainerType,
     cache: ImageCacheType
   ) =>
-  (ret: ReturnType, route: ChoosableRouteType | NotificationRouteType) => {
+  (ret: ReturnType, route: ChoosableRouteType | NotificationRouteFileType) => {
     let builtRoute: AbstractDigestedRouteType;
     if (isChoosableRoute(route)) {
       builtRoute = {
@@ -119,7 +120,7 @@ const createStartedRoute = (
 };
 
 const digestNotificationRoute = (
-  route: NotificationRouteType,
+  route: NotificationRouteFileType,
   events: MessageAppEventsType,
   cache: ImageCacheType
 ) => {
@@ -159,7 +160,6 @@ const digestChoosableRoute = (
   const routeId = id.toString();
   const routeEvent = events.routes[id.toString()];
   const snapshotResolver = resolveSnapshotPayload(cache);
-
   if (!isChosenEvent(routeEvent)) {
     const payloads = Object.entries(routes).reduce(
       (ret, [choice, route]) => {
@@ -168,10 +168,17 @@ const digestChoosableRoute = (
       },
       {} as { [choice: string]: MessagePayloadType[] }
     );
+    let options = route.options;
+    if (areSimpleOptions(options)) {
+      options = options.map((o) => {
+        return { label: o, value: o };
+      });
+    }
     return {
       ...route,
       id: routeId,
       routes: payloads,
+      options,
       status: ROUTE_STATUS_TYPE.CONDITIONS_NOT_MET as const,
     };
   }

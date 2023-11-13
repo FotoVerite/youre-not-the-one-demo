@@ -4,8 +4,8 @@ import {
 } from "@Components/phoneApplications/Messages/constants";
 import { ConversationFileType } from "@Components/phoneApplications/Messages/hooks/useConversations/types";
 
-import { michael_about_tonight_reply } from "./routes/michae_about_tonight_reply";
-import { michael_first_text } from "./routes/michael_first_text";
+import { michael_about_tonight_reply } from "./routes/choosable/michae_about_tonight_reply";
+import { michael_first_text } from "./routes/notifications/michael_first_text";
 const MICHAEL = MESSAGE_CONTACT_NAME.MICHAEL;
 export const michael: ConversationFileType = {
   name: MESSAGE_CONTACT_NAME.MICHAEL,

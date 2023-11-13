@@ -7,15 +7,14 @@ import { Draft, produce } from "immer";
 import moment, { Moment } from "moment";
 
 import {
-  areResolvedOptions,
   isDigestedChoosableRoute,
   isDigestedNotificationRoute,
 } from "./guards";
 import {
   RouteConditionsType,
-  OptionsWithConditionals,
   ROUTE_STATUS_TYPE,
   AbstractDigestedRouteType,
+  OptionType,
 } from "./types";
 import { MESSAGE_CONTACT_NAME } from "../../constants";
 import { EFFECT_TYPE, isContentWithMeta } from "../contentWithMetaTypes";
@@ -199,19 +198,11 @@ export const removeMessagesThatConditionsHaveNotBeenMet = (
 
 export const removeOptionsThatConditionsHaveNotBeenMet = (
   events: AppEventsType,
-  options: string[] | OptionsWithConditionals[]
+  options: OptionType[]
 ) => {
-  if (areResolvedOptions(options)) {
-    return options;
-  }
-  return options
-    .filter((option) => {
-      return messageAppConditionsMet(events.Messages, option.conditions);
-    })
-    .reduce(
-      (choices, optionsArray) => choices.concat(optionsArray.options),
-      [] as string[]
-    );
+  return options.filter((option) => {
+    return messageAppConditionsMet(events.Messages, option.conditions);
+  });
 };
 
 export const messagesConditionalCheck = (

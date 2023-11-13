@@ -2,8 +2,8 @@ import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/con
 import { MESSAGE_CONTENT } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
 import {
   ChoosableRouteType,
-  OptionsWithConditionals,
   ROUTE_STATUS_TYPE,
+  OptionType,
 } from "@Components/phoneApplications/Messages/hooks/routes/types";
 import { ExchangeBlockType } from "@Components/phoneApplications/Messages/hooks/useConversations/types";
 
@@ -19,8 +19,10 @@ export enum ZARA_I_FELL_FOR_SPAM_OPTIONS {
 const ZARA = MESSAGE_CONTACT_NAME.ZARA;
 const SELF = MESSAGE_CONTACT_NAME.SELF;
 
-const OPTIONS: OptionsWithConditionals[] = [
+const OPTIONS: OptionType[] = [
   {
+    label: ZARA_I_FELL_FOR_SPAM_OPTIONS.DID_NOT_SEND_IMAGES,
+    value: ZARA_I_FELL_FOR_SPAM_OPTIONS.DID_NOT_SEND_IMAGES,
     conditions: {
       [MESSAGE_CONTACT_NAME.SPAM1]: {
         routes: {
@@ -30,9 +32,10 @@ const OPTIONS: OptionsWithConditionals[] = [
         },
       },
     },
-    options: [ZARA_I_FELL_FOR_SPAM_OPTIONS.DID_NOT_SEND_IMAGES],
   },
   {
+    label: ZARA_I_FELL_FOR_SPAM_OPTIONS.DID_SEND_IMAGES,
+    value: ZARA_I_FELL_FOR_SPAM_OPTIONS.DID_SEND_IMAGES,
     conditions: {
       [MESSAGE_CONTACT_NAME.SPAM1]: {
         routes: {
@@ -42,7 +45,6 @@ const OPTIONS: OptionsWithConditionals[] = [
         },
       },
     },
-    options: [ZARA_I_FELL_FOR_SPAM_OPTIONS.DID_SEND_IMAGES],
   },
 ];
 const did_not_send_images: ExchangeBlockType[] = [
