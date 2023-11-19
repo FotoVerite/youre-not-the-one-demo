@@ -87,6 +87,8 @@ const RootChooser: FC<
             openOptionList(false);
             setChosenOption(option.value);
           }}
+          effect={option.effect}
+          effectData={option.data}
         />
       ));
       return nodes;

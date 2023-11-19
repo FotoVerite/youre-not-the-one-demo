@@ -4,6 +4,7 @@ declare module "*.jpeg";
 declare module "*.gif";
 declare module "*.ttf";
 declare module "*.wav";
+declare module "*.webp";
 declare module "*.mp3";
 declare module "*.svg" {
   import React from "react";

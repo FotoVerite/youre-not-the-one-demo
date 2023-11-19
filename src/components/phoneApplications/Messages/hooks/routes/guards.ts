@@ -32,7 +32,7 @@ export const areSimpleOptions = (
 ): options is string[] => {
   return (
     options != null &&
-    options.every((option) => !options.hasOwnProperty("label"))
+    options.every((option) => !option.hasOwnProperty("label"))
   );
 };
 

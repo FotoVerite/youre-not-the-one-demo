@@ -24,7 +24,6 @@ const MessageLogsContextProvider: FC<  MessageLogsContextProvider,
   const [images, setImages] = useState<MessageLogType>();
   useEffect(() => {
     const cb = async () => {
-      console.log();
       if (data == null) {
         return setImages({});
       }

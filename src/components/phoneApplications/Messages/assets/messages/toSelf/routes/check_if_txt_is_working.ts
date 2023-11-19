@@ -8,6 +8,7 @@ import {
 } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
 import {
   ChoosableRouteType,
+  OPTION_EFFECT_TYPE,
   ROUTE_STATUS_TYPE,
 } from "@Components/phoneApplications/Messages/hooks/routes/types";
 
@@ -23,7 +24,15 @@ enum OPTIONS {
 
 export const check_if_txt_is_working: ChoosableRouteType = {
   id: TO_SELF_IDS.CHECK_IF_TEXT_IS_WORKING,
-  options: Object.values(OPTIONS),
+  options: [
+    { label: OPTIONS.A, value: OPTIONS.A },
+    {
+      label: "Test",
+      value: "Test",
+      effect: OPTION_EFFECT_TYPE.STATIC,
+      data: "REDO",
+    },
+  ],
   effects: [
     {
       type: EFFECT_TYPE.CONDITIONAL_EXCHANGE,

@@ -1,19 +1,5 @@
 import { Skia } from "@shopify/react-native-skia";
 
-// export const crossSection = Skia.RuntimeEffect.Make(`
-//     uniform float M_PI;
-//     uniform float M_TWO_PI;
-//     uniform float t;
-//     uniform vec2 iResolution;
-
-//     vec4 main(vec2 FC) {
-//         vec2 r =  2.0*vec2(FC.xy - 0.5*iResolution.xy)/iResolution.y;
-//         float ret;
-//         vec3 pixel = vec3(1);
-//         ret = 1.0;
-//         pixel = vec3(ret); // make a color out of return value.
-//         return vec4(pixel, 1.0);
-//     }`)!;
 export const osculatingLine = Skia.RuntimeEffect.Make(`
     uniform float t;
 	uniform float clipSize;

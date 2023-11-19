@@ -21,6 +21,7 @@
     "@shopify/react-native-skia": "0.1.196",
     "eventemitter3": "^5.0.1",
     "expo": "~49.0.8",
+    "expo-av": "~13.4.1",
     "expo-blur": "~12.4.1",
     "expo-crypto": "~12.4.1",
     "expo-file-system": "~15.4.3",
