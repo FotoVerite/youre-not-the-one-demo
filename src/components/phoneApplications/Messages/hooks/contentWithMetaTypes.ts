@@ -15,6 +15,7 @@ export enum MESSAGE_CONTENT {
   SNAPSHOT = "snapshot",
   STRING = "string",
   VCARD = "vcard",
+  VIDEO = "video",
 }
 
 export enum EFFECT_TYPE {
@@ -23,6 +24,10 @@ export enum EFFECT_TYPE {
   LOGLINE_REPLACEMENT,
   SNAPSHOT,
   BACKGROUND_SNAPSHOT,
+}
+
+export enum NEXT_MESSAGE_EFFECT_TYPE {
+  RETYPE,
 }
 
 export type MessageEffectType = {
@@ -46,6 +51,10 @@ interface AbstractContentWithMetaType {
   typingDelay?: number;
   reaction?: ReactionType;
   effect?: MessageEffectType;
+  nextMessageEffect?: {
+    type: NEXT_MESSAGE_EFFECT_TYPE;
+    data: string | string[];
+  };
 }
 
 export interface StringContentWithMeta extends AbstractContentWithMetaType {
@@ -87,6 +96,11 @@ export interface VCardContentWithMeta extends AbstractContentWithMetaType {
   content: MESSAGE_CONTACT_NAME;
   type: MESSAGE_CONTENT.VCARD;
 }
+
+export interface VideoContentWithMeta extends AbstractContentWithMetaType {
+  content: { video: string; subtitles: string[] };
+  type: MESSAGE_CONTENT.VIDEO;
+}
 export type ContentWithMetaType =
   | BackgroundSnapshotContentWithMeta
   | EmojiContentWithMeta
@@ -95,7 +109,8 @@ export type ContentWithMetaType =
   | NumberContentWithMeta
   | StringContentWithMeta
   | SnapshotContentWithMeta
-  | VCardContentWithMeta;
+  | VCardContentWithMeta
+  | VideoContentWithMeta;
 
 export const isContentWithMeta = (
   content: ContentWithMetaType | string

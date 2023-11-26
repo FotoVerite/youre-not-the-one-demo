@@ -32,6 +32,9 @@ const DisplayedText: FC<{
 
   const blurAndRemove = useCallback(() => {
     "worklet";
+    if (visibility.value !== 1) {
+      return;
+    }
     visibility.value = withTiming(0, {}, (finished) => {
       if (finished && cb) {
         runOnJS(cb)();

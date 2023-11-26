@@ -7,6 +7,7 @@ import {
   MESSAGE_CONTENT,
   MessageEffectType,
   FontAwesomeGlyphs,
+  NEXT_MESSAGE_EFFECT_TYPE,
 } from "../../contentWithMetaTypes";
 import { isStartedRoute } from "../../routes/guards";
 import {
@@ -21,6 +22,7 @@ import {
   MessageContentType,
   ConversationType,
 } from "../../useConversations/types";
+import { ReactNode } from "react";
 
 const SELF_NAMES_CONST = [
   MESSAGE_CONTACT_NAME.SELF,
@@ -145,6 +147,11 @@ export interface DigestedConversationVCardItemType
   type: MESSAGE_CONTENT.VCARD;
 }
 
+export interface DigestedConversationVideoItemType
+  extends AbstractMetaDigestedConversationItemType {
+  content: { video: string; subtitles: ReactNode[] };
+  type: MESSAGE_CONTENT.VIDEO;
+}
 export type DigestedConversationListItem =
   | DigestedConversationEmojiItemType
   | DigestedConversationImageItemType
@@ -155,7 +162,8 @@ export type DigestedConversationListItem =
   | DigestedConversationBackgroundSnapShotItemType
   | DigestedConversationSnapShotItemType
   | DigestedConversationStringItemType
-  | DigestedConversationVCardItemType;
+  | DigestedConversationVCardItemType
+  | DigestedConversationVideoItemType;
 
 export type BubbleItemType = Exclude<
   DigestedConversationListItem,

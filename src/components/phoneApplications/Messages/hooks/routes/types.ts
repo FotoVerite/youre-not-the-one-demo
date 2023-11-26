@@ -1,5 +1,8 @@
 import { MESSAGE_CONTACT_NAME } from "../../constants";
-import { MessageEffectType } from "../contentWithMetaTypes";
+import {
+  MessageEffectType,
+  NEXT_MESSAGE_EFFECT_TYPE,
+} from "../contentWithMetaTypes";
 import {
   DigestedBubbleProps,
   MessagePayloadType,
@@ -127,10 +130,16 @@ export type ProcessedRouteType = KickedOffRouteType & {
   status: ROUTE_STATUS_TYPE.STARTED | ROUTE_STATUS_TYPE.FINISHED;
 };
 
+export type NextMessageInQueue = {
+  value: string;
+  nextMessageEffect?: NEXT_MESSAGE_EFFECT_TYPE;
+  data?: string[] | string;
+};
+
 export type StartedRouteType = ProcessedRouteType & {
   status: ROUTE_STATUS_TYPE.STARTED;
   indexAt: number;
-  nextMessageInQueue?: string;
+  nextMessageInQueue?: NextMessageInQueue;
   pending: MessagePayloadType[];
   previousExchangeProps?: Omit<DigestedBubbleProps, "ID"> & { ID: string };
 };

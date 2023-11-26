@@ -36,7 +36,7 @@ const RootChooser: FC<
     setChosenOption("...");
   }, [conversation.exchanges, setChosenOption]);
 
-  const displayedText = useMemo(() => {
+  const displayedTextAttributes = useMemo(() => {
     if (isStartedRoute(activeRoute) && activeRoute.nextMessageInQueue) {
       return activeRoute.nextMessageInQueue;
     }
@@ -46,9 +46,9 @@ const RootChooser: FC<
     ) {
       const options = activeRoute.options;
       if (options.length === 1) {
-        return options[0].label;
+        return { value: options[0].label };
       } else {
-        return chosenOption;
+        return { value: chosenOption };
       }
     }
     return undefined;
@@ -114,7 +114,7 @@ const RootChooser: FC<
       {Platform.OS === "ios" && <BlurView style={styles.blur} intensity={5} />}
       <MessageTextInput
         chevronColor={conversation.interfaceColor}
-        text={displayedText}
+        displayedTextAttributes={displayedTextAttributes}
         cb={callback}
         openOptionList={openOptionList}
       />

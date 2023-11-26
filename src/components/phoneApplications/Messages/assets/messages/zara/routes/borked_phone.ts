@@ -1,7 +1,11 @@
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
-import { MESSAGE_CONTENT } from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
+import {
+  MESSAGE_CONTENT,
+  NEXT_MESSAGE_EFFECT_TYPE,
+} from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
 import {
   ChoosableRouteType,
+  OPTION_EFFECT_TYPE,
   ROUTE_STATUS_TYPE,
 } from "@Components/phoneApplications/Messages/hooks/routes/types";
 
@@ -9,6 +13,8 @@ import { ZARA_ROUTE_IDS } from "./routes";
 
 export enum BORKED_PHONE_OPTIONS {
   A = "OMG human interaction!",
+  B = "I can't deal with anyone right now.",
+  C = "I am waste of space",
 }
 
 const ZARA = MESSAGE_CONTACT_NAME.ZARA;
@@ -19,7 +25,21 @@ const SELF = MESSAGE_CONTACT_NAME.SELF;
 
 export const borked_phone: ChoosableRouteType = {
   id: ZARA_ROUTE_IDS.BORKED_PHONE,
-  options: Object.values(BORKED_PHONE_OPTIONS),
+  options: [
+    {
+      label: BORKED_PHONE_OPTIONS.B,
+      value: BORKED_PHONE_OPTIONS.B,
+      effect: OPTION_EFFECT_TYPE.STATIC,
+      data: "This is a thought spiral, I am sounding insane",
+    },
+    { label: BORKED_PHONE_OPTIONS.A, value: BORKED_PHONE_OPTIONS.A },
+    {
+      label: BORKED_PHONE_OPTIONS.C,
+      value: BORKED_PHONE_OPTIONS.C,
+      effect: OPTION_EFFECT_TYPE.STATIC,
+      data: "This is a thought spiral, I am sounding insane",
+    },
+  ],
   conditions: {
     [MESSAGE_CONTACT_NAME.ZARA]: {
       routes: {
@@ -43,7 +63,14 @@ export const borked_phone: ChoosableRouteType = {
         name: SELF,
         messages: [
           "I'm loosing my mind, my sanity!",
-          "I kinda sorta...",
+          {
+            type: MESSAGE_CONTENT.STRING,
+            content: "I kinda sorta...",
+            nextMessageEffect: {
+              type: NEXT_MESSAGE_EFFECT_TYPE.RETYPE,
+              data: ["I ruined my phone and my life", "I kinda ruined my life"],
+            },
+          },
           "froze my account and lost all my contacts...",
           "and now I don't know what to do",
           { type: MESSAGE_CONTENT.EMOJI, content: "💀" },

@@ -25,6 +25,7 @@ type CalculationsType = {
     | string
     | React.JSX.Element[]
     | { filename: string; backup: string }
+    | { video: string; subtitles: React.JSX.Element[] }
     | MESSAGE_CONTACT_NAME;
   cursorVector: Vector;
 };
@@ -34,7 +35,7 @@ export const SkMessage = (
   message: ContentWithMetaType,
   name: MESSAGE_CONTACT_NAME,
   isLastInExchange: boolean,
-  timeStamp?: string,
+  timeStamp?: string
 ) => {
   const DEFAULT_BOTTOM_PADDING = 4;
   const BOTTOM_PADDING_FOR_LAST_IN_BLOCK = 8;
@@ -46,7 +47,7 @@ export const SkMessage = (
     message,
     width,
     addressee,
-    font,
+    font
   );
   const skItem = {
     ID: Crypto.randomUUID(),
@@ -84,7 +85,7 @@ const calculateWidthHeightAndContent = (
   message: ContentWithMetaType,
   width: number,
   addressee: boolean,
-  font: SkFont,
+  font: SkFont
 ): CalculationsType => {
   const itemWidth = addressee ? width * 0.7 - 30 : width * 0.7;
   switch (message.type) {
@@ -119,7 +120,7 @@ const calculateWidthHeightAndContent = (
       if (!image) {
         LOG(
           LOG_COLORS.BgRed,
-          `IMAGE NOT FOUND FOR THIS BACKGROUND SNAP ${message.content.filename}`,
+          `IMAGE NOT FOUND FOR THIS BACKGROUND SNAP ${message.content.filename}`
         );
         return {
           width: 0,
@@ -139,7 +140,7 @@ const calculateWidthHeightAndContent = (
     }
     case MESSAGE_CONTENT.IMAGE: {
       const imageDimensions = Image.resolveAssetSource(
-        message.content as ImageSourcePropType,
+        message.content as ImageSourcePropType
       );
       const aspectRation = imageDimensions.height / imageDimensions.width;
       const imageHeight = itemWidth * aspectRation;
@@ -164,7 +165,7 @@ const calculateWidthHeightAndContent = (
           font,
           message.content,
           width,
-          addressee,
+          addressee
         );
       return {
         width: boxWidth,
@@ -179,7 +180,7 @@ const calculateWidthHeightAndContent = (
         font,
         message.content,
         width,
-        addressee,
+        addressee
       );
       return {
         width: glyphWidth,
@@ -195,6 +196,25 @@ const calculateWidthHeightAndContent = (
         content: message.content as MESSAGE_CONTACT_NAME,
         cursorVector: { x: 180 + 2, y: 0 },
       };
+    case MESSAGE_CONTENT.VIDEO: {
+      const [boxHeight, boxWidth, textNodes, cursorVector] =
+        GetDimensionsAndSkiaNodes(
+          font,
+          font,
+          message.content.subtitles.join("\n"),
+          width,
+          addressee
+        );
+      return {
+        width: itemWidth,
+        height: boxHeight + 160 + BUBBLE_PADDING,
+        content: {
+          video: message.content.video,
+          subtitles: textNodes,
+        },
+        cursorVector,
+      };
+    }
     default:
       return {
         width: itemWidth,

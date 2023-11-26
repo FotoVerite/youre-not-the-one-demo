@@ -2,7 +2,6 @@ import { CACHED_KEYS } from "@Components/Main/CacheLoader/types";
 import { useNotificationContext } from "@Components/notifications/context";
 import {
   NOTIFICATIONS_REDUCER_ACTIONS,
-  NotificationDataType,
 } from "@Components/notifications/reducer/types";
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
 import React, {
@@ -11,7 +10,6 @@ import React, {
   useContext,
   useEffect,
   useReducer,
-  useRef,
 } from "react";
 import { PHONE_APPLICATION_NAMES } from "src/constants/phoneApplicationNames";
 import { LOG, LOG_COLORS } from "src/utility/logger";

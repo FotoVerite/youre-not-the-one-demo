@@ -19,13 +19,10 @@ import {
   CONVERSATION_REDUCER_ACTIONS,
   RefreshAvailablePayloadType,
 } from "./type";
-import { MESSAGE_CONTENT } from "../../contentWithMetaTypes";
-import { messagesConditionalCheck } from "../../routes/conditionals";
+import { MESSAGE_CONTENT, isContentWithMeta } from "../../contentWithMetaTypes";
 import {
-  isChoosableRoute,
   isDigestedChoosableRoute,
   isDigestedNotificationRoute,
-  isNotificationRoute,
   isStartedRoute,
 } from "../../routes/guards";
 import { ROUTE_STATUS_TYPE, ROUTE_TYPE } from "../../routes/types";
@@ -194,9 +191,18 @@ const _setInputDisplay = (
   draft: DigestedConversationWithStartedRoute,
   nextMessage: MessagePayloadType
 ) => {
-  draft.activeRoute.nextMessageInQueue = convertMessageToString(
-    nextMessage.messageContent
-  );
+  console.log(nextMessage);
+  if (isContentWithMeta(nextMessage.messageContent)) {
+    draft.activeRoute.nextMessageInQueue = {
+      nextMessageEffect: nextMessage.messageContent.nextMessageEffect?.type,
+      data: nextMessage.messageContent.nextMessageEffect?.data,
+      value: convertMessageToString(nextMessage.messageContent),
+    };
+  } else {
+    draft.activeRoute.nextMessageInQueue = {
+      value: convertMessageToString(nextMessage.messageContent),
+    };
+  }
   _createCleanupAction(draft);
   return draft;
 };

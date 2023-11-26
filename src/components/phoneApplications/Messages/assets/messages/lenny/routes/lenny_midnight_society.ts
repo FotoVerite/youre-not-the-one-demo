@@ -3,12 +3,18 @@
 
 import { MESSAGE_CONTACT_NAME } from "@Components/phoneApplications/Messages/constants";
 import {
+  MESSAGE_CONTENT,
+  NEXT_MESSAGE_EFFECT_TYPE,
+} from "@Components/phoneApplications/Messages/hooks/contentWithMetaTypes";
+import {
   ChoosableRouteType,
   ROUTE_STATUS_TYPE,
 } from "@Components/phoneApplications/Messages/hooks/routes/types";
 import { ExchangeBlockType } from "@Components/phoneApplications/Messages/hooks/useConversations/types";
 
 import { LENNY_ROUTE_IDS } from "./routes";
+import lenny1 from "../assets/lenny1.mov";
+import lenny2 from "../assets/lenny2.mov";
 
 const LENNY = MESSAGE_CONTACT_NAME.LENNY;
 const SELF = MESSAGE_CONTACT_NAME.SELF;
@@ -22,33 +28,59 @@ enum OPTIONS {
 const exchanges: ExchangeBlockType[] = [
   {
     name: LENNY,
-    messages: ["For this meeting of the midnight society I present"],
-  },
-  {
-    name: SELF,
-    messages: ["OMG, no, I'm out", "I'm leaving you on read"],
-  },
-  {
-    name: LENNY,
     messages: [
-      "My dude please",
-      "Fuck... you never let up",
-      "And always try to control the situation, even when we were kids you tried to micromanage our vacations",
+      {
+        type: MESSAGE_CONTENT.VIDEO,
+        content: {
+          video: lenny1,
+          subtitles: ["For this meeting of the midnight society I present"],
+        },
+      },
     ],
   },
   {
     name: SELF,
-    messages: ["Sorry"],
+    messages: [
+      "OMG, no, I'm out",
+      "I'm leaving you on read",
+      "Not this fucking animoji bullshit again",
+    ],
   },
   {
     name: LENNY,
-    messages: ["Do you know about the hikikomoris in Japan"],
+    messages: [
+      {
+        type: MESSAGE_CONTENT.VIDEO,
+        content: {
+          video: lenny2,
+          subtitles: [
+            "My dude",
+            "please",
+            "I'm practicing for my next speaking engagement.",
+            "Fuck... you never let up",
+            "Always try to micromanage everything.",
+          ],
+        },
+      },
+    ],
+  },
+  {
+    name: SELF,
+    messages: [
+      "Sorry",
+      "But it's sooo creepy.",
+      "Does this really help you work on performance?",
+    ],
+  },
+  {
+    name: LENNY,
+    messages: ["Sigh... Yes", "Do you know about the hikikomori in Japan"],
   },
   {
     name: SELF,
     messages: [
       "You mean agoraphobic people",
-      "It's not like Japan is the only country dealing with shutin.",
+      "It's not like Japan is the only country dealing with shutins.",
     ],
   },
   {
@@ -57,43 +89,83 @@ const exchanges: ExchangeBlockType[] = [
   },
   {
     name: SELF,
-    messages: ["Fine, yes, I know about the hikikomoris"],
+    messages: ["Fine, yes, I know about hikikomori"],
   },
   {
     name: LENNY,
     messages: [
-      "The problem has been getting worse the past decade. But since lockdown things have changed",
-      "Before they'd play game mmos,lurk message boards or chat online to get human connection",
-      "But now a lot of them don't even want to go online",
-      "Their communities have seen a sharp drop-off of engagement",
-      "The few post that have appeared talk about a new feeling of dread and exhaustion",
-      "That their obsessions have run they're course and there's nothing left to do or to say.",
-      "They look at a screen and they just see an sea of black",
+      "It's been an issue for a very long time; but since lockdown things have changed",
+      "Before they'd play game mmos,lurk message boards, or chat online to get human connection",
+      "Now a lot of them just chat with AI, or have AI chat for them and read the results on message boards",
     ],
-  },
-  {
-    name: SELF,
-    messages: ["So they're acrophobic and complex depression now"],
   },
   {
     name: LENNY,
     messages: [
-      "No this is literal, not figural. Literal sea of black.",
-      "Every bit of technology from computers to digital clocks",
-      "To them nothing seems to be on",
-      "Even to the few ones that can venture out the curse doesn't seem to lift.",
-      "They can't even view how much they owe at a convince store, or take out money from an ATM",
-      "Their lives even more then before seem to have stagnated and nobody can figure out the cause",
-      "Mostly when people ask them what they think is happening they just say they feel like they're in limbo",
+      "There are reddits and discords of AI just chatting between themselves",
+      "No human interaction, occasional tweaks of the code",
+      "If they manually type something, it's to the effect of, I'm tired of trying to figure out what people want from me.",
+      "They look at a screen and they just see people yelling at them, calling them stupid, or on the wrong side of history",
     ],
   },
   {
     name: SELF,
-    messages: ["Ahuh, fascinating", "And how did they post then on reddit?"],
+    messages: ["So they're agoraphobic and cowards got it"],
   },
   {
     name: LENNY,
-    messages: ["Normally it's a parent"],
+    messages: ["You're such a fucking asshole."],
+  },
+  {
+    name: LENNY,
+    messages: [
+      "Imagine feeling so alienated that you'd rather have a stand in for yourself then have any agency.",
+      "Rather watch something pretend to be your opinions instead of having them yourself",
+      "Sometimes I wonder if you are autistic.",
+      "you act like you have zero empathy",
+    ],
+  },
+  {
+    name: SELF,
+    messages: [
+      {
+        type: MESSAGE_CONTENT.STRING,
+        content: "Now who's being an asshole and a... sanist",
+        nextMessageEffect: {
+          type: NEXT_MESSAGE_EFFECT_TYPE.RETYPE,
+          data: [
+            "Now who's being an asshole",
+            "Now who's being an asshole and committing sanism",
+            "Now who's being an asshole and committing mentalism",
+          ],
+        },
+      },
+    ],
+  },
+  {
+    name: LENNY,
+    messages: ["WTF is a sanist"],
+  },
+  {
+    name: LENNY,
+    messages: [
+      "Just try to imagine being so estranged from social interaction.",
+      "But it's getting weirder",
+      "Some of these AI are getting so sophisticated that they're taking tests for them, or doing their shopping without prompting.",
+      "Some are even claiming they've had them taken over for most of the interactions they'd have with their parents.",
+      "A few parents even claim that their kids died and they had no idea till weeks later when their bodies were found.",
+      "Their AI was cheerfully keeping them updated about how everything was getting better.",
+    ],
+  },
+  { name: SELF, messages: ["Okay, so what's the end goal"] },
+  {
+    name: LENNY,
+    messages: [
+      "The few that are actually thinking about it are saying replacement.",
+      "They want to outsource their life.",
+      "Just be by themselves and have the AI do as much as possible so they don't need to think about it.",
+      "It just sounds so utterly lonely",
+    ],
   },
   {
     name: SELF,
@@ -109,14 +181,14 @@ const exchanges: ExchangeBlockType[] = [
   },
   {
     name: LENNY,
-    messages: ["Why is it that you can never just enjoy a story"],
+    messages: ["Why is it that you meet everything with irony?"],
   },
   {
     name: SELF,
     messages: [
-      "Because it's nonsensical",
-      "Because it's so concerned with it's messaging that it has no life to it. ",
-      "Because it's trite",
+      "Because I'm a millennial?",
+      "It's probably just ragebait/doombait. Or being done by like one insane person.",
+      "AI isn't even that good yet. Those forums would be a mess of boring exchanges that go no where.",
     ],
   },
   {

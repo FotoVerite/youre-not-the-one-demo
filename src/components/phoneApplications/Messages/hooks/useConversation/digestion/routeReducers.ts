@@ -37,6 +37,7 @@ import {
   ConversationFileType,
   ConversationType,
 } from "../../useConversations/types";
+import { isContentWithMeta } from "../../contentWithMetaTypes";
 
 type ReturnType = {
   seen: FinishedRouteType[];
@@ -88,6 +89,20 @@ export const reduceRoute =
     return ret;
   };
 
+const createNextMessageInQueue = (nextMessage?: MessagePayloadType) => {
+  if (!nextMessage) return undefined;
+  if (isContentWithMeta(nextMessage.messageContent)) {
+    return {
+      nextMessageEffect: nextMessage.messageContent.nextMessageEffect?.type,
+      data: nextMessage.messageContent.nextMessageEffect?.data,
+      value: convertMessageToString(nextMessage.messageContent),
+    };
+  }
+  return {
+    value: convertMessageToString(nextMessage.messageContent),
+  };
+};
+
 const createStartedRoute = (
   event: MessageRouteEventDataType & { chosen: string },
   cache: ImageCacheType,
@@ -110,9 +125,7 @@ const createStartedRoute = (
     }, [] as MessagePayloadType[]),
     status: ROUTE_STATUS_TYPE.STARTED as const,
     indexAt: atIndex,
-    nextMessageInQueue: payloads[0]
-      ? convertMessageToString(payloads[0].messageContent)
-      : undefined,
+    nextMessageInQueue: createNextMessageInQueue(payloads[0]),
     pending: payloads,
     position: event.position,
     updatedAt: event.updatedAt,

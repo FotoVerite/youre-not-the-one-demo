@@ -15,13 +15,13 @@ const Option: FC<{
   effectData?: string;
 }> = ({ cb, effect, effectData, option }) => {
   const [display, setDisplay] = useState(false);
-  const displayEffect = useCallback(
-    (effectData) => {
-      setDisplay((d) => !d);
-    },
-    [effect]
-  );
+  const displayEffect = useCallback(() => {
+    setDisplay(true);
+  }, []);
   const sound = useSound(buzzer);
+  if (display && effectData) {
+    return <BaseOption value={effectData} noChevron background={staticBG} />;
+  }
 
   return (
     <TouchableOpacity
@@ -30,20 +30,12 @@ const Option: FC<{
           cb();
         }
         if (effect != null) {
-          console.log("played");
           sound?.playAsync();
-          displayEffect(effectData);
+          displayEffect();
         }
       }}
     >
-      {!display && <BaseOption value={option} />}
-      {display && (
-        <BaseOption
-          value="THis is a bad end THis is a bad end"
-          noChevron={true}
-          background={staticBG}
-        />
-      )}
+      <BaseOption value={option} />
     </TouchableOpacity>
   );
 };

@@ -27,7 +27,7 @@ export const Timestamp: FC<{
     const translate = interpolate(
       translateX.value,
       [0, 1],
-      [timeWidth, addressee ? -100 : -35],
+      [timeWidth, addressee ? -100 : -35]
     );
     return { transform: [{ translateX: translate }] };
   });
@@ -49,7 +49,7 @@ export const Timestamp: FC<{
     >
       <Text
         onLayout={(layout: LayoutChangeEvent) => {
-          setTimeWidth(layout.nativeEvent.layout.width + theme.spacing.p2);
+          // setTimeWidth(layout.nativeEvent.layout.width + theme.spacing.p2);
         }}
       >
         {formatConversationTime(timestamp)}

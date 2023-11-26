@@ -1,5 +1,6 @@
+import { getWidthFromGlyphs } from "@Components/phoneApplications/Messages/hooks/useConversation/digestion/SkFunctions/skiaCalculations";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Canvas, Group, Text as SkText } from "@shopify/react-native-skia";
+import { Canvas, Group, Text as SkText, vec } from "@shopify/react-native-skia";
 import React, { FC, PropsWithChildren } from "react";
 import {
   ImageBackground,
@@ -23,17 +24,16 @@ const OptionText: FC<{ value: string; shader?: string }> = ({
   value,
 }) => {
   const font = useFontsContext().fonts.HelveticaNeue;
-  const skShader = useShader(SHADER_TYPES.GHOST, undefined, "runtime");
+  const width = getWidthFromGlyphs(font, value);
+  const skShader = useShader(SHADER_TYPES.GHOST, vec(width, 50), "runtime");
   if (!shader || !font) {
     return <Text style={styles.content}>{value}</Text>;
   }
   return (
     <Canvas style={{ flex: 1, height: 50 }}>
-      <SkText x={16} y={18} text={value} font={font} opacity={0.2} />
-
       <Group>
         {skShader}
-        <SkText x={16} y={18} text={value} font={font} />
+        <SkText x={16} y={30} text={value} font={font} color={"black"} />
       </Group>
     </Canvas>
   );

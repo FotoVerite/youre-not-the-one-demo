@@ -28,13 +28,13 @@ export const ExchangeWrapper: FC<ConversationExchangeWrapperType> = ({
   timestamp,
   translateX,
 }) => {
-  const [timeWidth, setTimeWidth] = useState(0);
+  const [timeWidth, setTimeWidth] = useState(85);
 
   const slideIn = useAnimatedStyle(() => {
     const translate = interpolate(
       translateX.value,
       [0, 1],
-      [0, -timeWidth + 20],
+      [0, -timeWidth + 20]
     );
     if (addressee) {
       return {};

@@ -10,11 +10,12 @@ import {
   RuntimeShader,
 } from "@shopify/react-native-skia";
 import { useWindowDimensions } from "react-native";
+
 import { cloudsShader } from "./shaders/clouds";
 import { crossSection } from "./shaders/crossSection";
+import { ghost } from "./shaders/ghost";
 import { osculatingLine } from "./shaders/oscilatingLine";
 import { pixelate } from "./shaders/pixelate";
-import { ghost } from "./shaders/ghost";
 export enum SHADER_TYPES {
   CLOUDS,
   CROSS_SECTION,
@@ -32,7 +33,7 @@ export const useShader = (
   const clock = useClockValue();
   const iResolution = vec(width, height);
 
-  let M_PI = Math.PI,
+  const M_PI = Math.PI,
     M_TWO_PI = 2 * M_PI;
 
   const uniforms = useComputedValue(

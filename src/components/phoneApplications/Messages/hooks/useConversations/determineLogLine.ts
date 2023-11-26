@@ -45,6 +45,8 @@ export const convertMessageToString = (message: MessageContentType) => {
         return "Send Snapshot";
       case MESSAGE_CONTENT.VCARD:
         return `${message.content} Contact Card`;
+      case MESSAGE_CONTENT.VIDEO:
+        return `VIDEO`;
       default:
         return message.content;
     }

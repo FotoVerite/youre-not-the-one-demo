@@ -24,15 +24,7 @@ enum OPTIONS {
 
 export const check_if_txt_is_working: ChoosableRouteType = {
   id: TO_SELF_IDS.CHECK_IF_TEXT_IS_WORKING,
-  options: [
-    { label: OPTIONS.A, value: OPTIONS.A },
-    {
-      label: "Test",
-      value: "Test",
-      effect: OPTION_EFFECT_TYPE.STATIC,
-      data: "REDO",
-    },
-  ],
+  options: [{ label: OPTIONS.A, value: OPTIONS.A }],
   effects: [
     {
       type: EFFECT_TYPE.CONDITIONAL_EXCHANGE,

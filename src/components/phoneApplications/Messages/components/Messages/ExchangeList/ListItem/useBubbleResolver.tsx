@@ -9,6 +9,7 @@ import { SkStringBubble } from "./SkBubbles/SkStringBubble";
 import { SkVcardBubble } from "./SkBubbles/SkVcardBubble";
 import { TimeStamp } from "./Timestamp";
 import { ExchangeListItemType } from "./types";
+import { SkVideoBubble } from "./SkBubbles/SkVideoBubble";
 
 const useBubbleResolver = (props: ExchangeListItemType) => {
   switch (props.type) {
@@ -46,6 +47,8 @@ const useBubbleResolver = (props: ExchangeListItemType) => {
       return <SkStringBubble {...props} key={`bubble-${props.ID}`} />;
     case MESSAGE_CONTENT.VCARD:
       return <SkVcardBubble {...props} />;
+    case MESSAGE_CONTENT.VIDEO:
+      return <SkVideoBubble {...props} key={`bubble-${props.ID}-video`} />;
     default:
       return <></>;
   }

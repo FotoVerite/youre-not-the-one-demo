@@ -6,6 +6,7 @@ declare module "*.ttf";
 declare module "*.wav";
 declare module "*.webp";
 declare module "*.mp3";
+declare module "*.mov";
 declare module "*.svg" {
   import React from "react";
   import { SvgProps } from "react-native-svg";

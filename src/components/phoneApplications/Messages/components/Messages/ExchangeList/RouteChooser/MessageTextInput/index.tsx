@@ -1,65 +1,34 @@
-import { FC, useRef, useState, useEffect } from "react";
+import { NextMessageInQueue } from "@Components/phoneApplications/Messages/hooks/routes/types";
+import { FC } from "react";
 import { View, TouchableWithoutFeedback, StyleSheet } from "react-native";
 import { theme } from "src/theme";
 import { Row } from "src/utility/layout";
 
-import ListOffsetEmitter, { LIST_EMITTER_EVENTS } from "../../emitters";
-import ChevronButton, { MESSAGE_SEND_BUTTON_STATE } from "../ChevronButton";
-import DisplayedText, { DISPLAYED_TEXT_STATES } from "../DisplayedText";
+import { useButtonStateMachine } from "./hooks/useButtonStateMachine";
+import ChevronButton from "../ChevronButton";
+import DisplayedText from "../DisplayedText";
 
 const MessageTextInput: FC<{
   chevronColor?: string;
   openOptionList: React.Dispatch<React.SetStateAction<boolean>>;
-  text?: string;
+  displayedTextAttributes?: NextMessageInQueue;
   cb: () => void;
-}> = ({ cb, chevronColor, openOptionList, text }) => {
-  const sent = useRef(true);
-  const [textState, setTextState] = useState(DISPLAYED_TEXT_STATES.DISPLAYED);
-  const [buttonState, setButtonState] = useState(
-    text != null
-      ? MESSAGE_SEND_BUTTON_STATE.SENDABLE
-      : MESSAGE_SEND_BUTTON_STATE.INACTIVE
-  );
-
-  useEffect(() => {
-    setTextState(DISPLAYED_TEXT_STATES.DISPLAYED);
-    if (text != null && text !== "...") {
-      sent.current = false;
-      setButtonState(MESSAGE_SEND_BUTTON_STATE.SENDABLE);
-    } else if (text === "...") {
-      sent.current = true;
-      setButtonState(MESSAGE_SEND_BUTTON_STATE.HAS_CONTENT);
-    } else {
-      setButtonState(MESSAGE_SEND_BUTTON_STATE.INACTIVE);
-    }
-  }, [text]);
+}> = ({ cb, chevronColor, openOptionList, displayedTextAttributes }) => {
+  const [displayedText, textState, buttonState, onPress] =
+    useButtonStateMachine(openOptionList, displayedTextAttributes);
 
   return (
     <View style={[styles.container]}>
-      <TouchableWithoutFeedback
-        onPress={() => {
-          ListOffsetEmitter.emit(LIST_EMITTER_EVENTS.END, 0);
-          if (text && !sent.current) {
-            sent.current = true;
-            setTextState(DISPLAYED_TEXT_STATES.SENT);
-            setButtonState(MESSAGE_SEND_BUTTON_STATE.WAITING);
-          } else if (text === "...") {
-            setButtonState(MESSAGE_SEND_BUTTON_STATE.OPEN);
-            openOptionList((isOpen) => {
-              setButtonState(
-                isOpen
-                  ? MESSAGE_SEND_BUTTON_STATE.HAS_CONTENT
-                  : MESSAGE_SEND_BUTTON_STATE.OPEN
-              );
-              return !isOpen;
-            });
-          }
-        }}
-      >
+      <TouchableWithoutFeedback onPress={() => onPress()}>
         <View style={[styles.textInput]}>
           <Row>
-            {text ? (
-              <DisplayedText text={text} state={textState} cb={cb} key={text} />
+            {displayedText ? (
+              <DisplayedText
+                text={displayedText}
+                state={textState}
+                cb={cb}
+                key={displayedTextAttributes?.value || "blank"}
+              />
             ) : (
               <View style={{ flexGrow: 1, minHeight: 35 }} />
             )}
