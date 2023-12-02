@@ -8,7 +8,7 @@ const useInitials = (
   height: number,
   name: MESSAGE_CONTACT_NAME,
   circleColor: string = "white",
-  fontColor: string = "black",
+  fontColor: string = "black"
 ) => {
   const font = useFontsContext().fonts.HelveticaNeue;
   const initials = name

@@ -7,10 +7,14 @@ import { produce } from "immer";
 import { useState, useCallback, useMemo, useEffect } from "react";
 import { delayFor } from "src/utility/async";
 
-import { messageAppConditionsMet } from "../routes/conditionals";
+import {
+  messageAppConditionsMet,
+  repeatableTimePassed,
+} from "../routes/conditionals";
 import {
   isDigestedChoosableRoute,
   isDigestedNotificationRoute,
+  isNotificationRoute,
 } from "../routes/guards";
 import {
   ROUTE_STATUS_TYPE,
@@ -28,15 +32,50 @@ export const useConversationDispatcher = (
 ) => {
   const eventsContext = useAppEventsContext();
   const { state: events, dispatch } = eventsContext;
+  const [cachedConversations, setCachedConversations] = useState(() =>
+    conversations.map((c) => c.name)
+  );
   const [routes, setRoutes] = useState(() =>
     reduceConversations(conversations, events)
   );
 
+  const [update, setUpdate] = useState(0);
+
+  useEffect(() => {
+    const newConversations = conversations.filter(
+      (c) => !cachedConversations.includes(c.name)
+    );
+
+    if (newConversations.length > 0) {
+      setRoutes(
+        produce(routes, (draft) => {
+          return { ...draft, ...reduceConversations(newConversations, events) };
+        })
+      );
+      setCachedConversations((names) =>
+        names.concat(newConversations.map((c) => c.name))
+      );
+    }
+  }, [cachedConversations, conversations, events, routes]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setUpdate((s) => s + 1);
+    }, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
   const toNotify = useMemo(() => {
     return Object.values(routes).filter((route) => {
+      if (isDigestedNotificationRoute(route) && route.repeatable) {
+        return (
+          messageAppConditionsMet(events.Messages, route.conditions) &&
+          repeatableTimePassed(events.Messages, route)
+        );
+      }
       return messageAppConditionsMet(events.Messages, route.conditions);
     });
-  }, [events.Messages, routes]);
+  }, [events.Messages, routes, update]);
 
   const dispatchNotification = useCallback(
     (route: DigestedNotificationRouteType) => {
@@ -81,6 +120,8 @@ export const useConversationDispatcher = (
       setRoutes((internRoutes) =>
         produce(internRoutes, (draft) => {
           for (const id of ids) {
+            const route = draft[id];
+            //TODO figure out how to handle repeatable routes
             delete draft[id];
           }
           return draft;

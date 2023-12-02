@@ -94,7 +94,13 @@ const refreshConversation = (
   payload: RefreshAvailablePayloadType
 ) => {
   draft.blockable = payload.blockable;
-  if (draft.activeRoute != null || !payload.activeRoute) return;
+  if (!payload.activeRoute) return;
+  if (
+    draft.activeRoute &&
+    (draft.activeRoute.id === payload.activeRoute.id ||
+      draft.activeRoute.status !== ROUTE_STATUS_TYPE.AVAILABLE)
+  )
+    return;
   draft.activeRoute = payload.activeRoute;
   return _createMessageAndUpdateDraft(config, draft);
 };
@@ -191,7 +197,6 @@ const _setInputDisplay = (
   draft: DigestedConversationWithStartedRoute,
   nextMessage: MessagePayloadType
 ) => {
-  console.log(nextMessage);
   if (isContentWithMeta(nextMessage.messageContent)) {
     draft.activeRoute.nextMessageInQueue = {
       nextMessageEffect: nextMessage.messageContent.nextMessageEffect?.type,

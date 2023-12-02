@@ -23,8 +23,9 @@ export enum ROUTE_STATUS_TYPE {
 
 export enum OPTION_EFFECT_TYPE {
   STATIC,
-  SAD,
+  MELT,
   GLITCH,
+  DISPLAY_AFTER_OTHER_SELECTION,
 }
 
 export type RouteChosenConditionType = {
@@ -32,6 +33,7 @@ export type RouteChosenConditionType = {
     chosen?: string[];
     not_chosen?: string[];
     status?: ROUTE_STATUS_TYPE;
+    timeSince?: number;
   };
 };
 
@@ -61,13 +63,24 @@ export interface AbstractRouteType {
   effects?: MessageEffectType[];
 }
 
-export type OptionType = {
+export type AbstractOptionType = {
   label: string;
   value: string;
   conditions?: RouteConditionsType;
   effect?: OPTION_EFFECT_TYPE;
-  data?: string;
+  data?: string | string[];
 };
+
+export interface OptionType extends AbstractOptionType {}
+export interface OptionTypeWithDisplayEffect extends AbstractOptionType {
+  effect: OPTION_EFFECT_TYPE.DISPLAY_AFTER_OTHER_SELECTION;
+  data: string[];
+}
+
+export interface OptionTypeWithShaderEffect extends AbstractOptionType {
+  effect: OPTION_EFFECT_TYPE.MELT | OPTION_EFFECT_TYPE.GLITCH;
+  data: string;
+}
 
 export interface ChoosableRouteType extends AbstractRouteType {
   options: string[] | OptionType[];
@@ -77,6 +90,7 @@ export interface ChoosableRouteType extends AbstractRouteType {
 export interface NotificationRouteFileType extends AbstractRouteType {
   backgroundColor?: string;
   exchanges: ExchangeBlockType[];
+  repeatable?: number;
 }
 export interface NotificationRouteType extends NotificationRouteFileType {
   status: ROUTE_STATUS_TYPE.CONDITIONS_NOT_MET;
@@ -105,6 +119,7 @@ export type DigestedChoosableRouteType = AbstractDigestedRouteType & {
 
 export type DigestedNotificationRouteType = AbstractDigestedRouteType & {
   type: ROUTE_TYPE.NOTIFICATION;
+  repeatable?: number;
   exchanges: MessagePayloadType[];
 };
 

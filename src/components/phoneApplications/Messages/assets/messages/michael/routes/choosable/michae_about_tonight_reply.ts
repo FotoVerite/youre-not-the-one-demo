@@ -43,7 +43,7 @@ const exchanges: ExchangeBlockType[] = [
   {
     name: MICHAEL,
     messages: [
-      "Only when I’m drunk and quoting my father…",
+      "Only when I’m drunk quoting my father…",
       "Wait why can’t you send history",
     ],
   },
@@ -85,10 +85,6 @@ const exchanges: ExchangeBlockType[] = [
   {
     name: MICHAEL,
     messages: ["You look great. The new routine is really working for you."],
-  },
-  {
-    name: SELF,
-    messages: ["Suuure"],
   },
 ];
 

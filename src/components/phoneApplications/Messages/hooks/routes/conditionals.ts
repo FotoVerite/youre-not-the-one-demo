@@ -15,6 +15,7 @@ import {
   ROUTE_STATUS_TYPE,
   AbstractDigestedRouteType,
   OptionType,
+  DigestedNotificationRouteType,
 } from "./types";
 import { MESSAGE_CONTACT_NAME } from "../../constants";
 import { EFFECT_TYPE, isContentWithMeta } from "../contentWithMetaTypes";
@@ -50,12 +51,12 @@ const routeChosenSelected = (
   chosen?: string[],
   viewed?: MessageRouteEventDataType
 ) => {
-  if (!viewed) {
-    return false;
-  }
-
   if (chosen == null) {
     return true;
+  }
+
+  if (!viewed) {
+    return false;
   }
 
   if (!viewed.chosen) {
@@ -68,24 +69,27 @@ const routeNotChosenSelected = (
   not_chosen?: string[],
   viewed?: MessageRouteEventDataType
 ) => {
-  if (!viewed) {
-    return false;
-  }
-
   if (not_chosen == null) {
     return true;
   }
-
+  if (!viewed) {
+    return false;
+  }
   if (!viewed.chosen) {
     return false;
   }
   return !not_chosen.includes(viewed.chosen);
 };
 
-const routeFinished = (
+const routeStatus = (
   status?: ROUTE_STATUS_TYPE,
   viewed?: MessageRouteEventDataType
 ) => {
+  //There will be no record if the conditions have not been met
+  if (status === ROUTE_STATUS_TYPE.CONDITIONS_NOT_MET && !viewed) {
+    return true;
+  }
+
   if (!viewed) {
     return false;
   }
@@ -96,6 +100,22 @@ const routeFinished = (
   return status === viewed.status;
 };
 
+const routeTimeSince = (
+  timeSinceInMilliseconds?: number,
+  viewed?: MessageRouteEventDataType
+) => {
+  if (!timeSinceInMilliseconds) {
+    return true;
+  }
+  if (!viewed) {
+    return false;
+  }
+  return (
+    moment(viewed.updatedAt).add(timeSinceInMilliseconds, "milliseconds") <
+    moment()
+  );
+};
+
 const routeHasBeenBlockedCheck = (
   name: MESSAGE_CONTACT_NAME,
   messageEvents: MessageAppEventsContainerType,
@@ -103,8 +123,11 @@ const routeHasBeenBlockedCheck = (
   conditionTime?: Moment
 ) => {
   const blockCondition = conditions[name]?.blocked;
-  if (!blockCondition) {
+  if (blockCondition == null) {
     return true;
+  }
+  if (blockCondition === false) {
+    return !messageEvents[name]?.blocked;
   }
   const blockedBoolean = messageEvents[name]?.blocked || false;
   const blockedAt = moment(messageEvents[name]?.blockedAt);
@@ -127,8 +150,8 @@ const routeHasBeenChosenCheck = (
     const routeCondition = routeConditions[key] || [];
     return (
       acc &&
-      viewedRoutes[key] != null &&
-      routeFinished(routeCondition.status, viewedRoutes[key]) &&
+      routeStatus(routeCondition.status, viewedRoutes[key]) &&
+      routeTimeSince(routeCondition.timeSince, viewedRoutes[key]) &&
       routeChosenSelected(routeCondition.chosen, viewedRoutes[key]) &&
       routeNotChosenSelected(routeCondition.not_chosen, viewedRoutes[key])
     );
@@ -168,6 +191,27 @@ export const messageAppConditionsMet = (
     );
   }
   return ret && checkConditions(state, conditions);
+};
+
+export const repeatableTimePassed = (
+  state: MessageAppEventsContainerType,
+  route: DigestedNotificationRouteType
+) => {
+  const ret = true;
+  if (route?.repeatable == null) {
+    return ret;
+  }
+  const name = route.name;
+  const viewedRoutes = state[name]?.routes || {};
+  const eventCreated = viewedRoutes[route.id]?.createdAt;
+  if (!eventCreated) {
+    return ret;
+  }
+  const timeToRepeat = moment(eventCreated).add(
+    route.repeatable,
+    "millisecond"
+  );
+  return timeToRepeat < moment();
 };
 
 export const mergeConditionalExchanges = (

@@ -60,6 +60,8 @@ interface AbstractContentWithMetaType {
 export interface StringContentWithMeta extends AbstractContentWithMetaType {
   content: string;
   type: MESSAGE_CONTENT.STRING;
+  font_size?: number;
+  font_color?: string;
 }
 
 export interface ImageContentWithMeta extends AbstractContentWithMetaType {

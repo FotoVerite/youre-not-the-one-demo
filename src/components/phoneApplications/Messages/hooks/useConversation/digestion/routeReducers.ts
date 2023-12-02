@@ -14,6 +14,7 @@ import { ImageCacheType } from "src/contexts/imageCache/types";
 import { convertBlockToMessagePayloadType } from "./convert";
 import { MessagePayloadType } from "./types";
 import { digestBlockAndFilterSkipped } from "./utility";
+import { isContentWithMeta } from "../../contentWithMetaTypes";
 import {
   areSimpleOptions,
   isChoosableRoute,
@@ -37,7 +38,6 @@ import {
   ConversationFileType,
   ConversationType,
 } from "../../useConversations/types";
-import { isContentWithMeta } from "../../contentWithMetaTypes";
 
 type ReturnType = {
   seen: FinishedRouteType[];
@@ -159,6 +159,7 @@ const digestNotificationRoute = (
       routeEvent.messageTimestamps
     ).map(snapshotResolver),
     status: ROUTE_STATUS_TYPE.FINISHED as const,
+    repeatable: props.repeatable,
     position: routeEvent.position,
     updatedAt: routeEvent.updatedAt,
   };

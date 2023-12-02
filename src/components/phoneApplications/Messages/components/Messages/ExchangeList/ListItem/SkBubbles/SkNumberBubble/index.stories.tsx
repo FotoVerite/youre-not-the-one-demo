@@ -5,6 +5,7 @@ import FontsContextProvider from "src/contexts/fonts";
 
 import { SkNumberBubble } from ".";
 import { SkBubbleTypeWithGradient } from "../types";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default {
   title: "Bubbles/SkNumberBubble",
@@ -12,11 +13,13 @@ export default {
 };
 
 const FontDecorator = (Story: ElementType) => (
-  <FontsContextProvider>
-    <View style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
-      <Story />
-    </View>
-  </FontsContextProvider>
+  <GestureHandlerRootView style={{ flex: 1 }}>
+    <FontsContextProvider resolver={() => {}}>
+      <View style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
+        <Story />
+      </View>
+    </FontsContextProvider>
+  </GestureHandlerRootView>
 );
 
 export const Default: {

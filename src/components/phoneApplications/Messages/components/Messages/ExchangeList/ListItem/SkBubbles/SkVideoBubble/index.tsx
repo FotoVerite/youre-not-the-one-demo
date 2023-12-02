@@ -19,7 +19,6 @@ type SkVideoBubbleType = Omit<SkBubbleTypeWithGradient, "content"> & {
 };
 
 export const SkVideoBubble: FC<SkVideoBubbleType> = (props) => {
-  console.log(props.ID);
   //const glitchEffect = useGlitchEffect(height, width, content, clip);
   const video = useRef<Video>(null);
   const [status, setStatus] = useState<AVPlaybackStatusSuccess>();

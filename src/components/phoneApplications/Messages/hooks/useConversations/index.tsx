@@ -10,6 +10,13 @@ import {
   ConversationListType,
   ConversationRecords,
 } from "./types";
+import {
+  antagonist2,
+  antagonist3,
+  antagonist4,
+  antagonist5,
+  antagonist1,
+} from "../../assets/messages/antagonistIfSpamBlocked";
 import { cat_facts } from "../../assets/messages/cat_facts";
 import { lenny } from "../../assets/messages/lenny";
 import { michael } from "../../assets/messages/michael";
@@ -25,6 +32,11 @@ const _conversations: ConversationFileType[] = [
   cat_facts,
   zara,
   spam1,
+  antagonist1,
+  antagonist2,
+  antagonist3,
+  antagonist4,
+  antagonist5,
   michael,
   lenny,
 ];

@@ -62,6 +62,7 @@ const getStories = () => {
     "./src/components/phoneApplications/Messages/components/Messages/ExchangeList/ListItem/SkBubbles/SkStringBubble/stories/index.stories.tsx": require("../src/components/phoneApplications/Messages/components/Messages/ExchangeList/ListItem/SkBubbles/SkStringBubble/stories/index.stories.tsx"),
     "./src/components/phoneApplications/Messages/components/Messages/ExchangeList/ListItem/SkBubbles/SkVcardBubble/index.stories.tsx": require("../src/components/phoneApplications/Messages/components/Messages/ExchangeList/ListItem/SkBubbles/SkVcardBubble/index.stories.tsx"),
     "./src/components/phoneApplications/Messages/components/Messages/ExchangeList/ListItem/stories/index.stories.tsx": require("../src/components/phoneApplications/Messages/components/Messages/ExchangeList/ListItem/stories/index.stories.tsx"),
+    "./src/components/phoneApplications/Messages/components/Messages/ExchangeList/RouteChooser/OptionList/Option/stories/index.stories.tsx": require("../src/components/phoneApplications/Messages/components/Messages/ExchangeList/RouteChooser/OptionList/Option/stories/index.stories.tsx"),
     "./src/components/phoneApplications/Messages/components/Messages/ExchangeList/stories/index.stories.tsx": require("../src/components/phoneApplications/Messages/components/Messages/ExchangeList/stories/index.stories.tsx"),
   };
 };

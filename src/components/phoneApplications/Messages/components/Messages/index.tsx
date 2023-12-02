@@ -30,7 +30,6 @@ const Messages: FC = () => {
       (n) => n !== null
     ) as MESSAGE_CONTACT_NAME[];
   }, [conversation, newMessageConversation]);
-
   useConversationDispatcher(viewable);
   useConversationNotifier(viewable, activeConversations);
 

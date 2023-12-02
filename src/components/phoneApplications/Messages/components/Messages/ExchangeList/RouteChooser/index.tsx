@@ -18,7 +18,6 @@ import { useInsetDimensions } from "src/utility/useInsetDimensions";
 
 import MessageTextInput from "./MessageTextInput";
 import OptionList from "./OptionList";
-import Option from "./OptionList/Option";
 
 const RootChooser: FC<
   {
@@ -76,24 +75,10 @@ const RootChooser: FC<
     return () => {};
   }, [activeRoute, dispatch, chosenOption]);
 
-  const Options = useMemo(() => {
-    if (isDigestedChoosableRoute(activeRoute)) {
-      const nodes = activeRoute.options.map((option) => (
-        <Option
-          key={`${activeRoute.routes.id}-${option.value}`}
-          id={activeRoute.id}
-          option={option.label}
-          cb={() => {
-            openOptionList(false);
-            setChosenOption(option.value);
-          }}
-          effect={option.effect}
-          effectData={option.data}
-        />
-      ));
-      return nodes;
-    }
-  }, [activeRoute]);
+  const cb = useCallback((value: string) => {
+    openOptionList(false);
+    setChosenOption(value);
+  }, []);
 
   useEffect(() => {
     const cb = (payload: {
@@ -118,9 +103,12 @@ const RootChooser: FC<
         cb={callback}
         openOptionList={openOptionList}
       />
-      <OptionList optionListOpen={optionListOpen} setActive={openOptionList}>
-        {Options}
-      </OptionList>
+      <OptionList
+        activeRoute={activeRoute}
+        cb={cb}
+        isDisplayed={optionListOpen}
+        setDisplayed={openOptionList}
+      />
     </Animated.View>
   );
 };

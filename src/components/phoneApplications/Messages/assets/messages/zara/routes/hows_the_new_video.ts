@@ -59,7 +59,7 @@ export const your_new_video: ChoosableRouteType = {
   conditions: {
     [MESSAGE_CONTACT_NAME.ZARA]: {
       routes: {
-        [ZARA_ROUTE_IDS.YOUR_DAY_WORSE_THEN_MINE]: {
+        [ZARA_ROUTE_IDS.I_REALLY_DONT_KNOW_WHAT_TO_DO_WITH_MYSELF]: {
           status: ROUTE_STATUS_TYPE.FINISHED,
         },
       },

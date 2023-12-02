@@ -19,6 +19,7 @@ import ConversationEmitter, {
   CONVERSATION_EMITTER_EVENTS,
 } from "../../emitters";
 import { findRouteEventIdsByStatus } from "../routes/filter";
+import { isNotificationRoute } from "../routes/guards";
 import { resolveRoutesPath } from "../routes/resolver";
 import { AbstractDigestedRouteType, ROUTE_STATUS_TYPE } from "../routes/types";
 import { ConversationType } from "../useConversations/types";
@@ -86,14 +87,29 @@ export const useConversation = (
       if (!state) return;
       const blockable = blockableConditionsMet(state, events);
       let activeRoute: undefined | AbstractDigestedRouteType;
-      if (!state.activeRoute) {
-        const triggerableRouteId = findRouteEventIdsByStatus(
+      if (
+        !state.activeRoute ||
+        state.activeRoute.status === ROUTE_STATUS_TYPE.AVAILABLE
+      ) {
+        const triggerableRouteIds: string[] = findRouteEventIdsByStatus(
           events.Messages[state.name],
           ROUTE_STATUS_TYPE.AVAILABLE
-        )[0];
-        if (triggerableRouteId) {
+        );
+
+        if (triggerableRouteIds.length > 0) {
+          const availableRoutes = triggerableRouteIds.map(
+            (id) => state.availableRoutes[id]
+          );
+          const notificationRoutes = availableRoutes.filter((r) =>
+            isNotificationRoute(r)
+          );
+          const route =
+            notificationRoutes.length > 0
+              ? notificationRoutes[0]
+              : availableRoutes[0];
+
           activeRoute = {
-            ...state.availableRoutes[triggerableRouteId],
+            ...route,
             status: ROUTE_STATUS_TYPE.AVAILABLE,
           };
           activeRoute = resolveRoutesPath(events, cache, activeRoute);

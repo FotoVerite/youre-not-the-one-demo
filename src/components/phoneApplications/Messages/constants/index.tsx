@@ -14,6 +14,7 @@ const defaults = {
 };
 
 export enum SNAPSHOT_NAMES {
+  BLOCK_ANTAGONIST = "BLOCK_ANTAGONIST",
   SERIAL_SNAPSHOT = "SERIAL_SNAPSHOT",
   ZARA_FUCK_OFF = "ZARA_FUCK_OFF",
 }
@@ -46,6 +47,8 @@ export enum MESSAGE_CONTACT_NAME {
   SPAM2 = "1-225-666-1337",
   SPAM3 = "1-226-666-1337",
   SPAM4 = "1-227-666-1337",
+  SPAM5 = "1-228-666-1337",
+  SPAM6 = "1-229-666-1337",
 }
 
 export const MESSAGE_CONTACT_INFO: {
@@ -54,6 +57,12 @@ export const MESSAGE_CONTACT_INFO: {
   "": defaults,
   [MESSAGE_CONTACT_NAME.CAT_FACTS]: defaults,
   [MESSAGE_CONTACT_NAME.SPAM1]: defaults,
+  [MESSAGE_CONTACT_NAME.SPAM2]: defaults,
+  [MESSAGE_CONTACT_NAME.SPAM3]: defaults,
+  [MESSAGE_CONTACT_NAME.SPAM4]: defaults,
+  [MESSAGE_CONTACT_NAME.SPAM5]: defaults,
+  [MESSAGE_CONTACT_NAME.SPAM6]: defaults,
+
   //   Arial: { avatar: arialAvatar, colors: ["#dbaf48", "#cdc8bb"] },
   //   Alice: { avatar: aliceAvatar, colors: ["#d0bd28", "#cdc8bb"] },
   //   Chris: { avatar: chrisAvatar, colors: ["#6bd8e4", "#363243"] },

@@ -1,6 +1,12 @@
 import { getWidthFromGlyphs } from "@Components/phoneApplications/Messages/hooks/useConversation/digestion/SkFunctions/skiaCalculations";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Canvas, Group, Text as SkText, vec } from "@shopify/react-native-skia";
+import {
+  Canvas,
+  Group,
+  Paint,
+  Text as SkText,
+  vec,
+} from "@shopify/react-native-skia";
 import React, { FC, PropsWithChildren } from "react";
 import {
   ImageBackground,
@@ -13,19 +19,31 @@ import { useFontsContext } from "src/contexts/fonts";
 import { theme } from "src/theme";
 import { Row } from "src/utility/layout";
 
+import { PerlinNoiseFilter } from "./PerlinNoiseFilter";
 import {
   SHADER_TYPES,
   useShader,
 } from "../../../ListItem/SkBubbles/hooks/useShader";
 import { BlackoutAndShrink } from "../Effects/BlackoutAndShrink";
 
-const OptionText: FC<{ value: string; shader?: string }> = ({
+type OptionTextType = {
+  value: string;
+  shader?: SHADER_TYPES;
+  color?: string;
+  strokeColor?: string;
+  usePerlinNoise?: boolean;
+};
+const OptionText: FC<OptionTextType> = ({
+  color,
   shader,
+  strokeColor,
   value,
+  usePerlinNoise,
 }) => {
   const font = useFontsContext().fonts.HelveticaNeue;
   const width = getWidthFromGlyphs(font, value);
-  const skShader = useShader(SHADER_TYPES.GHOST, vec(width, 50), "runtime");
+  const skShader = useShader(shader, vec(width, 50), "runtime");
+  color = color || "black";
   if (!shader || !font) {
     return <Text style={styles.content}>{value}</Text>;
   }
@@ -33,7 +51,14 @@ const OptionText: FC<{ value: string; shader?: string }> = ({
     <Canvas style={{ flex: 1, height: 50 }}>
       <Group>
         {skShader}
-        <SkText x={16} y={30} text={value} font={font} color={"black"} />
+        <SkText x={16} y={30} text={value} font={font} color={color}>
+          {strokeColor && (
+            <Paint color="black" style="stroke" strokeWidth={0.5}>
+              {usePerlinNoise && <PerlinNoiseFilter />}
+            </Paint>
+          )}
+        </SkText>
+        {usePerlinNoise && <PerlinNoiseFilter />}
       </Group>
     </Canvas>
   );
@@ -42,11 +67,11 @@ const OptionText: FC<{ value: string; shader?: string }> = ({
 const BaseOption: FC<
   {
     background?: ImageSourcePropType;
-    shader?: string;
     value: string;
     noChevron?: boolean;
-  } & PropsWithChildren
-> = ({ background, children, noChevron, value, shader }) => {
+  } & OptionTextType
+> = (props) => {
+  const { background, noChevron, value, shader, ...optionTextProps } = props;
   if (background) {
     return (
       <Row style={styles.container}>
@@ -54,7 +79,7 @@ const BaseOption: FC<
         <ImageBackground source={background} style={styles.content}>
           <Row style={styles.infoRow}>
             <Row>
-              <OptionText value={value} shader={SHADER_TYPES.PIXELATE} />
+              <OptionText value={value} shader={shader} {...optionTextProps} />
               {!noChevron && (
                 <FontAwesome
                   name="chevron-right"
@@ -72,10 +97,11 @@ const BaseOption: FC<
 
   return (
     <Row style={styles.container}>
+      {shader && <BlackoutAndShrink />}
       <View style={styles.content}>
         <Row style={styles.infoRow}>
           <Row>
-            <Text style={styles.content}>{value}</Text>
+            <OptionText value={value} shader={shader} {...optionTextProps} />
             {!noChevron && (
               <FontAwesome
                 name="chevron-right"

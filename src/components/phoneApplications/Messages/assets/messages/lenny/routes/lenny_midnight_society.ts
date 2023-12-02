@@ -15,6 +15,11 @@ import { ExchangeBlockType } from "@Components/phoneApplications/Messages/hooks/
 import { LENNY_ROUTE_IDS } from "./routes";
 import lenny1 from "../assets/lenny1.mov";
 import lenny2 from "../assets/lenny2.mov";
+import lenny3 from "../assets/lenny3.mov";
+import lenny4 from "../assets/lenny4.mov";
+import lenny5 from "../assets/lenny5.mov";
+import lenny6 from "../assets/lenny6.mov";
+import lenny7 from "../assets/lenny7.mov";
 
 const LENNY = MESSAGE_CONTACT_NAME.LENNY;
 const SELF = MESSAGE_CONTACT_NAME.SELF;
@@ -74,8 +79,20 @@ const exchanges: ExchangeBlockType[] = [
   },
   {
     name: LENNY,
-    messages: ["Sigh... Yes", "Do you know about the hikikomori in Japan"],
+    messages: [
+      {
+        type: MESSAGE_CONTENT.VIDEO,
+        content: {
+          video: lenny3,
+          subtitles: [
+            "Sigh... Yes",
+            "Do you know about the hikikomori in Japan",
+          ],
+        },
+      },
+    ],
   },
+
   {
     name: SELF,
     messages: [
@@ -83,39 +100,70 @@ const exchanges: ExchangeBlockType[] = [
       "It's not like Japan is the only country dealing with shutins.",
     ],
   },
+
   {
     name: LENNY,
     messages: ["OMG stop! Stop being a lawyer for five seconds"],
   },
+
   {
     name: SELF,
     messages: ["Fine, yes, I know about hikikomori"],
   },
+
   {
     name: LENNY,
     messages: [
-      "It's been an issue for a very long time; but since lockdown things have changed",
-      "Before they'd play game mmos,lurk message boards, or chat online to get human connection",
-      "Now a lot of them just chat with AI, or have AI chat for them and read the results on message boards",
+      {
+        type: MESSAGE_CONTENT.VIDEO,
+        content: {
+          video: lenny4,
+          subtitles: [
+            "It's been an issue for a very long time; but since lockdown things have changed",
+            "Before they'd play game mmos,lurk message boards, or chat online to get human connection",
+            "Now a lot of them just chat with AI, or have AI chat for them and read the results on message boards",
+          ],
+        },
+      },
     ],
   },
+
   {
     name: LENNY,
     messages: [
-      "There are reddits and discords of AI just chatting between themselves",
-      "No human interaction, occasional tweaks of the code",
-      "If they manually type something, it's to the effect of, I'm tired of trying to figure out what people want from me.",
-      "They look at a screen and they just see people yelling at them, calling them stupid, or on the wrong side of history",
+      {
+        type: MESSAGE_CONTENT.VIDEO,
+        content: {
+          video: lenny6,
+          subtitles: [
+            "There are reddits and discords of AI just chatting between themselves",
+            "No human interaction, occasional tweaks of the code",
+            "If they manually type something, it's to the effect of, I'm tired of trying to figure out what people want from me.",
+            "They look at a screen and they just see people yelling at them, calling them stupid, or on the wrong side of history",
+          ],
+        },
+      },
     ],
   },
+
   {
     name: SELF,
     messages: ["So they're agoraphobic and cowards got it"],
   },
+
   {
     name: LENNY,
-    messages: ["You're such a fucking asshole."],
+    messages: [
+      {
+        type: MESSAGE_CONTENT.VIDEO,
+        content: {
+          video: lenny7,
+          subtitles: ["You're such a fucking asshole."],
+        },
+      },
+    ],
   },
+
   {
     name: LENNY,
     messages: [

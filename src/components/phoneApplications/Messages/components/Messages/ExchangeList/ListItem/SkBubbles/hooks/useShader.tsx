@@ -8,18 +8,22 @@ import {
   SkPoint,
   ImageShader,
   RuntimeShader,
+  useImage,
 } from "@shopify/react-native-skia";
 import { useWindowDimensions } from "react-native";
 
 import { cloudsShader } from "./shaders/clouds";
 import { crossSection } from "./shaders/crossSection";
 import { ghost } from "./shaders/ghost";
+import { glitchAndGlow } from "./shaders/glitchAndGlow";
 import { osculatingLine } from "./shaders/oscilatingLine";
 import { pixelate } from "./shaders/pixelate";
+
 export enum SHADER_TYPES {
   CLOUDS,
   CROSS_SECTION,
   GHOST,
+  GLITCH_AND_GLOW,
   PIXELATE,
   OSCULATING,
 }
@@ -59,6 +63,9 @@ export const useShader = (
         break;
       case SHADER_TYPES.GHOST:
         source = ghost;
+        break;
+      case SHADER_TYPES.GLITCH_AND_GLOW:
+        source = glitchAndGlow;
         break;
       case SHADER_TYPES.OSCULATING:
         source = osculatingLine;
