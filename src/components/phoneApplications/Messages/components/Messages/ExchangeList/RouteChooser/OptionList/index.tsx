@@ -4,6 +4,7 @@ import React, {
   FC,
   PropsWithChildren,
   memo,
+  useCallback,
   useEffect,
   useMemo,
   useState,
@@ -36,7 +37,7 @@ const OptionList: FC<
   } & PropsWithChildren
 > = ({ activeRoute, cb, isDisplayed, setDisplayed, children }) => {
   const [selected, setSelected] = useState<string[]>([]);
-
+  const [cachedID, setCachedID] = useState<string>();
   const showOptions = useSharedValue(0);
   const [optionsHeight, setOptionsHeight] = useState(
     [] as SharedValue<number>[]
@@ -59,18 +60,16 @@ const OptionList: FC<
   }, [isDisplayed, showOptions]);
 
   useEffect(() => {
-    if (!isDigestedChoosableRoute(activeRoute)) {
-      setOptionsHeight([] as SharedValue<number>[]);
+    console.log(activeRoute?.id);
+    if (activeRoute) {
+      setOptionsHeight([]);
+      setCachedID(`${activeRoute.name}-${activeRoute.id}`);
+    } else {
+      setOptionsHeight([]);
     }
   }, [activeRoute]);
 
-  const animateOptionsUp = useAnimatedStyle(() => {
-    return {
-      height: interpolate(showOptions.value, [0, 1], [0, menuHeight.value]),
-    };
-  }, [showOptions, menuHeight]);
-
-  const Options = useMemo(() => {
+  const createOptions = useCallback(() => {
     if (isDigestedChoosableRoute(activeRoute)) {
       const nodes = activeRoute.options.map((option) => (
         <Option
@@ -86,6 +85,20 @@ const OptionList: FC<
       return nodes;
     }
   }, [activeRoute, cb, selected]);
+
+  const animateOptionsUp = useAnimatedStyle(() => {
+    return {
+      height: interpolate(showOptions.value, [0, 1], [0, menuHeight.value]),
+    };
+  }, [showOptions, menuHeight]);
+
+  const Options = useMemo(() => {
+    if (cachedID) {
+      return createOptions();
+    } else {
+      return [];
+    }
+  }, [cachedID, createOptions]);
 
   return (
     <Animated.View style={[styles.screen, animateOptionsUp]}>

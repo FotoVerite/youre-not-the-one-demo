@@ -4,8 +4,8 @@ import {
   ROUTE_STATUS_TYPE,
 } from "@Components/phoneApplications/Messages/hooks/routes/types";
 
-import { LENNY_ROUTE_IDS } from "./routes";
-import { ZARA_ROUTE_IDS } from "../../zara/routes/routes";
+import { ZARA_ROUTE_IDS } from "../../../zara/routes/routes";
+import { LENNY_ROUTE_IDS } from "../routes";
 
 export const lenny_want_to_hear_something_scary: NotificationRouteType = {
   id: LENNY_ROUTE_IDS.WANT_TO_HEAR_SOMETHING_SCARY,

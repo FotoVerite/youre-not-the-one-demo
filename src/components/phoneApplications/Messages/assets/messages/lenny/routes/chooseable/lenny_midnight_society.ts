@@ -12,14 +12,14 @@ import {
 } from "@Components/phoneApplications/Messages/hooks/routes/types";
 import { ExchangeBlockType } from "@Components/phoneApplications/Messages/hooks/useConversations/types";
 
-import { LENNY_ROUTE_IDS } from "./routes";
-import lenny1 from "../assets/lenny1.mov";
-import lenny2 from "../assets/lenny2.mov";
-import lenny3 from "../assets/lenny3.mov";
-import lenny4 from "../assets/lenny4.mov";
-import lenny5 from "../assets/lenny5.mov";
-import lenny6 from "../assets/lenny6.mov";
-import lenny7 from "../assets/lenny7.mov";
+import lenny1 from "../../assets/lenny1.mov";
+import lenny2 from "../../assets/lenny2.mov";
+import lenny3 from "../../assets/lenny3.mov";
+import lenny4 from "../../assets/lenny4.mov";
+import lenny5 from "../../assets/lenny5.mov";
+import lenny6 from "../../assets/lenny6.mov";
+import lenny7 from "../../assets/lenny7.mov";
+import { LENNY_ROUTE_IDS } from "../routes";
 
 const LENNY = MESSAGE_CONTACT_NAME.LENNY;
 const SELF = MESSAGE_CONTACT_NAME.SELF;
