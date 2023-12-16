@@ -37,7 +37,8 @@ const OptionList: FC<
   } & PropsWithChildren
 > = ({ activeRoute, cb, isDisplayed, setDisplayed, children }) => {
   const [selected, setSelected] = useState<string[]>([]);
-  const [cachedID, setCachedID] = useState<string>();
+  const [cachedId, setCachedId] = useState<string>();
+
   const showOptions = useSharedValue(0);
   const [optionsHeight, setOptionsHeight] = useState(
     [] as SharedValue<number>[]
@@ -59,15 +60,11 @@ const OptionList: FC<
     }
   }, [isDisplayed, showOptions]);
 
-  useEffect(() => {
-    console.log(activeRoute?.id);
-    if (activeRoute) {
-      setOptionsHeight([]);
-      setCachedID(`${activeRoute.name}-${activeRoute.id}`);
-    } else {
-      setOptionsHeight([]);
-    }
-  }, [activeRoute]);
+  const animateOptionsUp = useAnimatedStyle(() => {
+    return {
+      height: interpolate(showOptions.value, [0, 1], [0, menuHeight.value]),
+    };
+  }, [showOptions, menuHeight]);
 
   const createOptions = useCallback(() => {
     if (isDigestedChoosableRoute(activeRoute)) {
@@ -86,19 +83,30 @@ const OptionList: FC<
     }
   }, [activeRoute, cb, selected]);
 
-  const animateOptionsUp = useAnimatedStyle(() => {
-    return {
-      height: interpolate(showOptions.value, [0, 1], [0, menuHeight.value]),
-    };
-  }, [showOptions, menuHeight]);
+  useEffect(() => {
+    if (activeRoute == null) {
+      setCachedId(undefined);
+      return;
+    }
+    const ID = `${activeRoute.id}-${activeRoute.name}`;
+    if (cachedId === ID) {
+      return;
+    }
+    if (optionsHeight.length > 0) {
+      setOptionsHeight([]);
+      return;
+    }
+    setCachedId(ID);
+  }, [activeRoute, cachedId, optionsHeight.length]);
 
   const Options = useMemo(() => {
-    if (cachedID) {
-      return createOptions();
-    } else {
-      return [];
+    if (activeRoute == null) {
     }
-  }, [cachedID, createOptions]);
+    if (isDigestedChoosableRoute(activeRoute) && cachedId != null) {
+      return createOptions();
+    }
+    return [];
+  }, [activeRoute, cachedId, createOptions]);
 
   return (
     <Animated.View style={[styles.screen, animateOptionsUp]}>

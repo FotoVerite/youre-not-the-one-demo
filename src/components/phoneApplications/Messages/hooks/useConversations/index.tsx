@@ -18,6 +18,7 @@ import {
   antagonist1,
 } from "../../assets/messages/antagonistIfSpamBlocked";
 import { cat_facts } from "../../assets/messages/cat_facts";
+import { emma } from "../../assets/messages/emma";
 import { lenny } from "../../assets/messages/lenny";
 import { michael } from "../../assets/messages/michael";
 import { spam1 } from "../../assets/messages/spam1";
@@ -37,6 +38,7 @@ const _conversations: ConversationFileType[] = [
   antagonist3,
   antagonist4,
   antagonist5,
+  emma,
   michael,
   lenny,
 ];

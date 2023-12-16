@@ -4,9 +4,9 @@ import { ROUTE_STATUS_TYPE } from "@Components/phoneApplications/Messages/hooks/
 import { LENNY_ROUTE_IDS } from "../../../lenny/routes/routes";
 import { CAT_FACT_IDS } from "../routes";
 
-export const jaguars_can_bite = {
+export const clowder_of_cats = {
   id: CAT_FACT_IDS.CLOWDER_OF_CATS,
-  delay: 10500,
+  delay: 5000,
   conditions: {
     [MESSAGE_CONTACT_NAME.LENNY]: {
       routes: {

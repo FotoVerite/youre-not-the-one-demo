@@ -61,7 +61,7 @@ export const useDeleteAndReplace = (
   set: React.Dispatch<React.SetStateAction<string | undefined>>,
   replacements: string | string[],
   cb?: () => void,
-  baseDelay: number = 50
+  baseDelay: number = 200
 ) => {
   const [state, setState] = useState(STATE.WAITING);
 
@@ -70,9 +70,9 @@ export const useDeleteAndReplace = (
   const [currentTransition, setCurrentTransition] =
     useState<TransitionStateType>();
 
-  const typingSound = useSound(typing, { positionToStop: 1250 });
+  const typingSound = useSound(typing, { positionToStop: 1150 });
 
-  const deleteSound = useSound(typing, { positionToStop: 3250 });
+  const deleteSound = useSound(typing, { positionToStop: 3150 });
 
   const runCurrentTransition = useCallback(
     async (transition: TransitionStateType | undefined) => {

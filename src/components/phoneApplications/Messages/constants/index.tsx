@@ -27,6 +27,7 @@ export enum MESSAGE_CONTACT_NAME {
   CHRIS = "Chris",
   CLAY = "Clay",
   CUSTOMER_SERVICE = "401112",
+  EMMA = "Maybe: Emma",
   GRACE_RUSSO = "Grace Russo",
   GREG = "Fuck Face",
   LENNY = "Maybe: Lenny",
@@ -56,6 +57,10 @@ export const MESSAGE_CONTACT_INFO: {
 } = {
   "": defaults,
   [MESSAGE_CONTACT_NAME.CAT_FACTS]: defaults,
+  [MESSAGE_CONTACT_NAME.EMMA]: {
+    avatar: defaultAvatar,
+    colors: ["#d92c4c", "#450b49"],
+  },
   [MESSAGE_CONTACT_NAME.SPAM1]: defaults,
   [MESSAGE_CONTACT_NAME.SPAM2]: defaults,
   [MESSAGE_CONTACT_NAME.SPAM3]: defaults,
@@ -82,6 +87,7 @@ export const MESSAGE_CONTACT_INFO: {
     avatar: defaultAvatar,
     colors: ["#6b6b6d", "#363243"],
   },
+
   //   Mileena: { avatar: meleenaAvatar, colors: ["#ff0095", "#80194d"] },
   "Maybe: Michael": { avatar: michaelAvatar, colors: ["#f54295", "#8900fa"] },
   //   "Movie Night": { avatar: darkoAvatar, colors: ["#6b6b6d", "#363243"] },
