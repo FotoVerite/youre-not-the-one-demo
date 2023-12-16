@@ -4,11 +4,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   slug: "youre-not-the-one-demo",
   name: "youre-not-the-one-demo",
-  splash: { image: "assets/splash.jpeg", backgroundColor: "black" },
+  splash: { image: "assets/splash.png", backgroundColor: "#000000" },
   icon: "assets/yourenottheonedemo.jpg",
   ios: {
     supportsTablet: false,
-    bundleIdentifier: "com.fotoverite.yourenottheonedemo",
+    bundleIdentifier: "com.fotoverite.expo.yourenottheonedemo",
     buildNumber: "1.0.0",
   },
   extra: {
