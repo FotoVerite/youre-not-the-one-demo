@@ -38,11 +38,13 @@ export const TypingContainer: FC<
     return { opacity: interpolate(opacity.value, [1, 0], [0, 1]) };
   });
 
+  const { contentDelay, dispatch, height, resolved, typingDelay } = props;
+
   useEffect(() => {
     const continueRoute = async (delay: number) => {
-      ListOffsetEmitter.emit(LIST_EMITTER_EVENTS.ADD_TO_OFFSET, props.height);
+      ListOffsetEmitter.emit(LIST_EMITTER_EVENTS.ADD_TO_OFFSET, height);
       await delayFor(delay);
-      props.dispatch({ type: CONVERSATION_REDUCER_ACTIONS.CONTINUE_ROUTE });
+      dispatch({ type: CONVERSATION_REDUCER_ACTIONS.CONTINUE_ROUTE });
     };
 
     const showTyping = async (delay?: number) => {
@@ -53,22 +55,23 @@ export const TypingContainer: FC<
         1350 + (delay || 0),
         withTiming(0, { duration: 300 }, (finished) => {
           if (finished) {
-            runOnJS(continueRoute)(props.contentDelay || 0);
+            runOnJS(continueRoute)(contentDelay || 0);
           }
-        }),
+        })
       );
     };
 
-    if (props.contentDelay && props.resolved) {
-      showTyping(props.typingDelay);
+    if (contentDelay && resolved) {
+      showTyping(typingDelay);
     }
   }, [
     containerOpacity,
     opacity,
-    props.typingDelay,
-    props.resolved,
-    props.contentDelay,
-    props,
+    contentDelay,
+    resolved,
+    dispatch,
+    typingDelay,
+    height,
   ]);
 
   return (

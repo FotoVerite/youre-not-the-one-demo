@@ -45,7 +45,7 @@ export const yes_exactly: ChoosableRouteType = {
       {
         name: LENNY,
         messages: [
-          "I don't know, you're boyfriend, maybe Chris he's always been humor challenged",
+          "I don't know, your boyfriend, or your friend Chris he's always been humor challenged",
         ],
       },
       {

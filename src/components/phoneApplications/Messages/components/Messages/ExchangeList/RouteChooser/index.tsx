@@ -94,6 +94,7 @@ const RootChooser: FC<
       ConversationEmitter.off(CONVERSATION_EMITTER_EVENTS.RESET, cb);
     };
   }, []);
+
   return (
     <Animated.View style={[{ width }, styles.container]}>
       {Platform.OS === "ios" && <BlurView style={styles.blur} intensity={5} />}
