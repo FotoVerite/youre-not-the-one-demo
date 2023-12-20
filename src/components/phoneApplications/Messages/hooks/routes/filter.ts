@@ -21,7 +21,7 @@ export const findRouteEventIdsByStatus = (
 ) =>
   filterRouteEventsByStatus(events, status)
     .sort(([, routeA], [, RouteB]) =>
-      routeA.createdAt > RouteB.createdAt ? -1 : 1
+      routeA.createdAt > RouteB.createdAt ? 1 : -1
     )
     .map(([id]) => id);
 
